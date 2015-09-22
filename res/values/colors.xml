@@ -73,6 +73,7 @@
      
      
     <color name="main_blue">#00A1D8</color>
+    <color name="light_blue">#4BC4EE</color>
     <color name="blue_line">#00CDEC</color>
     <color name="grey_line">#D2D2D2</color>
     <color name="btn_green">#46D9BF</color>

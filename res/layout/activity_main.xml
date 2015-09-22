@@ -166,6 +166,21 @@
 	            android:layout_height="wrap_content"
 	            android:text="交易记录列表"
 	            android:id="@+id/btnTransactionRecords"/>
+	        <Button 
+	            android:layout_width="match_parent"
+	            android:layout_height="wrap_content"
+	            android:text="账户充值"
+	            android:id="@+id/btnRecharge"/>
+	        <Button 
+	            android:layout_width="match_parent"
+	            android:layout_height="wrap_content"
+	            android:text="支付宝提现"
+	            android:id="@+id/btnAlipay"/>
+	        <Button 
+	            android:layout_width="match_parent"
+	            android:layout_height="wrap_content"
+	            android:text="设置"
+	            android:id="@+id/btnSettings"/>
 	        
 			<TextView
 			    android:layout_width="match_parent"

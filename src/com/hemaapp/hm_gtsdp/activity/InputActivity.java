@@ -1,11 +1,10 @@
 package com.hemaapp.hm_gtsdp.activity;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -13,36 +12,22 @@ import com.hemaapp.hm_FrameWork.HemaNetTask;
 import com.hemaapp.hm_FrameWork.result.HemaBaseResult;
 import com.hemaapp.hm_gtsdp.GtsdpActivity;
 import com.hemaapp.hm_gtsdp.R;
-import com.hemaapp.hm_gtsdp.adapter.TransactionListAdapter;
-import com.hemaapp.hm_gtsdp.model.TransactionModel;
-import com.hemaapp.hm_gtsdp.view.GtsdpListView;
-import com.hemaapp.hm_gtsdp.view.GtsdpRefreshLoadmoreLayout;
 
-/**
- * 交易记录列表界面
- * @author Wen
- * @author HuFanglin
- *
- */
-public class TransactionRecordsActivity extends GtsdpActivity {
-	private List<TransactionModel> listDatas;
-	private TransactionListAdapter adapter;
+public class InputActivity extends GtsdpActivity {
+	private Intent beforeIntent;
+	private String title = "";
+	private String next = "";
+	private String InputHint = "";
+	private int InputType = -1;
 	private ImageView imageQuitActivity;
-	private GtsdpRefreshLoadmoreLayout refreshLoadmoreLayout;
-	private GtsdpListView showListView;
+	private TextView txtTitle, txtNext;
+	private EditText editEmail;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		setContentView(R.layout.activity_transaction_records);
+		setContentView(R.layout.activity_input_alipay);
 		super.onCreate(savedInstanceState);
-		listDatas = new ArrayList<TransactionModel>();
-		listDatas.add(new TransactionModel("发货", "2015.9.22 13:27:54", 250, false));
-		listDatas.add(new TransactionModel("银联充值", "2015.9.22 13:27:54", 250, true));
-		listDatas.add(new TransactionModel("支付宝充值", "2015.9.22 13:27:54", 250, true));
-		listDatas.add(new TransactionModel("配送", "2015.9.22 13:27:54", 250, true));
-		adapter = new TransactionListAdapter(mContext, listDatas);
-		showListView.setAdapter(adapter);
 	}
-	
+
 	@Override
 	protected void callAfterDataBack(HemaNetTask arg0) {
 		// TODO Auto-generated method stub
@@ -77,16 +62,27 @@ public class TransactionRecordsActivity extends GtsdpActivity {
 	@Override
 	protected void findView() {
 		imageQuitActivity = (ImageView)findViewById(R.id.imageQuitActivity);
-		((TextView)findViewById(R.id.txtTitle)).setText("交易记录");
-		findViewById(R.id.txtNext).setVisibility(View.INVISIBLE);
-		showListView = (GtsdpListView)findViewById(R.id.showListView);
-		refreshLoadmoreLayout = (GtsdpRefreshLoadmoreLayout)findViewById(R.id.refreshLoadmoreLayout);
+		txtTitle = (TextView)findViewById(R.id.txtTitle);
+		txtTitle.setText(title);
+		txtNext = (TextView)findViewById(R.id.txtNext);
+		txtNext.setText(next);
+		editEmail = (EditText)findViewById(R.id.editEmail);
+		if(InputType != -1)
+		{
+			editEmail.setInputType(InputType);
+		}
+		editEmail.setHint(InputHint);
 	}
 
 	@Override
 	protected void getExras() {
-		// TODO Auto-generated method stub
-		
+		beforeIntent = getIntent();
+		if(beforeIntent == null)
+			return;
+		title = beforeIntent.getStringExtra("Title");
+		next = beforeIntent.getStringExtra("Next");
+		InputType = beforeIntent.getIntExtra("InputType", -1);
+		InputHint = beforeIntent.getStringExtra("InputHint");
 	}
 
 	@Override
@@ -97,7 +93,21 @@ public class TransactionRecordsActivity extends GtsdpActivity {
 				finish(R.anim.none, R.anim.right_out);
 			}
 		});
+		txtNext.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				String Account = editEmail.getEditableText().toString().trim();
+				if(!"".equals(Account))
+				{
+					Intent result = new Intent();
+					result.putExtra("Result", Account);
+					setResult(RESULT_OK, result);
+				}
+				finish(R.anim.none, R.anim.right_out);
+			}
+		});
 	}
+	
 	@Override
 	protected boolean onKeyBack() {
 		finish(R.anim.none, R.anim.right_out);

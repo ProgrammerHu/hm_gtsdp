@@ -8,6 +8,7 @@ import android.content.Context;
 import com.hemaapp.GtsdpConfig;
 import com.hemaapp.hm_FrameWork.HemaNetWorker;
 import com.hemaapp.hm_gtsdp.nettask.ClientLoginTask;
+import com.hemaapp.hm_gtsdp.nettask.ClientLoginoutTask;
 import com.hemaapp.hm_gtsdp.nettask.DeviceSaveTask;
 import com.hemaapp.hm_gtsdp.nettask.InitTask;
 
@@ -47,6 +48,19 @@ public class GtsdpNetWorker extends HemaNetWorker {
 
 		GtsdpNetTask task = new ClientLoginTask(information, params);
 
+		executeTask(task);
+	}
+	
+
+	/**
+	 * ÍË³öµÇÂ¼
+	 */
+	public void clientLoginout(String token) {
+		GtsdpHttpInformation information = GtsdpHttpInformation.CLIENT_LOGINOUT;
+		HashMap<String, String> params = new HashMap<String, String>();
+		params.put("token", token);// µÇÂ½ÁîÅÆ
+
+		GtsdpNetTask task = new ClientLoginoutTask(information, params);
 		executeTask(task);
 	}
 

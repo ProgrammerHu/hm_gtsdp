@@ -13,24 +13,16 @@
 	    android:orientation="horizontal"
 	    android:background="@color/white"
 	    >
-	    <TextView 
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:text="金额"
-	        android:layout_margin="10dp"
-	        android:textSize="@dimen/textsize_8"
-	        android:layout_gravity="center_vertical"
-	        />
 	    <EditText 
 	        android:layout_width="match_parent"
 	        android:layout_height="wrap_content"
-	        android:id="@+id/editCount"
+	        android:id="@+id/editEmail"
 	        android:background="@null"
 	        android:layout_gravity="center_vertical"
-	        android:inputType="numberDecimal"
-	        android:maxLength="9"
-	        android:paddingTop="15dp"
-	        android:paddingBottom="15dp"
+	        android:inputType="textEmailAddress"
+	        android:padding="15dp"
+	        android:singleLine="true"
+	        android:hint="输入支付宝账号"
 	        />
 	</LinearLayout>
 </LinearLayout>

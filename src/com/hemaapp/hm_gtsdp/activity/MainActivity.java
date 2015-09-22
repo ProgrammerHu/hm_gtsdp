@@ -42,7 +42,8 @@ OnClickListener
 	btnMainPage, btnSendDetail, btnReciverList, btnSenderList, btnTimePicker, 
 	btnIdentification,btnSelectPic, btnIndentified, btnNotCursor, btnPublishRoute, btnFindGoods,
 	btnGoodsDetail, btnCrusorDetail, btnReciverDetail, btnSiteBDetail, btnSiteDetail, btnPay, btnMessages,
-	btnConfirmGet, btnMyAccount, btnBank, btnTransactionRecords;
+	btnConfirmGet, btnMyAccount, btnBank, btnTransactionRecords, btnRecharge, btnAlipay,
+	btnSettings;
 	private TextView txtShow;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -97,6 +98,9 @@ OnClickListener
 		init(btnMyAccount, R.id.btnMyAccount);
 		init(btnBank, R.id.btnBank);
 		init(btnTransactionRecords, R.id.btnTransactionRecords);
+		init(btnRecharge, R.id.btnRecharge);
+		init(btnAlipay, R.id.btnAlipay);
+		init(btnSettings, R.id.btnSettings);
 	}
 
 	private void init(Button button, int id)
@@ -222,6 +226,18 @@ OnClickListener
 			break;
 		case R.id.btnTransactionRecords:
 			intent = new Intent(MainActivity.this, TransactionRecordsActivity.class);
+			startActivity(intent);
+			break;
+		case R.id.btnRecharge:
+			intent = new Intent(MainActivity.this, RechargeActivity.class);
+			startActivity(intent);
+			break;
+		case R.id.btnAlipay:
+			intent = new Intent(MainActivity.this, AlipayIncashActivity.class);
+			startActivity(intent);
+			break;
+		case R.id.btnSettings:
+			intent = new Intent(MainActivity.this, SettingsActivity.class);
 			startActivity(intent);
 			break;
 			

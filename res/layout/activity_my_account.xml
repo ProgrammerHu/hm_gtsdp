@@ -1,105 +1,175 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- 我的账户布局 -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical" >
-
-    <include layout="@layout/header_quit_text_text" />
+    android:layout_height="match_parent" 
+    android:id="@+id/father">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/white"
+        android:layout_height="match_parent"
         android:orientation="vertical" >
 
-        <TextView
+        <include layout="@layout/header_quit_text_text" />
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/textsize_9"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="10dp"
-            android:text="账户余额" />
+            android:background="@color/white"
+            android:orientation="vertical" >
 
-        <TextView
-            android:id="@+id/txtCount"
-            android:layout_width="wrap_content"
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:text="账户余额"
+                android:textSize="@dimen/textsize_9" />
+
+            <TextView
+                android:id="@+id/txtCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="30dp"
+                android:layout_marginTop="30dp"
+                android:text="￥500"
+                android:textColor="@color/black"
+                android:textSize="@dimen/textsize_15" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="@color/grey_line" />
+
+        <RelativeLayout
+            android:id="@+id/layoutReciver"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="30dp"
-            android:layout_marginTop="30dp"
-            android:layout_gravity="center_horizontal"
-            android:text="￥500"
-            android:textColor="@color/black"
-            android:textSize="@dimen/textsize_15" />
+            android:background="@color/white" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="5dp"
+                android:padding="5dp"
+                android:text="金额"
+                android:textSize="@dimen/textsize_9" />
+
+            <TextView
+                android:id="@+id/txtReciverCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="5dp"
+                android:padding="5dp"
+                android:text="99元"
+                android:textColor="@color/orange"
+                android:textSize="@dimen/textsize_9" />
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2px"
+            android:background="@color/orange" />
+
+        <RelativeLayout
+            android:id="@+id/layoutRecords"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_click_layout" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="5dp"
+                android:paddingBottom="10dp"
+                android:paddingLeft="5dp"
+                android:paddingTop="10dp"
+                android:text="交易记录"
+                android:textSize="@dimen/textsize_9" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="5dp"
+                android:padding="5dp"
+                android:src="@drawable/arrow_right" />
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="@color/grey_line" />
     </LinearLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1px"
-        android:background="@color/grey_line" />
- 	<RelativeLayout
-        android:id="@+id/layoutReciver"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" 
-        android:background="@color/white">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="5dp"
-            android:padding="5dp"
-            android:text="金额"
-            android:textSize="@dimen/textsize_9" />
-
-        <TextView
-            android:id="@+id/txtReciverCount"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="5dp"
-            android:padding="5dp"
-            android:text="99元"
-            android:textColor="@color/orange"
-            android:textSize="@dimen/textsize_9" />
-    </RelativeLayout>
+	
     
-    <View
+    <LinearLayout 
         android:layout_width="match_parent"
-        android:layout_height="2px"
-        android:background="@color/orange" />
- 	<RelativeLayout
-        android:id="@+id/layoutRecords"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" 
-        android:background="@drawable/bg_click_layout"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true"
         >
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="5dp"
-            android:paddingLeft="5dp"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
-            android:text="交易记录"
-            android:textSize="@dimen/textsize_9" />
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="5dp"
-            android:padding="5dp"
-            android:src="@drawable/arrow_right"/>
-    </RelativeLayout>
-    
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1px"
-        android:background="@color/grey_line" />
-    
-</LinearLayout>
+        <LinearLayout 
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="6dp"
+            android:layout_marginLeft="6dp"
+            android:layout_marginBottom="6dp"
+            android:layout_marginRight="3dp"
+            android:layout_weight="1"
+            android:background="@drawable/bg_button_submit_square"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:id="@+id/layoutRecharge"
+            >
+            <ImageView 
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/logo_download"
+                />
+            <TextView 
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="充值"
+                android:textColor="@color/white"
+                android:textSize="@dimen/textsize_9"
+                android:layout_marginLeft="5dp"
+                />
+        </LinearLayout>
+         <LinearLayout 
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="6dp"
+            android:layout_marginLeft="6dp"
+            android:layout_marginBottom="6dp"
+            android:layout_marginRight="3dp"
+            android:layout_weight="1"
+            android:background="@drawable/bg_button_submit_lightblue"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:id="@+id/layoutIncash"
+            >
+            <ImageView 
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/logo_mail"
+                />
+            <TextView 
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="申请提现"
+                android:textColor="@color/white"
+                android:textSize="@dimen/textsize_9"
+                android:layout_marginLeft="5dp"
+                />
+        </LinearLayout>
+    </LinearLayout>
+</RelativeLayout>

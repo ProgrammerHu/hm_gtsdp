@@ -295,7 +295,7 @@
             android:name="com.hemaapp.hm_gtsdp.activity.MyAccountActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
-			android:windowSoftInputMode="stateHidden"/>
+			android:windowSoftInputMode="stateAlwaysHidden"/>
 		<activity
             android:name="com.hemaapp.hm_gtsdp.activity.ToCashActivity"
             android:label="@string/app_name"
@@ -306,6 +306,31 @@
             android:label="@string/app_name"
             android:screenOrientation="portrait"
 			android:windowSoftInputMode="stateHidden"/>
+		<activity
+            android:name="com.hemaapp.hm_gtsdp.activity.RechargeActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+			android:windowSoftInputMode="stateAlwaysHidden"/>
+		<activity
+            android:name="com.hemaapp.hm_gtsdp.activity.AlipayIncashActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+			android:windowSoftInputMode="stateAlwaysHidden"/>
+		<activity
+            android:name="com.hemaapp.hm_gtsdp.activity.InputActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+			android:windowSoftInputMode="stateHidden"/>
+		<activity
+            android:name="com.hemaapp.hm_gtsdp.activity.SelectBankActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+			android:windowSoftInputMode="stateAlwaysHidden"/>
+		<activity
+            android:name="com.hemaapp.hm_gtsdp.activity.SettingsActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+			android:windowSoftInputMode="stateAlwaysHidden"/>
     </application>
 
 </manifest>

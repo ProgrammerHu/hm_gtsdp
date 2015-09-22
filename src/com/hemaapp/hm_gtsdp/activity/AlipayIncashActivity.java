@@ -2,6 +2,7 @@ package com.hemaapp.hm_gtsdp.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -16,19 +17,18 @@ import com.hemaapp.hm_gtsdp.R;
 import com.hemaapp.hm_gtsdp.dialog.GtsdptOneButtonDialog;
 import com.hemaapp.hm_gtsdp.dialog.GtsdptOneButtonDialog.OnButtonListener;
 
-public class ToCashActivity extends GtsdpActivity implements OnClickListener{
-	private final int SELECT_BANK = 100;
-	
+public class AlipayIncashActivity extends GtsdpActivity implements OnClickListener{
+	private final int INPUT_ALIPAY_ACCOUNT = 100;
 	private ImageView imageQuitActivity;
-	private View layoutBank, layoutDirection;
-	private TextView txtBalance, txtBank;
+	private View layoutAlipay, layoutDirection;
+	private TextView txtBalance, txtAlipayAccount;
 	private EditText editCount, editPwd;
 	private Button btnConfirm;
 	private GtsdptOneButtonDialog dialog;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		setContentView(R.layout.activity_tocash);
+		setContentView(R.layout.activity_alipay_incash);
 		super.onCreate(savedInstanceState);
 		dialog = new GtsdptOneButtonDialog(mContext);
 		dialog.setRightButtonText("确定");
@@ -75,15 +75,16 @@ public class ToCashActivity extends GtsdpActivity implements OnClickListener{
 	@Override
 	protected void findView() {
 		imageQuitActivity = (ImageView)findViewById(R.id.imageQuitActivity);
-		((TextView)findViewById(R.id.txtTitle)).setText("银行卡提现");
+		((TextView)findViewById(R.id.txtTitle)).setText("支付宝提现");
 		findViewById(R.id.txtNext).setVisibility(View.INVISIBLE);
-		layoutBank = findViewById(R.id.layoutBank);
+		layoutAlipay = findViewById(R.id.layoutAlipay);
 		layoutDirection = findViewById(R.id.layoutDirection);
 		txtBalance = (TextView)findViewById(R.id.txtBalance);
+		txtAlipayAccount = (TextView)findViewById(R.id.txtAlipayAccount);
 		editCount = (EditText)findViewById(R.id.editCount);
 		editPwd = (EditText)findViewById(R.id.editPwd);
 		btnConfirm = (Button)findViewById(R.id.btnConfirm);
-		txtBank = (TextView)findViewById(R.id.txtBank);
+		
 	}
 
 	@Override
@@ -94,10 +95,11 @@ public class ToCashActivity extends GtsdpActivity implements OnClickListener{
 
 	@Override
 	protected void setListener() {
-		layoutBank.setOnClickListener(this);
+		layoutAlipay.setOnClickListener(this);
 		imageQuitActivity.setOnClickListener(this);
 		btnConfirm.setOnClickListener(this);
 		layoutDirection.setOnClickListener(this);
+		
 	}
 
 	@Override
@@ -106,9 +108,13 @@ public class ToCashActivity extends GtsdpActivity implements OnClickListener{
 		case R.id.imageQuitActivity:
 			finish(R.anim.none, R.anim.right_out);
 			break;
-		case R.id.layoutBank:
-			Intent intent = new Intent(ToCashActivity.this, SelectBankActivity.class);
-			startActivityForResult(intent, SELECT_BANK);
+		case R.id.layoutAlipay:
+			Intent intent = new Intent(AlipayIncashActivity.this, InputActivity.class);
+			intent.putExtra("Title", "支付宝账号");
+			intent.putExtra("Next", "确定");
+			intent.putExtra("InputType", InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);//邮箱类型
+			intent.putExtra("InputHint", "输入支付宝账号");
+			startActivityForResult(intent, INPUT_ALIPAY_ACCOUNT);
 			overridePendingTransition(R.anim.right_in, R.anim.none);
 			break;
 		case R.id.btnConfirm:
@@ -119,14 +125,15 @@ public class ToCashActivity extends GtsdpActivity implements OnClickListener{
 			break;
 		}
 	}
+
 	/**
 	 * 点击提交申请
 	 */
 	private void clickConfirm()
 	{
-		if("提现银行".equals(txtBank.getText()))
+		if("".equals(txtAlipayAccount.getText()))
 		{
-			dialog.setText("请选择提现银行");
+			dialog.setText("请输入支付宝账户");
 			dialog.show();
 			return;
 		}
@@ -153,6 +160,7 @@ public class ToCashActivity extends GtsdpActivity implements OnClickListener{
 		}
 	}
 	
+
 	@Override
 	protected boolean onKeyBack() {
 		finish(R.anim.none, R.anim.right_out);
@@ -161,10 +169,13 @@ public class ToCashActivity extends GtsdpActivity implements OnClickListener{
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-		if(requestCode == SELECT_BANK && resultCode == RESULT_OK)
+		if(resultCode == RESULT_OK && requestCode == INPUT_ALIPAY_ACCOUNT)
 		{
-			
+			String Account = data.getStringExtra("Result");
+			if(!"".equals(Account))
+			{
+				txtAlipayAccount.setText(Account);
+			}
 		}
 	}
-
 }
