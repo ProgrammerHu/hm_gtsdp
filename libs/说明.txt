@@ -1,0 +1,20 @@
+支付宝相关jar包
+		alipay.jar
+		
+银联相关jar包及镜像文件
+		UPPayAssistEx.jar
+		UPPayPluginExStd.jar
+		libentryexstd.so(注意5个arm64-v8a,armeabi,armeabi-v7a,mips和x86文件夹)
+				
+高德地图相关jar包及镜像文件
+		Android_Location_V1.1.1.jar (若项目自需要定位功能,只导入该jar包即可)
+		Android_Map_V2.0.4.jar
+		MapApiSearch.jar
+		libamapv304.so和libamapv304ex.so(注意2个armeabi和armeabi-v7a文件夹)
+
+百度推送相关jar包及镜像文件
+		pushservice-4.5.3.48.jar
+		libbdpush_V2_3.so(注意2个armeabi和mips文件夹)
+		
+微信支付相关jar包
+		libammsdk.jar

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <FrameLayout
+        android:layout_width="65dp"
+        android:layout_height="65dp" >
+
+        <com.hemaapp.hm_FrameWork.view.RoundedImageView
+            android:id="@+id/imageview"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_gravity="bottom"
+            android:scaleType="centerCrop"
+            android:src="#121212" />
+    </FrameLayout>
+
+</LinearLayout>

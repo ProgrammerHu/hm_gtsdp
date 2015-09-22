@@ -1,0 +1,311 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.hemaapp.hm_gtsdp"
+    android:versionCode="1"
+    android:versionName="1.0.0" >
+
+    <uses-sdk
+        android:minSdkVersion="8"
+        android:targetSdkVersion="21" />
+	<!-- permissions start -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.CALL_PHONE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+
+    <!-- 使用定位功能所需权限 -->
+    <uses-permission android:name="android.permission.CHANGE_CONFIGURATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
+    <!-- shareSDK权限 -->
+    <uses-permission android:name="android.permission.GET_TASKS" />
+    <uses-permission android:name="android.permission.MANAGE_ACCOUNTS" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+
+    <!-- 百度推送权限 -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.ACCESS_DOWNLOAD_MANAGER" />
+    <uses-permission android:name="android.permission.DOWNLOAD_WITHOUT_NOTIFICATION" />
+    
+    <!-- 扫描二维码的权限-->
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-feature android:name="android.hardware.camera.autofocus" /> 
+    
+    <application
+        android:name="com.hemaapp.hm_gtsdp.GtsdpApplication"
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:persistent="true"
+        android:theme="@style/AppTheme" >
+        
+        
+          <!-- 百度推送相关, 开发：bZfMxWEVpEiPBkyCTaGlM8WC -->
+        <meta-data
+            android:name="api_key"
+            android:value="bZfMxWEVpEiPBkyCTaGlM8WC" />
+        <!-- 注意：此值不同项目不同(新项目需申请新的key值) -->
+
+
+        <!-- push应用定义消息receiver声明 -->
+        <receiver android:name="com.hemaapp.hm_gtsdp.push.MyPushMessageReceiver" >
+            <intent-filter>
+
+                <!-- 接收push消息 -->
+                <action android:name="com.baidu.android.pushservice.action.MESSAGE" />
+                <!-- 接收bind,unbind,fetch,delete等反馈消息 -->
+                <action android:name="com.baidu.android.pushservice.action.RECEIVE" />
+                <action android:name="com.baidu.android.pushservice.action.notification.CLICK" />
+            </intent-filter>
+        </receiver>
+
+        <!-- push必须的receviver和service声明 -->
+        <receiver
+            android:name="com.baidu.android.pushservice.PushServiceReceiver"
+            android:process=":bdservice_v1" >
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+                <action android:name="com.baidu.android.pushservice.action.notification.SHOW" />
+                <action android:name="com.baidu.android.pushservice.action.media.CLICK" />
+                <!-- 以下四项为可选的action声明，可大大提高service存活率和消息到达速度 -->
+                <action android:name="android.intent.action.MEDIA_MOUNTED" />
+                <action android:name="android.intent.action.USER_PRESENT" />
+                <action android:name="android.intent.action.ACTION_POWER_CONNECTED" />
+                <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED" />
+            </intent-filter>
+        </receiver>
+        <receiver
+            android:name="com.baidu.android.pushservice.RegistrationReceiver"
+            android:process=":bdservice_v1" >
+            <intent-filter>
+                <action android:name="com.baidu.android.pushservice.action.METHOD" />
+                <action android:name="com.baidu.android.pushservice.action.BIND_SYNC" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.PACKAGE_REMOVED" />
+
+                <data android:scheme="package" />
+            </intent-filter>
+        </receiver>
+
+        <service
+            android:name="com.baidu.android.pushservice.PushService"
+            android:exported="true"
+            android:process=":bdservice_v1" >
+            <intent-filter>
+                <action android:name="com.baidu.android.pushservice.action.PUSH_SERVICE" />
+            </intent-filter>
+        </service>
+        <!-- 4.4版本新增的CommandService声明，提升小米和魅族手机上的实际推送到达率 -->
+        <service
+            android:name="com.baidu.android.pushservice.CommandService"
+            android:exported="true" />
+        <!-- 百度推送相关end -->
+
+
+        <!-- 支付宝支付(如果没有安装客户端,调网页版) -->
+        <activity
+            android:name="com.alipay.android.app.sdk.WapPayActivity"
+            android:screenOrientation="portrait" />
+        <!-- 支付宝支付end -->
+
+
+        <!-- 银联支付 -->
+        <activity
+            android:name="com.unionpay.uppay.PayActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:excludeFromRecents="true"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize" />
+        <!-- 银联支付 end -->
+
+
+        <!-- shareSDK相关 -->
+        <activity
+            android:name="cn.sharesdk.framework.ShareSDKUIShell"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:windowSoftInputMode="stateHidden|adjustResize" >
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <!-- 微信分享回调 -->
+        <activity
+            android:name=".wxapi.WXEntryActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:exported="true"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+
+        <!-- shareSDK相关end -->
+
+
+        <!-- 高德地图ApiKey --><!-- 00dff809d34f2988c1936e6a2d2fd5b1 开发 -->
+        <meta-data
+            android:name="com.amap.api.v2.apikey"
+            android:value="00dff809d34f2988c1936e6a2d2fd5b1" />
+        
+        
+        <activity
+            android:name="com.hemaapp.hm_gtsdp.activity.StartActivity"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        
+		<activity
+            android:name="com.hemaapp.hm_gtsdp.activity.MainActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"/>
+		<activity
+            android:configChanges="orientation|keyboardHidden"
+            android:name="com.hemaapp.hm_gtsdp.activity.CodeCaptureActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+		<activity
+            android:name="com.hemaapp.hm_gtsdp.activity.LoginActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"/>
+		<activity
+            android:name="com.hemaapp.hm_gtsdp.activity.RegisterActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"/>
+		<activity
+            android:name="com.hemaapp.hm_gtsdp.activity.FixDataActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"/>
+		<activity
+            android:name="com.hemaapp.hm_gtsdp.activity.SetPwdActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"/>
+		<activity
+            android:name="com.hemaapp.hm_gtsdp.activity.SelectAddressActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+			android:windowSoftInputMode="stateHidden"/>
+		<activity
+            android:name="com.hemaapp.hm_gtsdp.activity.AnswerQuestionActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+			android:windowSoftInputMode="stateHidden"/>
+		<activity
+            android:name="com.hemaapp.hm_gtsdp.activity.MainPageActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+			android:windowSoftInputMode="stateHidden"/>
+		<activity
+            android:name="com.hemaapp.hm_gtsdp.activity.SendDetailActivty"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+			android:windowSoftInputMode="stateHidden"/>
+		<activity
+            android:name="com.hemaapp.hm_gtsdp.activity.TemplateListActivty"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+			android:windowSoftInputMode="stateHidden"/>
+		<activity
+            android:name="com.hemaapp.hm_gtsdp.activity.TemplateEditActivty"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+			android:windowSoftInputMode="stateHidden"/>
+		<activity
+            android:name="com.iwhys.library.MainActivityTest"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+			android:windowSoftInputMode="stateHidden"/>
+		<activity
+            android:name="com.hemaapp.hm_gtsdp.activity.FindAddressActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+			android:windowSoftInputMode="stateHidden"/>
+		<activity
+            android:name="com.hemaapp.hm_gtsdp.activity.CourierIdentificationActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+			android:windowSoftInputMode="stateHidden"/>
+		<activity
+            android:name="com.hemaapp.hm_gtsdp.activity.AlbumActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+			android:windowSoftInputMode="stateHidden"/>
+		<activity
+            android:name="com.hemaapp.hm_gtsdp.activity.IdentifyingActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+			android:windowSoftInputMode="stateHidden"/>
+		<activity
+            android:name="com.hemaapp.hm_gtsdp.activity.NotCursorActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+			android:windowSoftInputMode="stateHidden"/>
+		<activity
+            android:name="com.hemaapp.hm_gtsdp.activity.PublishRouteActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+			android:windowSoftInputMode="stateHidden"/>
+		<activity
+            android:name="com.hemaapp.hm_gtsdp.activity.FindGoodsActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+			android:windowSoftInputMode="stateHidden"/>
+		<activity
+            android:name="com.hemaapp.hm_gtsdp.activity.GoodsDetailActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+			android:windowSoftInputMode="stateAlwaysHidden"/>
+		<activity
+            android:name="com.hemaapp.hm_gtsdp.activity.ChangeCountActivtiy"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+			android:windowSoftInputMode="stateHidden"/>
+		<activity
+            android:name="com.hemaapp.hm_gtsdp.activity.MyPayActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+			android:windowSoftInputMode="stateHidden"/>
+		<activity
+            android:name="com.hemaapp.hm_gtsdp.activity.AllOrdersActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+			android:windowSoftInputMode="stateHidden"/>
+		<activity
+            android:name="com.hemaapp.hm_gtsdp.activity.MessagesActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+			android:windowSoftInputMode="stateHidden"/>
+		<activity
+            android:name="com.hemaapp.hm_gtsdp.activity.MyAccountActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+			android:windowSoftInputMode="stateHidden"/>
+		<activity
+            android:name="com.hemaapp.hm_gtsdp.activity.ToCashActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+			android:windowSoftInputMode="stateHidden"/>
+		<activity
+            android:name="com.hemaapp.hm_gtsdp.activity.TransactionRecordsActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+			android:windowSoftInputMode="stateHidden"/>
+    </application>
+
+</manifest>

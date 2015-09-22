@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/bg_linearlayout_withborder"
+     >
+
+    <TextView
+        android:id="@+id/txtStationName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="济南站"
+        android:textColor="@color/black"
+        android:textSize="@dimen/textsize_8.5" 
+        android:padding="10dp"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="@color/grey_line" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" 
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="5dp"
+        >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="出发地网点可发货数量" 
+            android:textSize="@dimen/textsize_7.5"/>
+        <TextView 
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/btn_green"
+            android:text="25"
+            android:textSize="@dimen/textsize_7.5"
+            android:layout_marginLeft="40dp"
+            />
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" 
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="10dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="此路线捎货每公斤" 
+            android:textSize="@dimen/textsize_7.5"/>
+        <TextView 
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/orange"
+            android:text="￥30"
+            android:textSize="@dimen/textsize_7.5"
+            android:layout_marginLeft="40dp"
+            android:layout_alignParentRight="true"
+            />
+    </RelativeLayout>
+
+</LinearLayout>

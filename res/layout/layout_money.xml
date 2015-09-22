@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layoutMoney"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:id="@+id/layoutReciver"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" 
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="5dp"
+            android:padding="5dp"
+            android:text="金额"
+            android:textSize="@dimen/textsize_9" />
+
+        <TextView
+            android:id="@+id/txtReciverCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="5dp"
+            android:padding="5dp"
+            android:text="99元"
+            android:textColor="@color/orange"
+            android:textSize="@dimen/textsize_9" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/layoutCursor"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white" 
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="5dp"
+            android:padding="5dp"
+            android:text="捎带报酬"
+            android:textSize="@dimen/textsize_9" />
+
+        <TextView
+            android:id="@+id/txtCursorCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="5dp"
+            android:padding="5dp"
+            android:text="120元"
+            android:textColor="@color/orange"
+            android:textSize="@dimen/textsize_9" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/layoutSite"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white" 
+        android:visibility="gone"
+        >
+
+        <TextView
+            android:id="@+id/txt1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="5dp"
+            android:padding="5dp"
+            android:text="金额"
+            android:textSize="@dimen/textsize_9" />
+
+        <TextView
+            android:id="@+id/txtSiteCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/txt1"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:paddingLeft="5dp"
+            android:text="99"
+            android:textColor="@color/orange"
+            android:textSize="@dimen/textsize_9" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="5dp"
+            android:layout_toRightOf="@id/txtSiteCount"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:paddingRight="5dp"
+            android:text="元"
+            android:textColor="@color/orange"
+            android:textSize="@dimen/textsize_9" />
+
+        <ImageView
+            android:id="@+id/image1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="5dp"
+            android:padding="5dp"
+            android:src="@drawable/arrow_right_blue" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@id/image1"
+            android:text="修改"
+            android:textColor="@color/main_blue" />
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2px"
+        android:background="@color/orange" />
+
+</LinearLayout>

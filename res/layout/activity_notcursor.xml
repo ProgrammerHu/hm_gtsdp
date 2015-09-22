@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" 
+    android:background="@color/background"
+    android:gravity="center_horizontal">
+    <include layout="@layout/header_quit_text_text"/>
+	<ImageView 
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:src="@drawable/shopcar"
+	    android:layout_marginTop="70dp"
+	    />
+	<TextView 
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:text="您不是配送员不能找货！"
+	    android:textSize="@dimen/textsize_8"
+	    android:layout_marginTop="10dp"
+	    />
+	<TextView 
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:text="只有认证配送员成功后才能找货"
+	    android:textSize="@dimen/textsize_7.5"
+	    android:layout_marginTop="5dp"
+	    />
+	<Button 
+	    android:layout_width="match_parent"
+	    android:layout_height="50dp"
+	    android:text="申请认证"
+	    android:id="@+id/btnCommit"
+	    android:layout_marginTop="50dp"
+	    android:layout_marginLeft="20dp"
+	    android:layout_marginRight="20dp"
+	    android:background="@drawable/bg_button_submit_blue"
+	    android:textColor="@color/white"
+	    />
+</LinearLayout>

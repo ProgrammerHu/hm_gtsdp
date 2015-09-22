@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">hm_gtsdp</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="contentdescription">Settings</string>
+    <string name="zhifubao1">支付宝客户端支付</string>
+    <string name="zhifubao2">推荐有支付宝账号的用户使用</string>
+    <string name="yinlian1">中国银联支付</string>
+    <string name="yinlian2">储蓄卡方式付费</string>
+    <string name="yue">账户余额支付</string>
+    <string name="clear">清空</string>
+
+    <string name="scan_text">&#160;&#160;&#160;&#160;&#160;&#160;扫描二维码，确认收货</string>
+    <string name="scan_text2">&#160;&#160;&#160;&#160;&#160;&#160;一旦扫描确认，交易自动完成</string>
+    
+    <string name="day_name_format">EEE</string>
+    <string name="invalid_date">Date must be between %1$s and %2$s.</string>
+    <string name="month_name_format">yyyy年MM月 </string>
+</resources>

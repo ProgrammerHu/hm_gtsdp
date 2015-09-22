@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+	<RadioGroup 
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:gravity="center_horizontal"
+	    android:orientation="horizontal"
+	    android:id="@+id/radioGroup"
+	    android:background="@color/white"
+	    >
+	    <RadioButton 
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="运输中"
+	        android:button="@null"
+	        android:gravity="center"
+            android:textColor="@color/selector_text_tab2"
+            android:background="@drawable/selector_tilte_1"
+            android:id="@+id/rbtnLeft"
+	        />
+	    <RadioButton 
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="已送达"
+	        android:button="@null"
+	        android:gravity="center"
+            android:textColor="@color/selector_text_tab2"
+            android:background="@drawable/selector_tilte_1"
+            android:id="@+id/rbtnRight"
+	        />
+	</RadioGroup>    
+	
+    <com.hemaapp.hm_gtsdp.view.GtsdpRefreshLoadmoreLayout
+        android:id="@+id/refreshLoadmoreLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        >
+        <com.hemaapp.hm_gtsdp.view.GtsdpListView
+	        android:layout_width="match_parent"
+	        android:layout_height="match_parent"
+	        android:id="@+id/showListView"
+        	>	
+        </com.hemaapp.hm_gtsdp.view.GtsdpListView>
+    </com.hemaapp.hm_gtsdp.view.GtsdpRefreshLoadmoreLayout>
+</LinearLayout>
