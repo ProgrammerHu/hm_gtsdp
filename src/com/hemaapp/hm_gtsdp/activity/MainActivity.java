@@ -43,7 +43,7 @@ OnClickListener
 	btnIdentification,btnSelectPic, btnIndentified, btnNotCursor, btnPublishRoute, btnFindGoods,
 	btnGoodsDetail, btnCrusorDetail, btnReciverDetail, btnSiteBDetail, btnSiteDetail, btnPay, btnMessages,
 	btnConfirmGet, btnMyAccount, btnBank, btnTransactionRecords, btnRecharge, btnAlipay,
-	btnSettings;
+	btnSettings, btnDispatching, btnPwdManage;
 	private TextView txtShow;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -101,6 +101,8 @@ OnClickListener
 		init(btnRecharge, R.id.btnRecharge);
 		init(btnAlipay, R.id.btnAlipay);
 		init(btnSettings, R.id.btnSettings);
+		init(btnDispatching, R.id.btnDispatching);
+		init(btnPwdManage, R.id.btnPwdManage);
 	}
 
 	private void init(Button button, int id)
@@ -240,6 +242,16 @@ OnClickListener
 			intent = new Intent(MainActivity.this, SettingsActivity.class);
 			startActivity(intent);
 			break;
+		case R.id.btnDispatching:
+			intent = new Intent(MainActivity.this, DispatchingActivity.class);
+			startActivity(intent);
+			break;
+		case R.id.btnPwdManage:
+			intent = new Intent(MainActivity.this, PwdManangeActivity.class);
+			startActivity(intent);
+			break;
+			
+			
 			
 			
 			

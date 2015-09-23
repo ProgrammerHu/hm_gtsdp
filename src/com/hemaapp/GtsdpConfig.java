@@ -86,4 +86,16 @@ public class GtsdpConfig {
 	 * 主色调
 	 */
 	public static final int Main_Blue = Color.rgb(0, 161, 216);
+	/**
+	 * 修改登录密码
+	 */
+	public static final int CHANGE_LOGIN_PWD = 10;
+	/**
+	 * 修改支付密码
+	 */
+	public static final int CHANGE_PAY_PWD = 20;
+	/**
+	 * 找回支付密码
+	 */
+	public static final int FIND_PAY_PWD = 30;
 }

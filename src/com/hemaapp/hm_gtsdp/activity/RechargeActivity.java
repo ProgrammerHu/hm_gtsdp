@@ -2,16 +2,24 @@ package com.hemaapp.hm_gtsdp.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.alipay.android.app.sdk.AliPay;
 import com.hemaapp.hm_FrameWork.HemaNetTask;
+import com.hemaapp.hm_FrameWork.result.HemaArrayResult;
 import com.hemaapp.hm_FrameWork.result.HemaBaseResult;
 import com.hemaapp.hm_gtsdp.GtsdpActivity;
+import com.hemaapp.hm_gtsdp.GtsdpHttpInformation;
 import com.hemaapp.hm_gtsdp.R;
+import com.hemaapp.hm_gtsdp.alipay.Result;
+import com.hemaapp.hm_gtsdp.model.AlipayTrade;
+import com.hemaapp.hm_gtsdp.model.User;
 
 public class RechargeActivity extends GtsdpActivity implements OnClickListener{
 	private final int Change_Count = 100;
@@ -46,9 +54,17 @@ public class RechargeActivity extends GtsdpActivity implements OnClickListener{
 	}
 
 	@Override
-	protected void callBackForServerSuccess(HemaNetTask arg0,
-			HemaBaseResult arg1) {
-		// TODO Auto-generated method stub
+	protected void callBackForServerSuccess(HemaNetTask nettask, HemaBaseResult result) {
+		GtsdpHttpInformation inforamtion = (GtsdpHttpInformation)nettask.getHttpInformation();
+		switch(inforamtion)
+		{
+		case ALIPAY:
+			HemaArrayResult<AlipayTrade> aResult = (HemaArrayResult<AlipayTrade>) result;
+			AlipayTrade trade = aResult.getObjects().get(0);
+			String orderInfo = trade.getAlipaysign();
+			new AlipayThread(orderInfo).start();
+			break;
+		}
 		
 	}
 
@@ -142,7 +158,10 @@ public class RechargeActivity extends GtsdpActivity implements OnClickListener{
 			showTextDialog("银联支付");
 			break;
 		case R.id.layoutAlipay:
-			showTextDialog("支付宝");
+//			showTextDialog("支付宝");
+			User user = getApplicationContext().getUser();
+			String token = user.getToken();
+			getNetWorker().alipay(token, "1", "1", "0.01");
 			break;
 		case R.id.layoutWechat:
 			showTextDialog("微信");
@@ -158,4 +177,58 @@ public class RechargeActivity extends GtsdpActivity implements OnClickListener{
 			txtPayCount.setText("￥" + strCount);
 		}
 	}
+	
+
+	private class AlipayThread extends Thread {
+		String orderInfo;
+		AlipayHandler alipayHandler;
+
+		public AlipayThread(String orderInfo) {
+			this.orderInfo = orderInfo;
+			alipayHandler = new AlipayHandler(RechargeActivity.this);
+		}
+
+		@Override
+		public void run() {
+			AliPay alipay = new AliPay(RechargeActivity.this, alipayHandler);
+
+			// 设置为沙箱模式，不设置默认为线上环境
+			// alipay.setSandBox(true);
+			String result = alipay.pay(orderInfo);
+			log_i("result = " + result);
+			Message msg = new Message();
+			msg.obj = result;
+			alipayHandler.sendMessage(msg);
+		}
+	}
+
+	private static class AlipayHandler extends Handler {
+		RechargeActivity activity;
+
+		public AlipayHandler(RechargeActivity activity) {
+			this.activity = activity;
+		}
+
+		public void handleMessage(android.os.Message msg) {
+			Result result = new Result((String) msg.obj);
+			int staus = result.getResultStatus();
+			switch (staus) {
+			case 9000:
+				activity.showTextDialog("恭喜\n购买成功");
+				postAtTime(new Runnable() {
+
+					@Override
+					public void run() {
+						activity.finish();
+					}
+				}, 1500);
+				break;
+			default:
+				activity.showTextDialog(result.getResult());
+				break;
+			}
+		};
+	}
+
+	
 }

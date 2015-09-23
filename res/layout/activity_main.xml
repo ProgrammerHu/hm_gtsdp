@@ -181,6 +181,16 @@
 	            android:layout_height="wrap_content"
 	            android:text="设置"
 	            android:id="@+id/btnSettings"/>
+	        <Button 
+	            android:layout_width="match_parent"
+	            android:layout_height="wrap_content"
+	            android:text="配送订单"
+	            android:id="@+id/btnDispatching"/>
+	        <Button 
+	            android:layout_width="match_parent"
+	            android:layout_height="wrap_content"
+	            android:text="密码管理"
+	            android:id="@+id/btnPwdManage"/>
 	        
 			<TextView
 			    android:layout_width="match_parent"

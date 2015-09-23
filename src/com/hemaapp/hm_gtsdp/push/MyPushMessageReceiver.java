@@ -19,6 +19,7 @@ import android.util.Log;
 import com.baidu.android.pushservice.PushMessageReceiver;
 import com.hemaapp.hm_gtsdp.R;
 import com.hemaapp.hm_gtsdp.activity.MainActivity;
+import com.hemaapp.hm_gtsdp.activity.MessagesActivity;
 
 /**
  * Push消息处理receiver。请编写您需要的回调函数， 一般来说： onBind是必须的，用来处理startWork返回值；
@@ -183,7 +184,7 @@ public class MyPushMessageReceiver extends PushMessageReceiver {
 		// Demo更新界面展示代码，应用请在这里加入自己的处理逻辑
 //		 updateContent(context, notifyString);
 		Intent intent = new Intent();
-		intent.setClass(context.getApplicationContext(), MainActivity.class);
+		intent.setClass(context.getApplicationContext(), MessagesActivity.class);
 		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		context.getApplicationContext().startActivity(intent);
 

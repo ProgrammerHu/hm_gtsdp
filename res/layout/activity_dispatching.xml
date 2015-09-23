@@ -1,44 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- 配送订单 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
+    <include layout="@layout/header_quit_text_text"/>
 	<RadioGroup 
 	    android:layout_width="match_parent"
 	    android:layout_height="wrap_content"
-	    android:gravity="center_horizontal"
 	    android:orientation="horizontal"
-	    android:id="@+id/radioGroup"
 	    android:background="@color/white"
+	    android:id="@+id/radioGroup"
 	    >
 	    <RadioButton 
-	        android:layout_width="wrap_content"
+	        android:layout_width="match_parent"
 	        android:layout_height="wrap_content"
-	        android:text="运输中"
-	        android:button="@null"
+	        android:text="捎货单"
 	        android:gravity="center"
+	        android:button="@null"
+	        android:layout_weight="1"
+	        android:paddingTop="10dp"
+	        android:paddingBottom="10dp"
             android:textColor="@color/selector_text_tab2"
             android:background="@drawable/selector_tilte_1"
             android:id="@+id/rbtnLeft"
 	        />
 	    <RadioButton 
-	        android:layout_width="wrap_content"
+	        android:layout_width="match_parent"
 	        android:layout_height="wrap_content"
-	        android:text="已送达"
-	        android:button="@null"
+	        android:text="历史订单"
 	        android:gravity="center"
+	        android:button="@null"
+	        android:layout_weight="1"
+	        android:paddingTop="10dp"
+	        android:paddingBottom="10dp"
             android:textColor="@color/selector_text_tab2"
             android:background="@drawable/selector_tilte_1"
             android:id="@+id/rbtnRight"
 	        />
-	</RadioGroup>    
-	
+	</RadioGroup>
 	<View 
 	    android:layout_width="match_parent"
 	    android:layout_height="1px"
 	    android:background="@color/grey_line"
 	    />
-	
     <com.hemaapp.hm_gtsdp.view.GtsdpRefreshLoadmoreLayout
         android:id="@+id/refreshLoadmoreLayout"
         android:layout_width="match_parent"
