@@ -2,7 +2,7 @@ package com.hemaapp.hm_gtsdp.view;
 
 
 import com.hemaapp.hm_gtsdp.R;
-
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -14,6 +14,7 @@ import android.widget.RelativeLayout;
 import android.widget.Scroller;
 import android.widget.TextView;
 
+@SuppressLint("WrongViewCast")
 public class SlideView extends LinearLayout {
 
     private static final String TAG = "SlideView";

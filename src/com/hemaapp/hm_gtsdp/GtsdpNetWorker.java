@@ -12,6 +12,7 @@ import com.hemaapp.hm_gtsdp.nettask.ClientLoginTask;
 import com.hemaapp.hm_gtsdp.nettask.ClientLoginoutTask;
 import com.hemaapp.hm_gtsdp.nettask.DeviceSaveTask;
 import com.hemaapp.hm_gtsdp.nettask.InitTask;
+import com.hemaapp.hm_gtsdp.nettask.UnionTradeTask;
 
 /**
  * 网络请求工具类
@@ -118,6 +119,27 @@ public class GtsdpNetWorker extends HemaNetWorker {
 //		params.put("total_fee", total_fee);// 支付交易金额,单位：元(测试时统一传递0.01元)
 
 		GtsdpNetTask task = new AlipayTradeTask(information, params);
+		executeTask(task);
+	}
+	/**
+	 * 获取银联交易签名串
+	 * @param token 登陆令牌
+	 * @param paytype 支付类型 固定传2
+	 * @param keytype 业务类型,1：账户余额充值2：商品立即购买
+	 * @param keyid 业务相关,id当keytype=1时,keyid=0当keytype=2时,keyid=blog_id
+	 * @param total_fee  支付交易金额,单位：元(测试时统一传递0.01元)
+	 */
+	public void unionpay(String token, String paytype, String keytype,
+			String keyid, String total_fee) {
+		GtsdpHttpInformation information = GtsdpHttpInformation.UNIONPAY;
+		HashMap<String, String> params = new HashMap<String, String>();
+		params.put("token", token);// 登陆令牌
+//		params.put("paytype", paytype);// 支付类型 固定传2
+		params.put("keytype", keytype);// 业务类型,1：账户余额充值2：商品立即购买
+		params.put("keyid", keyid);// 业务相关,id当keytype=1时,keyid=0当keytype=2时,keyid=blog_id
+//		params.put("total_fee", total_fee);// 支付交易金额,单位：元(测试时统一传递0.01元)
+
+		GtsdpNetTask task = new UnionTradeTask(information, params);
 		executeTask(task);
 	}
 

@@ -348,10 +348,35 @@
             android:screenOrientation="portrait"
 			android:windowSoftInputMode="stateHidden"/>
 		<activity
+            android:name="com.hemaapp.hm_gtsdp.activity.ChangePwdActivity2"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+			android:windowSoftInputMode="stateHidden"/>
+		<activity
             android:name="com.hemaapp.hm_gtsdp.activity.FindPwdActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
 			android:windowSoftInputMode="stateHidden"/>
+		<activity
+            android:name="com.hemaapp.hm_gtsdp.activity.UserCenterActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+			android:windowSoftInputMode="stateAlwaysHidden"/>
+		<activity
+            android:name="com.hemaapp.hm_gtsdp.activity.SuggestionActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+			android:windowSoftInputMode="stateHidden"/>
+		<activity
+            android:name="com.hemaapp.hm_gtsdp.activity.SetQuestionActivty"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+			android:windowSoftInputMode="stateHidden"/>
+		<activity
+            android:name="com.hemaapp.hm_gtsdp.activity.AboutUsActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+			android:windowSoftInputMode="stateAlwaysHidden"/>
     </application>
 
 </manifest>

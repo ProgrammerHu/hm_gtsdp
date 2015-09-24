@@ -1,5 +1,7 @@
 package com.hemaapp.hm_gtsdp;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -15,6 +17,9 @@ import android.app.ActivityManager;
 import android.app.ActivityManager.RunningAppProcessInfo;
 import android.content.Context;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.res.AssetManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Log;
 
 
@@ -317,4 +322,28 @@ public class GtsdpUtil {
 		}
 		return "数据获取成功";
 	}
+    
+    /**
+     * 读取assets中的图片资源
+     * @param fileName
+     * @param context
+     * @return
+     */
+    public static Bitmap getImageFromAssetsFile(String fileName, Context context)  
+    {  
+        Bitmap image = null;  
+        AssetManager am = context.getResources().getAssets();  
+        try  
+        {  
+            InputStream is = am.open(fileName);  
+            image = BitmapFactory.decodeStream(is);  
+            is.close();  
+        }  
+        catch (IOException e)  
+        {  
+            e.printStackTrace();  
+        }  
+        return image;  
+    
+    }  
 }

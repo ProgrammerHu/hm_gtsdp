@@ -173,6 +173,7 @@ public class MainPageActivity extends GtsdpFragmentActivity implements OnClickLi
             PageId++;
             mHandler.postDelayed(switchTask, 3000);
         }
+        
     };
     Handler mHandler = new Handler();
     
@@ -217,10 +218,10 @@ public class MainPageActivity extends GtsdpFragmentActivity implements OnClickLi
     @Override
     protected void onStop() {
     	super.onStop();
-    	try {
-			switchTask.wait();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+//    	try {
+//			switchTask.wait();
+//		} catch (InterruptedException e) {
+//			e.printStackTrace();
+//		}
     }
 }

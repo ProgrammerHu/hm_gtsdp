@@ -104,9 +104,9 @@ public enum GtsdpHttpInformation implements HemaHttpInfomation {
 
 		 if (this.equals(ALIPAY))
 		 path = info.getSys_plugins() + urlPath;
-		//
-		// if (this.equals(UNIONPAY))
-		// path = info.getSys_plugins() + urlPath;
+		
+		 if (this.equals(UNIONPAY))
+		 path = info.getSys_plugins() + urlPath;
 
 		return path;
 	}

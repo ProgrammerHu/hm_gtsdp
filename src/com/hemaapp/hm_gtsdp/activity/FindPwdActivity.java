@@ -167,7 +167,7 @@ public class FindPwdActivity extends GtsdpActivity implements OnClickListener {
 	 */
 	private void clickNext()
 	{
-		Intent intent = new Intent(FindPwdActivity.this, FixDataActivity.class);
+		Intent intent = new Intent(FindPwdActivity.this, ChangePwdActivity2.class);
 		startActivity(intent);
 		overridePendingTransition(R.anim.right_in, R.anim.none);
 	}

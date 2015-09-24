@@ -289,7 +289,7 @@
 	    android:layout_width="match_parent"
 	    android:layout_height="50dp"
 	    android:background="@drawable/bg_button_submit_blue"
-	    android:text="验证"
+	    android:text="完成"
 	    android:textSize="@dimen/textsize_9"
 	    android:textColor="@color/white"
 	    android:id="@+id/btnConfirm"

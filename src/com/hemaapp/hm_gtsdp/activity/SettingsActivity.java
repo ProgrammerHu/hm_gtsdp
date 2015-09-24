@@ -127,7 +127,9 @@ public class SettingsActivity extends GtsdpActivity implements OnClickListener, 
 			new ClearTask().execute();
 			break;
 		case R.id.layoutSuggestion:
-			
+			Intent intent = new Intent(this, SuggestionActivity.class);
+			startActivity(intent);
+			overridePendingTransition(R.anim.right_in, R.anim.none);
 			break;
 		case R.id.layoutAboutUs:
 			

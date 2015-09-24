@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.alipay.android.app.sdk.AliPay;
+import com.hemaapp.GtsdpConfig;
 import com.hemaapp.hm_FrameWork.HemaNetTask;
 import com.hemaapp.hm_FrameWork.result.HemaArrayResult;
 import com.hemaapp.hm_FrameWork.result.HemaBaseResult;
@@ -19,7 +20,10 @@ import com.hemaapp.hm_gtsdp.GtsdpHttpInformation;
 import com.hemaapp.hm_gtsdp.R;
 import com.hemaapp.hm_gtsdp.alipay.Result;
 import com.hemaapp.hm_gtsdp.model.AlipayTrade;
+import com.hemaapp.hm_gtsdp.model.UnionTrade;
 import com.hemaapp.hm_gtsdp.model.User;
+import com.unionpay.UPPayAssistEx;
+import com.unionpay.uppay.PayActivity;
 
 public class RechargeActivity extends GtsdpActivity implements OnClickListener{
 	private final int Change_Count = 100;
@@ -55,6 +59,7 @@ public class RechargeActivity extends GtsdpActivity implements OnClickListener{
 
 	@Override
 	protected void callBackForServerSuccess(HemaNetTask nettask, HemaBaseResult result) {
+		cancelProgressDialog();
 		GtsdpHttpInformation inforamtion = (GtsdpHttpInformation)nettask.getHttpInformation();
 		switch(inforamtion)
 		{
@@ -63,6 +68,13 @@ public class RechargeActivity extends GtsdpActivity implements OnClickListener{
 			AlipayTrade trade = aResult.getObjects().get(0);
 			String orderInfo = trade.getAlipaysign();
 			new AlipayThread(orderInfo).start();
+			break;
+		case UNIONPAY:
+			HemaArrayResult<UnionTrade> uResult = (HemaArrayResult<UnionTrade>) result;
+			UnionTrade uTrade = uResult.getObjects().get(0);
+			String tn = uTrade.getTn();
+			UPPayAssistEx.startPayByJAR(this, PayActivity.class, null, null,
+					tn, GtsdpConfig.UNIONPAY_TESTMODE);
 			break;
 		}
 		
@@ -152,16 +164,17 @@ public class RechargeActivity extends GtsdpActivity implements OnClickListener{
 	
 	private void clickPay()
 	{
+		User user = getApplicationContext().getUser();
+		String token = user.getToken();
 		switch(selectId)
 		{
 		case R.id.layoutUnionpay:
-			showTextDialog("银联支付");
+			getNetWorker().unionpay(token, "2", "1", "1", "0.01");
+			showProgressDialog("跳转中，请稍后");
 			break;
 		case R.id.layoutAlipay:
-//			showTextDialog("支付宝");
-			User user = getApplicationContext().getUser();
-			String token = user.getToken();
 			getNetWorker().alipay(token, "1", "1", "0.01");
+			showProgressDialog("跳转中，请稍后");
 			break;
 		case R.id.layoutWechat:
 			showTextDialog("微信");

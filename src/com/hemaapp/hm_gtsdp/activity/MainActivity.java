@@ -38,12 +38,12 @@ import android.widget.TextView;
 public class MainActivity extends GtsdpActivity implements
 OnClickListener
 {
-	private Button btnQRCode, btnLogin, btnSetPwd, btnMap, btnAnswer,
+	private Button btnQRCode, btnLogin, btnSetPwd, btnFixData, btnMap, btnAnswer,
 	btnMainPage, btnSendDetail, btnReciverList, btnSenderList, btnTimePicker, 
 	btnIdentification,btnSelectPic, btnIndentified, btnNotCursor, btnPublishRoute, btnFindGoods,
 	btnGoodsDetail, btnCrusorDetail, btnReciverDetail, btnSiteBDetail, btnSiteDetail, btnPay, btnMessages,
 	btnConfirmGet, btnMyAccount, btnBank, btnTransactionRecords, btnRecharge, btnAlipay,
-	btnSettings, btnDispatching, btnPwdManage;
+	btnSettings, btnDispatching, btnPwdManage, btnUsercenter, btnSetQuestion, btnAboutUs;
 	private TextView txtShow;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -103,6 +103,11 @@ OnClickListener
 		init(btnSettings, R.id.btnSettings);
 		init(btnDispatching, R.id.btnDispatching);
 		init(btnPwdManage, R.id.btnPwdManage);
+		init(btnUsercenter, R.id.btnUsercenter);
+		init(btnFixData, R.id.btnFixData);
+		init(btnSetQuestion, R.id.btnSetQuestion);
+		init(btnAboutUs, R.id.btnAboutUs);
+		
 	}
 
 	private void init(Button button, int id)
@@ -250,7 +255,22 @@ OnClickListener
 			intent = new Intent(MainActivity.this, PwdManangeActivity.class);
 			startActivity(intent);
 			break;
-			
+		case R.id.btnUsercenter:
+			intent = new Intent(MainActivity.this, UserCenterActivity.class);
+			startActivity(intent);
+			break;
+		case R.id.btnFixData:
+			intent = new Intent(MainActivity.this, FixDataActivity.class);
+			startActivity(intent);
+			break;
+		case R.id.btnSetQuestion:
+			intent = new Intent(MainActivity.this, SetQuestionActivty.class);
+			startActivity(intent);
+			break;
+		case R.id.btnAboutUs:
+			intent = new Intent(MainActivity.this, AboutUsActivity.class);
+			startActivity(intent);
+			break;
 			
 			
 			
