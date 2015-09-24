@@ -39,11 +39,14 @@ import com.google.zxing.NotFoundException;
 import com.google.zxing.Result;
 import com.google.zxing.common.HybridBinarizer;
 import com.google.zxing.qrcode.QRCodeReader;
+import com.hemaapp.GtsdpConfig;
 import com.hemaapp.hm_gtsdp.R;
 import com.hemaapp.hm_FrameWork.HemaNetTask;
 import com.hemaapp.hm_FrameWork.result.HemaBaseResult;
 import com.hemaapp.hm_gtsdp.GtsdpActivity;
 import com.hemaapp.hm_gtsdp.GtsdpApplication;
+import com.hemaapp.hm_gtsdp.dialog.GtsdpTwoButtonDialog;
+import com.hemaapp.hm_gtsdp.dialog.GtsdpTwoButtonDialog.OnButtonListener;
 import com.hemaapp.hm_gtsdp.model.User;
 import com.hemaapp.hm_gtsdp.zxing.camera.CameraManager;
 import com.hemaapp.hm_gtsdp.zxing.decoding.CaptureActivityHandler;
@@ -52,10 +55,15 @@ import com.hemaapp.hm_gtsdp.zxing.decoding.RGBLuminanceSource;
 import com.hemaapp.hm_gtsdp.zxing.view.ViewfinderView;
 
 /**
- * 二维码扫描
- * */
+ * 扫描二维码
+ * @author Wen
+ * @author HuFanglin
+ *
+ */
 @SuppressLint("HandlerLeak") @SuppressWarnings("deprecation")
-public class CodeCaptureActivity extends GtsdpActivity implements Callback {
+public class CodeCaptureActivity extends GtsdpActivity implements Callback, OnClickListener {
+	
+	private ImageView imageQuitActivity, imageOpenLight;
 	
 	private TextView left; 
 	private TextView title;
@@ -70,9 +78,9 @@ public class CodeCaptureActivity extends GtsdpActivity implements Callback {
 	private Vector<BarcodeFormat> decodeFormats;
 	private String characterSet;
 	private InactivityTimer inactivityTimer;
-	private ImageView scan_camera;//相册按钮
-	private ImageView scan_light;//开灯按钮
-	private TextView light;//开灯/关灯
+//	private ImageView scan_camera;//相册按钮
+//	private ImageView scan_light;//开灯按钮
+//	private TextView light;//开灯/关灯
 	private int sign;
 
 	private static final int CAMERA = 100;
@@ -84,17 +92,14 @@ public class CodeCaptureActivity extends GtsdpActivity implements Callback {
 	
 	private User user;
 
+	private GtsdpTwoButtonDialog dialog;
 	/** Called when the activity is first created. */
 	@SuppressLint("CutPasteId") @Override
 	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_capture);
-//		left = (TextView) findViewById(R.id.title_btn_left);
-//		right = (Button) findViewById(R.id.title_btn_right);
-//		title = (TextView) findViewById(R.id.title_text);
+		super.onCreate(savedInstanceState);
 		
 		layout_empty = (LinearLayout) findViewById(R.id.layout);
-//		text_login = (TextView) findViewById(R.id.textview);
 		
 		layout1 = (RelativeLayout) findViewById(R.id.layout1);
 		init();
@@ -103,52 +108,10 @@ public class CodeCaptureActivity extends GtsdpActivity implements Callback {
 		inactivityTimer = new InactivityTimer(this);
 		viewfinderView = (ViewfinderView) findViewById(R.id.viewfinder_view);
 
-//		TextView mButtonBack = (TextView) findViewById(R.id.title_btn_left);
-		scan_light = (ImageView) findViewById(R.id.scan_light);
-		scan_camera = (ImageView) findViewById(R.id.scan_camera);
-		light=(TextView)findViewById(R.id.light);		
-//		mButtonBack.setOnClickListener(new OnClickListener() {
-//			@Override
-//			public void onClick(View v) {
-//				CodeCaptureActivity.this.finish();
-//			}
-//		});
-		//开灯监听
-		scan_light.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				if (sign % 2 == 0) {
-					CameraManager.get().openF();
-					light.setText("关灯");
-				} else {
-					CameraManager.get().stopF();
-					light.setText("开灯");
-				}
-				sign++;
-
-			}
-		});
-		//相册监听
-		scan_camera.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				//打开手机中的相册
-				Intent innerIntent = new Intent(Intent.ACTION_GET_CONTENT); //"android.intent.action.GET_CONTENT"
-				innerIntent.setType("image/*");
-				Intent wrapperIntent = Intent.createChooser(innerIntent, "选择二维码图片");
-				startActivityForResult(wrapperIntent, CAMERA);
-			}
-		});
-//		text_login.setOnClickListener(new OnClickListener() {
-//
-//			@Override
-//			public void onClick(View v) {
-//				Intent it = new Intent(CodeCaptureActivity.this, LoginActivity.class);
-//				startActivity(it);
-//			}
-//		});
+		dialog = new GtsdpTwoButtonDialog(mContext);
+		dialog.setButtonListener(buttonListener);
+		dialog.setRightButtonTextColor(GtsdpConfig.Main_Blue);
+		dialog.cancel();
 	}
 
 	private void init(){
@@ -156,20 +119,11 @@ public class CodeCaptureActivity extends GtsdpActivity implements Callback {
 		if(user == null){
 			layout_empty.setVisibility(View.VISIBLE);
 			layout1.setVisibility(View.GONE);
-//			title.setText("扫描二维码");
-//			right.setVisibility(View.INVISIBLE);
-		}else {
+		}else 
+		{
 			layout_empty.setVisibility(View.GONE);
 			layout1.setVisibility(View.VISIBLE);
 		}
-		
-//		left.setOnClickListener(new OnClickListener() {
-//			
-//			@Override
-//			public void onClick(View v) {
-//				finish();
-//			}
-//		});
 	}
 	private Handler mHandler = new Handler(){
 
@@ -331,8 +285,9 @@ public class CodeCaptureActivity extends GtsdpActivity implements Callback {
 	public void handleDecode(Result result, Bitmap barcode) {
 		inactivityTimer.onActivity();
 		String resultString = result.getText();
-		if (resultString.equals("")) {
-			Toast.makeText(CodeCaptureActivity.this, "扫描失败！", Toast.LENGTH_SHORT).show();
+		if (resultString.equals("")) 
+		{
+			showTextDialog("扫描失败");
 		}else {
 //			Intent resultIntent = new Intent(CodeCaptureActivity.this ,CodeIfoActivity.class);
 //			Bundle bundle = new Bundle();
@@ -340,10 +295,9 @@ public class CodeCaptureActivity extends GtsdpActivity implements Callback {
 //			bundle.putParcelable("bitmap", barcode);
 //			resultIntent.putExtras(bundle);
 //			startActivity(resultIntent);
-			showTextDialog(result.getText());
-			onResume();
+			dialog.setText(result.getText());
+			dialog.show();
 		}
-//		CodeCaptureActivity.this.finish();
 	}
 
 	private void initCamera(SurfaceHolder surfaceHolder) {
@@ -427,7 +381,8 @@ public class CodeCaptureActivity extends GtsdpActivity implements Callback {
 
 	@Override
 	protected void findView() {
-		// TODO Auto-generated method stub
+		imageQuitActivity = (ImageView)findViewById(R.id.imageQuitActivity);
+		imageOpenLight = (ImageView)findViewById(R.id.imageOpenLight);
 		
 	}
 
@@ -439,8 +394,55 @@ public class CodeCaptureActivity extends GtsdpActivity implements Callback {
 
 	@Override
 	protected void setListener() {
-		// TODO Auto-generated method stub
+		imageQuitActivity.setOnClickListener(this);
+		imageOpenLight.setOnClickListener(this);
 		
 	}
+
+	@Override
+	public void onClick(View v) 
+	{
+		switch(v.getId())
+		{
+		case R.id.imageQuitActivity:
+			finish(R.anim.none, R.anim.right_out);
+			break;
+		case R.id.imageOpenLight:
+			if (sign % 2 == 0) {
+				CameraManager.get().openF();
+			} else {
+				CameraManager.get().stopF();
+			}
+			sign++;
+			break;
+		}
+	}
+	/**
+	 * 点击弹框
+	 */
+	private OnButtonListener buttonListener = new OnButtonListener() {
+		
+		@Override
+		public void onRightButtonClick(GtsdpTwoButtonDialog dialog) {
+			dialog.cancel();
+			//重新开始扫描
+			if (handler != null) {
+				handler.quitSynchronously();
+				handler = null;
+			}
+			CameraManager.get().closeDriver();
+			onResume();
+		}
+		
+		@Override
+		public void onLeftButtonClick(GtsdpTwoButtonDialog dialog) {
+			dialog.cancel();
+		}
+	};
+	
+	protected boolean onKeyBack() {
+		finish(R.anim.none, R.anim.right_out);
+		return super.onKeyBack();
+	};
 
 }

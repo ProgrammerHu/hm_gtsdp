@@ -12,8 +12,8 @@
     <string name="yue">账户余额支付</string>
     <string name="clear">清空</string>
 
-    <string name="scan_text">&#160;&#160;&#160;&#160;&#160;&#160;扫描二维码，确认收货</string>
-    <string name="scan_text2">&#160;&#160;&#160;&#160;&#160;&#160;一旦扫描确认，交易自动完成</string>
+    <string name="scan_text">&#160;&#160;&#160;&#160;&#160;&#160;扫描添加二维码</string>
+    <string name="scan_text2">&#160;&#160;&#160;&#160;&#160;&#160;给商品绑定二维码</string>
     
     <string name="day_name_format">EEE</string>
     <string name="invalid_date">Date must be between %1$s and %2$s.</string>

@@ -122,7 +122,7 @@ public class TemplateListActivty extends GtsdpActivity implements OnClickListene
 		switch(v.getId())
 		{
 		case R.id.imageQuitActivity:
-			finish();
+			finish(R.anim.none, R.anim.right_out);
 			break;
 		case R.id.layoutAddTemplate:
 			Intent intent = new Intent(TemplateListActivty.this, TemplateEditActivty.class);
@@ -160,5 +160,11 @@ public class TemplateListActivty extends GtsdpActivity implements OnClickListene
 //        params.height = itemHeight * addressAdapter.getCount();
 //        templateList.setLayoutParams(params);
 
+	}
+	
+	@Override
+	protected boolean onKeyBack() {
+		finish(R.anim.none, R.anim.right_out);
+		return super.onKeyBack();
 	}
 }

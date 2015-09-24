@@ -75,7 +75,7 @@ public class SetPwdActivity extends GtsdpActivity implements OnClickListener{
 		switch(v.getId())
 		{
 		case R.id.imageQuitActivity:
-			finish();
+			finish(R.anim.none, R.anim.right_out);
 			break;
 		case R.id.txtNext:
 			String pwd = editPwd.getEditableText().toString();
@@ -125,6 +125,12 @@ public class SetPwdActivity extends GtsdpActivity implements OnClickListener{
 	protected void callBeforeDataBack(HemaNetTask arg0) {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	@Override
+	protected boolean onKeyBack() {
+		finish(R.anim.none, R.anim.right_out);
+		return super.onKeyBack();
 	}
 
 }

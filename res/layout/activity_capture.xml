@@ -2,48 +2,71 @@
 <!-- 二维码界面 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" 
-    android:orientation="vertical">
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
 
-    <RelativeLayout 
+    <LinearLayout
+        android:id="@+id/sqCodeTop"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/main_blue"
-        android:id="@+id/sqCodeTop"
-        >
-        <ImageView 
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-           	android:src="@drawable/image_quit" 
-           	android:padding="10dp"
-           	android:layout_centerVertical="true"
-            />
-        <TextView 
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:text="扫描二维码"
-            android:textColor="@color/white"
-            android:textSize="@dimen/textsize_10"
-            />
-        <ImageView 
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-           	android:src="@drawable/lightning" 
-           	android:padding="10dp"
-           	android:layout_centerVertical="true"
-           	android:layout_alignParentRight="true"
-            />
-    </RelativeLayout>
+        android:orientation="horizontal" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="3" >
+
+            <ImageView
+                android:id="@+id/imageQuitActivity"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:background="@drawable/bg_image_none_red"
+                android:padding="15dp"
+                android:src="@drawable/image_quit" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:gravity="center" >
+
+            <TextView
+                android:id="@+id/txtTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="扫描二维码"
+                android:textColor="@color/white"
+                android:textSize="@dimen/textsize_10" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="3"
+            android:gravity="right|center_vertical" >
+
+            <ImageView
+                android:id="@+id/imageOpenLight"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:background="@drawable/bg_image_none_red"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp"
+                android:src="@drawable/lightning" />
+        </LinearLayout>
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:visibility="visible" 
-        >
-
+        android:visibility="visible" >
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -79,7 +102,7 @@
     <RelativeLayout
         android:id="@+id/layout1"
         android:layout_width="match_parent"
-        android:layout_height="fill_parent" >
+        android:layout_height="match_parent" >
 
         <SurfaceView
             android:id="@+id/preview_view"
@@ -91,119 +114,32 @@
             android:id="@+id/viewfinder_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
-        
-        <LinearLayout 
-            android:layout_above="@+id/linearlayout"
+
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_above="@+id/linearlayout"
             android:layout_centerHorizontal="true"
+            android:orientation="vertical"
             android:paddingRight="15dp"
-            android:orientation="vertical">
-            
-            <TextView 
+            android:layout_alignParentBottom="true" 
+            android:layout_marginBottom="50dp">
+
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
                 android:text="@string/scan_text"
                 android:textColor="@color/white"
-                android:textSize="@dimen/textsize_8"/>
-            
-            <TextView 
+                android:textSize="@dimen/textsize_8" />
+
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
                 android:text="@string/scan_text2"
                 android:textColor="@color/white"
-                android:textSize="@dimen/textsize_7"/>
-            
-        </LinearLayout>
-        
-
-        <LinearLayout
-            android:id="@+id/linearlayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:orientation="vertical" >
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
-                android:text=""
-                android:textColor="@color/white"
-                android:textSize="@dimen/textsize_8"
-                android:typeface="sans" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
-                android:text=""
-                android:textColor="@color/white"
                 android:textSize="@dimen/textsize_7" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:background="@color/black"
-                android:orientation="horizontal"
-                android:paddingBottom="25dp"
-                android:paddingLeft="15dp"
-                android:paddingRight="15dp"
-                android:paddingTop="15dp" >
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center_horizontal"
-                    android:orientation="vertical" >
-
-                    <ImageView
-                        android:id="@+id/scan_camera"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:contentDescription="@string/contentdescription"
-                        android:src="@drawable/scan_camera" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:layout_marginTop="5dp"
-                        android:text="相册"
-                        android:textColor="@color/white"
-                        android:textSize="@dimen/textsize_7.5" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center_horizontal"
-                    android:orientation="vertical" >
-
-                    <ImageView
-                        android:id="@+id/scan_light"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:contentDescription="@string/contentdescription"
-                        android:src="@drawable/scan_light" />
-
-                    <TextView
-                        android:id="@+id/light"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:layout_marginTop="5dp"
-                        android:text="开灯"
-                        android:textColor="@color/white"
-                        android:textSize="@dimen/textsize_7.5" />
-                </LinearLayout>
-            </LinearLayout>
         </LinearLayout>
     </RelativeLayout>
 

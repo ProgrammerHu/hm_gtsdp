@@ -14,7 +14,12 @@ import com.hemaapp.hm_FrameWork.result.HemaBaseResult;
 import com.hemaapp.hm_gtsdp.GtsdpActivity;
 import com.hemaapp.hm_gtsdp.R;
 
-
+/**
+ * 密码管理界面
+ * @author Wen
+ * @author HuFanglin
+ *
+ */
 public class PwdManangeActivity extends GtsdpActivity implements OnClickListener {
 	private View imageQuitActivity, layoutTop, layoutMiddle, layoutBottom;
 	@Override

@@ -51,6 +51,7 @@ public class CourierIdentificationActivity extends GtsdpActivity implements OnCl
 	private HemaImageWay imageWay;
 
 	private ShowLargeImageView mView;
+	private int MaxWidth, MinWidth;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		setContentView(R.layout.activity_findgoods_notcourier_identification);
@@ -149,15 +150,15 @@ public class CourierIdentificationActivity extends GtsdpActivity implements OnCl
 		case R.id.imagePerson:
 			clickImageView(v, setPerson);break;
 		case R.id.deleteFace:
-			clearImageView(imageFace, deleteFace);
+			clearImageView(imageFace, deleteFace, findViewById(R.id.layout1), findViewById(R.id.layout11));
 			setFace = false;
 			break;
 		case R.id.deleteBack:
-			clearImageView(imageBack, deleteBack);
+			clearImageView(imageBack, deleteBack, findViewById(R.id.layout2), findViewById(R.id.layout22));
 			setBack = false;
 			break;
 		case R.id.deletePerson:
-			clearImageView(imagePerson, deletePerson);
+			clearImageView(imagePerson, deletePerson, findViewById(R.id.layout3), findViewById(R.id.layout33));
 			setPerson = false;
 			break;
 		}
@@ -200,10 +201,13 @@ public class CourierIdentificationActivity extends GtsdpActivity implements OnCl
 	 * @param button
 	 * @param param
 	 */
-	private void clearImageView(ImageView imageView, ImageButton button)
+	private void clearImageView(ImageView imageView, ImageButton button, View haveHideView
+			, View BigView)
 	{
 		imageView.setImageResource(R.drawable.camera_big);
 		button.setVisibility(View.GONE);
+		haveHideView.setVisibility(View.VISIBLE);
+		BigView.getLayoutParams().width = MinWidth;
 	}
 	/**
 	 * 点击选择图片来源
@@ -293,25 +297,38 @@ public class CourierIdentificationActivity extends GtsdpActivity implements OnCl
 		XtomImageTask imageTask ;
 		switch (TempClickId) {
 		case R.id.imageFace:
+			MaxWidth = (findViewById(R.id.layout1)).getWidth() + (findViewById(R.id.layout11)).getWidth();
+			MinWidth = (findViewById(R.id.layout11)).getWidth();
 			imageTask =new XtomImageTask(imageFace, compressPath, mContext);
 			deleteFace.setVisibility(View.VISIBLE);
 			imageWorker.loadImage(imageTask);
 			imageFace.setTag(R.id.TAG, compressPath);
 			setFace = true;
+			(findViewById(R.id.layout1)).setVisibility(View.GONE);
+			(findViewById(R.id.layout11)).getLayoutParams().width = MaxWidth;
 			break;
 		case R.id.imageBack:
+			MaxWidth = (findViewById(R.id.layout2)).getWidth() + (findViewById(R.id.layout22)).getWidth();
+			MinWidth = (findViewById(R.id.layout22)).getWidth();
 			imageTask =new XtomImageTask(imageBack, compressPath, mContext);
 			deleteBack.setVisibility(View.VISIBLE);
 			imageWorker.loadImage(imageTask);
 			imageBack.setTag(R.id.TAG, compressPath);
 			setBack = true;
+			(findViewById(R.id.layout2)).setVisibility(View.GONE);
+			(findViewById(R.id.layout22)).getLayoutParams().width = MaxWidth;
 			break;
 		case R.id.imagePerson:
+			MaxWidth = (findViewById(R.id.layout3)).getWidth() + (findViewById(R.id.layout33)).getWidth();
+			MinWidth = (findViewById(R.id.layout33)).getWidth();
 			imageTask =new XtomImageTask(imagePerson, compressPath, mContext);
 			deletePerson.setVisibility(View.VISIBLE);
 			imageWorker.loadImage(imageTask);
 			imagePerson.setTag(R.id.TAG, compressPath);
 			setPerson = true;
+			(findViewById(R.id.layout3)).setVisibility(View.GONE);
+			(findViewById(R.id.layout33)).getLayoutParams().width = MaxWidth;
+			(findViewById(R.id.layout33)).getLayoutParams().height = (findViewById(R.id.layout22)).getLayoutParams().height;
 			break;
 		}
 	}

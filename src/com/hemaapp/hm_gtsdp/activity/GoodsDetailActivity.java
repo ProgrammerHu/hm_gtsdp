@@ -22,7 +22,12 @@ import com.hemaapp.hm_gtsdp.adapter.FindGoodsImageAdapter;
 import com.hemaapp.hm_gtsdp.dialog.GtsdpTwoButtonDialog;
 import com.hemaapp.hm_gtsdp.dialog.GtsdpTwoButtonDialog.OnButtonListener;
 import com.hemaapp.hm_gtsdp.view.MyGridView;
-
+/**
+ * ªıŒÔœÍ«È
+ * @author Wen
+ * @author HuFanglin
+ *
+ */
 public class GoodsDetailActivity extends GtsdpActivity implements OnClickListener {
 	private final int CHANGE_COUNT = 100;
 	private Intent beforeIntent;
