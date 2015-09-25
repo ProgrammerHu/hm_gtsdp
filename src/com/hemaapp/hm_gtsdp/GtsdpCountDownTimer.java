@@ -30,6 +30,14 @@ public class GtsdpCountDownTimer extends CountDownTimer
 		this.afterLayout = afterLayout;
 		this.actionView = actionView;
 	}
+	
+	public GtsdpCountDownTimer(long millisInFuture, long countDownInterval, TextView textView, Button beforeButton, LinearLayout afterLayout)
+	{
+		super(millisInFuture, countDownInterval);
+		this.textView = textView;
+		this.beforeButton = beforeButton;
+		this.afterLayout = afterLayout;
+	}
 
 	@Override
 	public void onTick(long millisUntilFinished) {
@@ -41,6 +49,7 @@ public class GtsdpCountDownTimer extends CountDownTimer
 	public void onFinish() {
 		afterLayout.setVisibility(View.GONE);
 		beforeButton.setVisibility(View.VISIBLE);
-		actionView.setText("");
+		if(actionView != null)
+			actionView.setText("");
 	}
 }

@@ -3,6 +3,8 @@ package com.hemaapp.hm_gtsdp.activity;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 import xtom.frame.image.load.XtomImageTask;
 import xtom.frame.image.load.XtomImageTask.Size;
@@ -30,6 +32,7 @@ import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
+import android.widget.TextView;
 
 import com.hemaapp.GtsdpConfig;
 import com.hemaapp.hm_FrameWork.HemaNetTask;
@@ -37,6 +40,7 @@ import com.hemaapp.hm_FrameWork.result.HemaBaseResult;
 import com.hemaapp.hm_FrameWork.view.RoundedImageView;
 import com.hemaapp.hm_gtsdp.GtsdpActivity;
 import com.hemaapp.hm_gtsdp.R;
+import com.hemaapp.hm_gtsdp.model.User;
 import com.hemaapp.hm_gtsdp.view.SelectPopupWindow;
 
 public class UserCenterActivity extends GtsdpActivity implements OnClickListener {
@@ -49,34 +53,17 @@ public class UserCenterActivity extends GtsdpActivity implements OnClickListener
 	private LinearLayout layoutBottom, layoutHead;
 	private View imageQuitActivity, imageSetting, layoutMyAccount, layoutMyOrder, layoutChangePwd, layoutPwdSafety, layoutOrders;
 	private SelectPopupWindow selectPop;
-	
+	private TextView txtUsername;
 	private String tempPath;//保存图片路径
 	private String imagePathCamera;//相机拍照路径
 	private RoundedImageView image_avatar;
 	
+	private User user;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		setContentView(R.layout.activity_usercenter);
 		super.onCreate(savedInstanceState);
-		
-		int w = View.MeasureSpec.makeMeasureSpec(0,
-				View.MeasureSpec.UNSPECIFIED);
-		int h = View.MeasureSpec.makeMeasureSpec(0,
-				View.MeasureSpec.UNSPECIFIED);
-		scrollview.measure(w, h);
-		insideFather.measure(w, h);
-		view1.measure(w, h);
-		layoutHead.measure(w, h);
-		DisplayMetrics dm = new DisplayMetrics();
-	    getWindowManager().getDefaultDisplay().getMetrics(dm);
-		int insideHeight = insideFather.getMeasuredHeight();
-		if(insideHeight < getScreenHeight() - view1.getMeasuredHeight() -  layoutHead.getMeasuredHeight())
-		{
-			int maxHight =  getScreenHeight() - view1.getMeasuredHeight() -  layoutHead.getMeasuredHeight();
-			FrameLayout.LayoutParams params = (FrameLayout.LayoutParams)insideFather.getLayoutParams();
-			params.height = maxHight;
-			insideFather.setLayoutParams(params);
-		}
+		init();
 	}
 
 	@Override
@@ -127,11 +114,13 @@ public class UserCenterActivity extends GtsdpActivity implements OnClickListener
 		layoutPwdSafety= findViewById(R.id.layoutPwdSafety);
 		layoutOrders= findViewById(R.id.layoutOrders);
 		image_avatar = (RoundedImageView)findViewById(R.id.imageHead);
+		txtUsername = (TextView)findViewById(R.id.txtUsername);
+		txtUsername.setText(user.getNickname());
 	}
 
 	@Override
 	protected void getExras() {
-		// TODO Auto-generated method stub
+		user = getApplicationContext().getUser();
 		
 	}
 
@@ -146,7 +135,39 @@ public class UserCenterActivity extends GtsdpActivity implements OnClickListener
 		layoutOrders.setOnClickListener(this);
 		image_avatar.setOnClickListener(this);
 	}
-	
+	private void init()
+	{
+		int w = View.MeasureSpec.makeMeasureSpec(0,
+				View.MeasureSpec.UNSPECIFIED);
+		int h = View.MeasureSpec.makeMeasureSpec(0,
+				View.MeasureSpec.UNSPECIFIED);
+		scrollview.measure(w, h);
+		insideFather.measure(w, h);
+		view1.measure(w, h);
+		layoutHead.measure(w, h);
+		DisplayMetrics dm = new DisplayMetrics();
+	    getWindowManager().getDefaultDisplay().getMetrics(dm);
+		int insideHeight = insideFather.getMeasuredHeight();
+		if(insideHeight < getScreenHeight() - view1.getMeasuredHeight() -  layoutHead.getMeasuredHeight())
+		{
+			int maxHight =  getScreenHeight() - view1.getMeasuredHeight() -  layoutHead.getMeasuredHeight();
+			FrameLayout.LayoutParams params = (FrameLayout.LayoutParams)insideFather.getLayoutParams();
+			params.height = maxHight;
+			insideFather.setLayoutParams(params);
+		}
+		
+		//加载用户头像
+		try {
+			URL url = new URL(user.getAvatar());
+			ImageTask imageTask = new ImageTask(image_avatar, url,
+					mContext, new Size(180, 180));
+			imageWorker.loadImage(imageTask);
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
 	/**
 	 * 获取去掉标题栏的屏幕高度
 	 * @return
@@ -207,7 +228,10 @@ public class UserCenterActivity extends GtsdpActivity implements OnClickListener
 			startActivity(intent);
 			overridePendingTransition(R.anim.right_in, R.anim.none);
 			break;
-		case R.id.layoutPwdSafety:
+		case R.id.layoutPwdSafety://密保管理
+			intent = new Intent(UserCenterActivity.this, CheckPhoneActivity.class);
+			startActivity(intent);
+			overridePendingTransition(R.anim.right_in, R.anim.none);
 			break;
 		case R.id.layoutOrders://配送订单
 			intent = new Intent(UserCenterActivity.this, DispatchingActivity.class);
@@ -352,6 +376,11 @@ public class UserCenterActivity extends GtsdpActivity implements OnClickListener
 		public ImageTask(ImageView imageView, String path, Object context,
 				Size size) {
 			super(imageView, path, context, size);
+		}
+		public ImageTask(ImageView imageView, URL url, Object context,
+				Size size)
+		{
+			super(imageView, url, context, size);
 		}
 		@Override
 		public void setBitmap(Bitmap bitmap) {

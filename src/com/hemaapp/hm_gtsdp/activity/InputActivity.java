@@ -12,12 +12,22 @@ import com.hemaapp.hm_FrameWork.HemaNetTask;
 import com.hemaapp.hm_FrameWork.result.HemaBaseResult;
 import com.hemaapp.hm_gtsdp.GtsdpActivity;
 import com.hemaapp.hm_gtsdp.R;
-
+/**
+ * 输入界面
+ * @author Wen
+ * @author HuFanglin
+ *参数：
+ *Title 标题
+ *Next 确定
+ *InputType 不为-1
+ *InputHint 提示
+ */
 public class InputActivity extends GtsdpActivity {
 	private Intent beforeIntent;
 	private String title = "";
 	private String next = "";
 	private String InputHint = "";
+	private String Text = "";
 	private int InputType = -1;
 	private ImageView imageQuitActivity;
 	private TextView txtTitle, txtNext;
@@ -72,6 +82,7 @@ public class InputActivity extends GtsdpActivity {
 			editEmail.setInputType(InputType);
 		}
 		editEmail.setHint(InputHint);
+		editEmail.setText(Text);
 	}
 
 	@Override
@@ -83,6 +94,7 @@ public class InputActivity extends GtsdpActivity {
 		next = beforeIntent.getStringExtra("Next");
 		InputType = beforeIntent.getIntExtra("InputType", -1);
 		InputHint = beforeIntent.getStringExtra("InputHint");
+		Text = beforeIntent.getStringExtra("Text");
 	}
 
 	@Override
@@ -97,12 +109,9 @@ public class InputActivity extends GtsdpActivity {
 			@Override
 			public void onClick(View v) {
 				String Account = editEmail.getEditableText().toString().trim();
-				if(!"".equals(Account))
-				{
-					Intent result = new Intent();
-					result.putExtra("Result", Account);
-					setResult(RESULT_OK, result);
-				}
+				Intent result = new Intent();
+				result.putExtra("Result", Account);
+				setResult(RESULT_OK, result);
 				finish(R.anim.none, R.anim.right_out);
 			}
 		});

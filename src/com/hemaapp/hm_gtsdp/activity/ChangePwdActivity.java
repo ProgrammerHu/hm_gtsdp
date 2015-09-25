@@ -11,8 +11,10 @@ import com.hemaapp.GtsdpConfig;
 import com.hemaapp.hm_FrameWork.HemaNetTask;
 import com.hemaapp.hm_FrameWork.result.HemaBaseResult;
 import com.hemaapp.hm_gtsdp.GtsdpActivity;
+import com.hemaapp.hm_gtsdp.GtsdpApplication;
 import com.hemaapp.hm_gtsdp.R;
 import com.hemaapp.hm_gtsdp.R.id;
+import com.hemaapp.hm_gtsdp.model.User;
 
 public class ChangePwdActivity extends GtsdpActivity implements OnClickListener{
 	
@@ -49,7 +51,7 @@ public class ChangePwdActivity extends GtsdpActivity implements OnClickListener{
 	@Override
 	protected void callBackForServerSuccess(HemaNetTask arg0,
 			HemaBaseResult arg1) {
-		// TODO Auto-generated method stub
+		showTextDialog("成功");
 		
 	}
 
@@ -116,6 +118,7 @@ public class ChangePwdActivity extends GtsdpActivity implements OnClickListener{
 		 * 2、确定新密码是否符合6-16位的规定
 		 * 3、确定新旧密码是否相同
 		 */
+		String OldPwd = editOldPwd.getEditableText().toString().trim();
 		String NewPwd = editNewPwd.getEditableText().toString().trim();
 		String RepeatPwd = editRepeatPwd.getEditableText().toString().trim();
 		if("".equals(NewPwd))
@@ -133,6 +136,7 @@ public class ChangePwdActivity extends GtsdpActivity implements OnClickListener{
 			showTextDialog("密码输入不一致！请重新输入");
 			return;
 		}
-		showTextDialog("OK");
+		User user = GtsdpApplication.getInstance().getUser();
+		getNetWorker().changePwd(user.getToken(), "1", OldPwd, NewPwd);
 	}
 }

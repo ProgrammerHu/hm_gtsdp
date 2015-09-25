@@ -1,11 +1,13 @@
 package com.hemaapp.hm_gtsdp.activity;
 
 import xtom.frame.util.XtomSharedPreferencesUtil;
+import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -62,6 +64,7 @@ OnInfoWindowClickListener, OnMapClickListener, OnGeocodeSearchListener
 	//界面布局相关
 	private TextView txtTitle, txtNext;
 	private ImageView imageQuitActivity;
+	private Button btnConfirm;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -181,7 +184,7 @@ OnInfoWindowClickListener, OnMapClickListener, OnGeocodeSearchListener
 		txtTitle = (TextView)findViewById(R.id.txtTitle);
 		txtTitle.setText("找货");
 		imageQuitActivity = (ImageView)findViewById(R.id.imageQuitActivity);
-		
+		btnConfirm = (Button)findViewById(R.id.btnConfirm);
 	}
 
 	@Override
@@ -194,15 +197,29 @@ OnInfoWindowClickListener, OnMapClickListener, OnGeocodeSearchListener
 	protected void setListener() {
 		txtNext.setOnClickListener(this);
 		imageQuitActivity.setOnClickListener(this);
+		btnConfirm.setOnClickListener(this);
 	}
 
 	@Override
 	public void onClick(View v) {
+		Intent intent;
 		switch(v.getId())
 		{
 		case R.id.imageQuitActivity:
 			finish(R.anim.none, R.anim.right_out);
 			break;
+		case R.id.btnConfirm:
+			intent = new Intent(this, PublishRouteActivity.class);
+			startActivity(intent);
+			overridePendingTransition(R.anim.right_in, R.anim.none);
+			break;
+		case R.id.txtTitle:
+			intent = new Intent(this, PublishRouteActivity.class);
+			startActivity(intent);
+			//这里要加上当前的起止位置
+			overridePendingTransition(R.anim.right_in, R.anim.none);
+			break;
+			
 		}
 		
 	}

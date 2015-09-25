@@ -38,7 +38,8 @@ public class TemplateListActivty extends GtsdpActivity implements OnClickListene
 	private TemplateAddressAdpater addressAdapter;
 	private TextView txtTitle, txtNext, txtAdd;
 	private ImageView imageQuitActivity;
-	
+	private int SelectPosition = -1;
+	private List<ContactsTemplateModel> dataList;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		setContentView(R.layout.activity_template_list);
@@ -111,6 +112,7 @@ public class TemplateListActivty extends GtsdpActivity implements OnClickListene
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) { 
+				SelectPosition = position;
 				addressAdapter.selectItem(position);
 				addressAdapter.notifyDataSetChanged();
 			}
@@ -122,6 +124,14 @@ public class TemplateListActivty extends GtsdpActivity implements OnClickListene
 		switch(v.getId())
 		{
 		case R.id.imageQuitActivity:
+			if(SelectPosition != -1)
+			{//已经选择
+				Intent result = new Intent();
+				result.putExtra("Name", dataList.get(SelectPosition).getName());
+				result.putExtra("Address", dataList.get(SelectPosition).getAddress());
+				result.putExtra("Phone", dataList.get(SelectPosition).getPhoneNumber());
+				setResult(RESULT_OK, result);
+			}
 			finish(R.anim.none, R.anim.right_out);
 			break;
 		case R.id.layoutAddTemplate:
@@ -138,7 +148,7 @@ public class TemplateListActivty extends GtsdpActivity implements OnClickListene
 
 	private void setListViewData()
 	{
-		List<ContactsTemplateModel> dataList = new ArrayList<ContactsTemplateModel>();
+		dataList = new ArrayList<ContactsTemplateModel>();
 		ContactsTemplateModel model = new ContactsTemplateModel("陈程程","山东省济南市","18215968686qq");
 		dataList.add(model);model = new ContactsTemplateModel("陈程程","山东省济南市","18215968686qq");
 		dataList.add(model);model = new ContactsTemplateModel("陈程程","山东省济南市","18215968686qq");
@@ -147,18 +157,6 @@ public class TemplateListActivty extends GtsdpActivity implements OnClickListene
 		dataList.add(model);
 		addressAdapter = new TemplateAddressAdpater(TemplateListActivty.this, dataList, ActivityType);
 		templateList.setAdapter(addressAdapter);
-		
-//		以下是为了让Listview适应scrollView，暂时去掉
-//		View listView = addressAdapter.getView(0, null, templateList);
-//		int w = View.MeasureSpec.makeMeasureSpec(0,
-//                View.MeasureSpec.UNSPECIFIED);
-//        int h = View.MeasureSpec.makeMeasureSpec(0,
-//                View.MeasureSpec.UNSPECIFIED);
-//        listView.measure(w, h);
-//        int itemHeight = listView.getMeasuredHeight();
-//        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams)templateList.getLayoutParams();
-//        params.height = itemHeight * addressAdapter.getCount();
-//        templateList.setLayoutParams(params);
 
 	}
 	

@@ -131,7 +131,8 @@
                 android:gravity="center_horizontal"
                 android:text="@string/scan_text"
                 android:textColor="@color/white"
-                android:textSize="@dimen/textsize_8" />
+                android:textSize="@dimen/textsize_8" 
+                android:id="@+id/txtTop"/>
 
             <TextView
                 android:layout_width="match_parent"
@@ -139,7 +140,8 @@
                 android:gravity="center_horizontal"
                 android:text="@string/scan_text2"
                 android:textColor="@color/white"
-                android:textSize="@dimen/textsize_7" />
+                android:textSize="@dimen/textsize_7"
+                android:id="@+id/txtBottom" />
         </LinearLayout>
     </RelativeLayout>
 

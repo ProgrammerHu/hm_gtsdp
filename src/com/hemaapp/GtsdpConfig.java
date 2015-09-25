@@ -98,4 +98,20 @@ public class GtsdpConfig {
 	 * 找回支付密码
 	 */
 	public static final int FIND_PAY_PWD = 30;
+	/**
+	 * 扫描绑定二维码
+	 */
+	public static final int CODE_BIND = 0;
+	/**
+	 * 扫描二维码收货收货人
+	 */
+	public static final int CODE_GET = 1;
+	/**
+	 * 扫描二维码网点接单
+	 */
+	public static final int CODE_SITE = 2;
+	/**
+	 * 扫描二维码配送员接货
+	 */
+	public static final int CODE_CURSOR = 3;
 }

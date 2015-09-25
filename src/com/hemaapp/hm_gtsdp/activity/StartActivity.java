@@ -7,6 +7,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.Animation.AnimationListener;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.hemaapp.hm_gtsdp.GtsdpArrayResult;
 import com.hemaapp.hm_gtsdp.GtsdpHttpInformation;
@@ -36,9 +37,6 @@ public class StartActivity extends GtsdpActivity
 		sysInitInfo = getApplicationContext().getSysInitInfo();
 		user = getApplicationContext().getUser();
 		txtWelcome = (TextView)findViewById(R.id.txtWelcome);
-//		Intent intent = new Intent(StartActivity.this, MainActivity.class);
-//		startActivity(intent);
-//		finish();
 		init();
 	}
 	private void init()
@@ -79,8 +77,23 @@ public class StartActivity extends GtsdpActivity
 	}
 
 	@Override
-	protected void callBackForServerFailed(HemaNetTask arg0, HemaBaseResult arg1) {
-		showTextDialog("系统初始化失败，请确定网络参数");
+	protected void callBackForServerFailed(HemaNetTask netTask, HemaBaseResult result) {
+//		showTextDialog("系统初始化失败，请确定网络参数");
+		GtsdpHttpInformation infomation = (GtsdpHttpInformation)netTask.getHttpInformation();
+		switch(infomation)
+		{
+		case CLIENT_LOGIN:
+			if(result.getError_code() == 102)
+			{
+				Toast.makeText(StartActivity.this, result.getMsg() + "请重新登录", Toast.LENGTH_SHORT).show();
+				Intent intent = new Intent(StartActivity.this, LoginActivity.class);
+				startActivity(intent);
+				overridePendingTransition(R.anim.right_in, R.anim.none);
+				this.finish();
+			}
+			
+		}
+			
 	}
 
 	@Override
@@ -99,8 +112,9 @@ public class StartActivity extends GtsdpActivity
 			GtsdpArrayResult<User> sUser = (GtsdpArrayResult<User>)baseResult;
 			this.user = sUser.getObjects().get(0);
 			getApplicationContext().setUser(user);
-			Intent intent = new Intent(StartActivity.this, MainActivity.class);
+			Intent intent = new Intent(StartActivity.this, MainPageActivity.class);
 			startActivity(intent);
+			overridePendingTransition(R.anim.right_in, R.anim.none);
 			this.finish();
 			break;
 		}

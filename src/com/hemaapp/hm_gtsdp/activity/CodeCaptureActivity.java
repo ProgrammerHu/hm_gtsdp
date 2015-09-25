@@ -62,14 +62,17 @@ import com.hemaapp.hm_gtsdp.zxing.view.ViewfinderView;
  */
 @SuppressLint("HandlerLeak") @SuppressWarnings("deprecation")
 public class CodeCaptureActivity extends GtsdpActivity implements Callback, OnClickListener {
+	private static final int CAMERA = 100;
+	private static final int PARSE_BARCODE_SUC = 300;
+	private static final int PARSE_BARCODE_FAIL = 303;
 	
+	private Intent beforeIntent;
+	private int ActivityType;//界面类型，参考GtsdpConfig
 	private ImageView imageQuitActivity, imageOpenLight;
 	
-	private TextView left; 
-	private TextView title;
+	private TextView left, title, txtTop, txtBottom, txtTitle; 
 	private Button right;
 	private LinearLayout layout_empty; //未登录界面
-//	private TextView text_login; //登录按钮
 	
 	private RelativeLayout layout1;//已登录界面
 	private CaptureActivityHandler handler;
@@ -78,14 +81,8 @@ public class CodeCaptureActivity extends GtsdpActivity implements Callback, OnCl
 	private Vector<BarcodeFormat> decodeFormats;
 	private String characterSet;
 	private InactivityTimer inactivityTimer;
-//	private ImageView scan_camera;//相册按钮
-//	private ImageView scan_light;//开灯按钮
-//	private TextView light;//开灯/关灯
 	private int sign;
 
-	private static final int CAMERA = 100;
-	private static final int PARSE_BARCODE_SUC = 300;
-	private static final int PARSE_BARCODE_FAIL = 303;
 	private ProgressDialog mProgress;
 	private String photo_path;
 	private Bitmap scanBitmap;
@@ -383,13 +380,31 @@ public class CodeCaptureActivity extends GtsdpActivity implements Callback, OnCl
 	protected void findView() {
 		imageQuitActivity = (ImageView)findViewById(R.id.imageQuitActivity);
 		imageOpenLight = (ImageView)findViewById(R.id.imageOpenLight);
-		
+		txtTop = (TextView)findViewById(R.id.txtTop);
+		txtBottom = (TextView)findViewById(R.id.txtBottom);
+		txtTitle = (TextView)findViewById(R.id.txtTitle);
+		switch(ActivityType)
+		{
+		case -1:
+			showTextDialog("界面参数错误");
+			break;
+		case GtsdpConfig.CODE_GET:
+			txtTitle.setText("收货");
+			txtTop.setText("扫描二维码确认接货/收货");
+			txtBottom.setText("");
+			break;
+		case GtsdpConfig.CODE_SITE:
+			txtTitle.setText("网点");
+			txtTop.setText("扫描二维码接单");
+			txtBottom.setText("");
+			break;
+		}
 	}
 
 	@Override
 	protected void getExras() {
-		// TODO Auto-generated method stub
-		
+		beforeIntent = getIntent();
+		ActivityType = beforeIntent.getIntExtra("ActivityType", -1);
 	}
 
 	@Override
@@ -405,7 +420,7 @@ public class CodeCaptureActivity extends GtsdpActivity implements Callback, OnCl
 		switch(v.getId())
 		{
 		case R.id.imageQuitActivity:
-			finish(R.anim.none, R.anim.right_out);
+			finish();
 			break;
 		case R.id.imageOpenLight:
 			if (sign % 2 == 0) {
@@ -441,7 +456,7 @@ public class CodeCaptureActivity extends GtsdpActivity implements Callback, OnCl
 	};
 	
 	protected boolean onKeyBack() {
-		finish(R.anim.none, R.anim.right_out);
+		finish();
 		return super.onKeyBack();
 	};
 

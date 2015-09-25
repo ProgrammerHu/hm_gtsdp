@@ -73,6 +73,7 @@
 			            android:id="@+id/editReciverName"
 			            android:background="@null"
 			            android:layout_margin="10dp"
+			            android:textSize="@dimen/textsize_8"
 			            />
 			    </LinearLayout>
 			    <LinearLayout 
@@ -105,6 +106,7 @@
 			            android:layout_height="wrap_content"
 			            android:id="@+id/txtReciverAddress"
 			            android:layout_margin="10dp"
+			            android:textSize="@dimen/textsize_8"
 			            />
 			    </LinearLayout>
 			    <LinearLayout 
@@ -138,6 +140,7 @@
 			            android:background="@null"
 			            android:layout_margin="10dp"
 			            android:inputType="phone"
+			            android:textSize="@dimen/textsize_8"
 			            />
 			    </LinearLayout>
 			    
@@ -194,6 +197,7 @@
 			            android:id="@+id/editSenderName"
 			            android:background="@null"
 			            android:layout_margin="10dp"
+			            android:textSize="@dimen/textsize_8"
 			            />
 			    </LinearLayout>
 			    <LinearLayout 
@@ -226,6 +230,7 @@
 			            android:layout_height="wrap_content"
 			            android:id="@+id/txtSenderAddress"
 			            android:layout_margin="10dp"
+			            android:textSize="@dimen/textsize_8"
 			            />
 			    </LinearLayout>
 			    <LinearLayout 
@@ -259,6 +264,7 @@
 			            android:background="@null"
 			            android:layout_margin="10dp"
 			            android:inputType="phone"
+			            android:textSize="@dimen/textsize_8"
 			            />
 			    </LinearLayout>
 			    <LinearLayout 

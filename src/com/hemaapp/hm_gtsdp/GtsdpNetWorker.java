@@ -8,6 +8,7 @@ import android.content.Context;
 import com.hemaapp.GtsdpConfig;
 import com.hemaapp.hm_FrameWork.HemaNetWorker;
 import com.hemaapp.hm_gtsdp.nettask.AlipayTradeTask;
+import com.hemaapp.hm_gtsdp.nettask.ChangePwdTask;
 import com.hemaapp.hm_gtsdp.nettask.ClientLoginTask;
 import com.hemaapp.hm_gtsdp.nettask.ClientLoginoutTask;
 import com.hemaapp.hm_gtsdp.nettask.DeviceSaveTask;
@@ -83,7 +84,24 @@ public class GtsdpNetWorker extends HemaNetWorker {
 		GtsdpNetTask task = new InitTask(information, params);
 		executeTask(task);
 	}
-	
+	/**
+	 * 修改密码
+	 * @param token 登录令牌
+	 * @param keytype 密码类型	1：登陆密码 2：支付密码
+	 * @param old_password 旧密码
+	 * @param new_password 新密码
+	 */ 
+	public void changePwd(String token, String keytype, String old_password, String new_password)
+	{
+		GtsdpHttpInformation information = GtsdpHttpInformation.PASSWORD_SAVE;
+		HashMap<String, String> params = new HashMap<String, String>();
+		params.put("token", token);// 版本号码(默认：1.0.0)
+		params.put("keytype", keytype);// 登陆所用的系统版本号
+		params.put("old_password", old_password);// 客户端硬件串号
+		params.put("new_password", new_password);// 客户端硬件串号
+		GtsdpNetTask task = new ChangePwdTask(information, params);
+		executeTask(task);
+	}
 	/**
 	 * 硬件注册保存
 	 */

@@ -5,7 +5,12 @@ import java.util.List;
 
 import xtom.frame.view.XtomRefreshLoadmoreLayout;
 import xtom.frame.view.XtomRefreshLoadmoreLayout.OnStartListener;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.internal.widget.AdapterViewCompat;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
@@ -15,12 +20,14 @@ import com.hemaapp.hm_FrameWork.HemaNetTask;
 import com.hemaapp.hm_FrameWork.result.HemaBaseResult;
 import com.hemaapp.hm_gtsdp.GtsdpFragment;
 import com.hemaapp.hm_gtsdp.R;
+import com.hemaapp.hm_gtsdp.activity.OrderDetailActivity;
 import com.hemaapp.hm_gtsdp.adapter.OrdersListAdapter;
 import com.hemaapp.hm_gtsdp.model.OrderModel;
 import com.hemaapp.hm_gtsdp.view.GtsdpListView;
 import com.hemaapp.hm_gtsdp.view.GtsdpRefreshLoadmoreLayout;
 
-public class MySendFragment extends GtsdpFragment implements OnCheckedChangeListener {
+public class MySendFragment extends GtsdpFragment implements OnCheckedChangeListener,
+OnItemClickListener{
 	private int pageNumber;//记录当前fragment的页码
 	
 	private int pages = 0;//记录listview的页数
@@ -99,6 +106,7 @@ public class MySendFragment extends GtsdpFragment implements OnCheckedChangeList
 		showListView.setAdapter(listViewAdapter);
 		radioGroup.setOnCheckedChangeListener(this);
 		refreshLoadmoreLayout.setOnStartListener(new StartListener());
+		showListView.setOnItemClickListener(this);
 	}
 
 	@Override
@@ -135,6 +143,20 @@ public class MySendFragment extends GtsdpFragment implements OnCheckedChangeList
 		public void onStartLoadmore(XtomRefreshLoadmoreLayout v) {// 加载更多
 			showTextDialog("下拉");
 		}
+	}
+
+	@Override
+	public void onItemClick(AdapterView<?> parent, View view, int position,
+			long id) {
+		Intent intent = new Intent(getActivity(), OrderDetailActivity.class);
+		if (rbtnLeft.isSelected()) {
+			intent.putExtra("Id", listDataOnPassage.get(position).getOrderId());
+		} else {
+			intent.putExtra("Id", listDataServed.get(position).getOrderId());
+		}
+		startActivity(intent);
+		getActivity().overridePendingTransition(R.anim.right_in, R.anim.none);
+
 	}
 
 }

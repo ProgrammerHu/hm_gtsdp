@@ -3,6 +3,7 @@ package com.hemaapp.hm_gtsdp.activity;
 import java.lang.reflect.Field;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.view.ViewPager;
@@ -18,11 +19,14 @@ import android.widget.RelativeLayout;
 import android.widget.Scroller;
 import android.widget.TextView;
 
+import com.hemaapp.GtsdpConfig;
 import com.hemaapp.hm_FrameWork.HemaNetTask;
 import com.hemaapp.hm_FrameWork.result.HemaBaseResult;
 import com.hemaapp.hm_gtsdp.GtsdpFragmentActivity;
 import com.hemaapp.hm_gtsdp.R;
 import com.hemaapp.hm_gtsdp.adapter.ImageViewPagerAdapter;
+import com.hemaapp.hm_gtsdp.dialog.GtsdpTwoButtonDialog;
+import com.hemaapp.hm_gtsdp.dialog.GtsdpTwoButtonDialog.OnButtonListener;
 
 public class MainPageActivity extends GtsdpFragmentActivity implements OnClickListener {
 	private TextView txtTitle, txtNext;
@@ -79,12 +83,17 @@ public class MainPageActivity extends GtsdpFragmentActivity implements OnClickLi
 		imageQuitActivity = (ImageView)findViewById(R.id.imageQuitActivity);
 		imageQuitActivity.setVisibility(View.INVISIBLE);
 		mainViewPager = (ViewPager)findViewById(R.id.mainViewPager);
-		mainViewPager.setAdapter(new ImageViewPagerAdapter(getSupportFragmentManager()));
+		mainViewPager.setAdapter(new ImageViewPagerAdapter(getSupportFragmentManager(), MainPageActivity.this));
 		RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)mainViewPager.getLayoutParams();
 		params.height = mScreenWidth * 4 / 7;
 		mainViewPager.setLayoutParams(params);
 		pointsImage = (ImageView)findViewById(R.id.pointsImage);
 		setScrollSpeed();
+		imageSend = (ImageView)findViewById(R.id.imageSend);
+		imageGet = (ImageView)findViewById(R.id.imageGet);
+		imageFind = (ImageView)findViewById(R.id.imageFind);
+		UserCenter = (LinearLayout)findViewById(R.id.UserCenter);
+		SystemMessage = (LinearLayout)findViewById(R.id.SystemMessage);
 	}
 
 	@Override
@@ -95,6 +104,11 @@ public class MainPageActivity extends GtsdpFragmentActivity implements OnClickLi
 
 	@Override
 	protected void setListener() {
+		imageSend.setOnClickListener(this);
+		imageGet.setOnClickListener(this);
+		imageFind.setOnClickListener(this);
+		UserCenter.setOnClickListener(this);
+		SystemMessage.setOnClickListener(this);
 		mainViewPager.addOnPageChangeListener(new OnPageChangeListener() {
 			@Override
 			public void onPageSelected(int arg0) {
@@ -129,14 +143,34 @@ public class MainPageActivity extends GtsdpFragmentActivity implements OnClickLi
 	
 	@Override
 	public void onClick(View v) {
+		Intent intent;
 		switch(v.getId())
 		{
 		case R.id.imageSend:
+			intent = new Intent(this, SendDetailActivty.class);
+			startActivity(intent);
+			overridePendingTransition(R.anim.right_in, R.anim.none);
+			break;
 		case R.id.imageGet:
+			intent = new Intent(this, CodeCaptureActivity.class);
+			intent.putExtra("ActivityType", GtsdpConfig.CODE_SITE);
+			startActivity(intent);
+//			overridePendingTransition(R.anim.right_in, R.anim.none);
+			break;
 		case R.id.imageFind:
+			intent = new Intent(this, FindGoodsActivity.class);
+			startActivity(intent);
+			overridePendingTransition(R.anim.right_in, R.anim.none);
 			break;
 		case R.id.UserCenter:
+			intent = new Intent(this,UserCenterActivity.class);
+			startActivity(intent);
+			overridePendingTransition(R.anim.right_in, R.anim.none);
+			break;
 		case R.id.SystemMessage:
+			intent = new Intent(this, MessagesActivity.class);
+			startActivity(intent);
+			overridePendingTransition(R.anim.right_in, R.anim.none);
 			break;
 		}
 	}
@@ -153,7 +187,7 @@ public class MainPageActivity extends GtsdpFragmentActivity implements OnClickLi
 	         FixedSpeedScroller scroller = new FixedSpeedScroller(MainPageActivity.this,
 	                 new AccelerateInterpolator());
 	         field.set(mainViewPager, scroller);
-	         scroller.setmDuration(500);
+	         scroller.setmDuration(250);//还是250比较好，神奇的数字
 		}
 		catch(Exception e)
 		{
@@ -161,12 +195,6 @@ public class MainPageActivity extends GtsdpFragmentActivity implements OnClickLi
 		}
 	}
 	
-	@Override
-    protected void onResume() {
-        super.onResume();
-        switchTask.run();
-    }
-
     private Runnable switchTask = new Runnable() {
         public void run() {
         	mainViewPager.setCurrentItem(PageId);  
@@ -184,7 +212,7 @@ public class MainPageActivity extends GtsdpFragmentActivity implements OnClickLi
      *
      */
     private class FixedSpeedScroller extends Scroller {
-        private int mDuration = 500;
+        private int mDuration = 100;//这个没用
      
         public FixedSpeedScroller(Context context) {
             super(context);
@@ -216,12 +244,34 @@ public class MainPageActivity extends GtsdpFragmentActivity implements OnClickLi
     }
     
     @Override
-    protected void onStop() {
-    	super.onStop();
-//    	try {
-//			switchTask.wait();
-//		} catch (InterruptedException e) {
-//			e.printStackTrace();
-//		}
+    protected boolean onKeyBack() {
+		GtsdpTwoButtonDialog dialog = new GtsdpTwoButtonDialog(mContext);
+		dialog.setText("确定要退出吗？");
+		dialog.setRightButtonTextColor(GtsdpConfig.Main_Blue);
+		dialog.setButtonListener(new OnButtonListener() {
+			@Override
+			public void onRightButtonClick(GtsdpTwoButtonDialog dialog) {
+				dialog.cancel();
+				finish(R.anim.none, R.anim.right_out);
+			}
+
+			@Override
+			public void onLeftButtonClick(GtsdpTwoButtonDialog dialog) {
+				dialog.cancel();
+			}
+		});
+		return false;
+    }
+    @Override
+    protected void onPause() {
+    	super.onPause();
+    	mHandler.removeCallbacks(switchTask);
+    }
+    @Override
+    protected void onResume() {
+    	// TODO Auto-generated method stub
+    	super.onResume();
+
+        switchTask.run();
     }
 }

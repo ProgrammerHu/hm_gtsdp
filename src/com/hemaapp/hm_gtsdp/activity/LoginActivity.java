@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.hemaapp.hm_gtsdp.R;
 import com.hemaapp.hm_FrameWork.HemaNetTask;
@@ -110,6 +111,7 @@ public class LoginActivity extends GtsdpActivity implements OnClickListener
 			showTextDialog("手机号格式不正确！请重输");
 			return;
 		}
+		showProgressDialog("登录中，请稍后");
 		getNetWorker().clientLogin(phoneNumber, password);
 	}
 	
@@ -138,21 +140,15 @@ public class LoginActivity extends GtsdpActivity implements OnClickListener
 		switch(information)
 		{
 		case CLIENT_LOGIN:
-			showTextDialog("登录成功！");
-			//向SharedPreferences写入用户信息
-//			boolean IsRemember = isRememberPwd.isChecked();
-//			if(IsRemember)
-			{
-				String username = netTask.getParams().get("username");
-				String password = netTask.getParams().get("password");
-				XtomSharedPreferencesUtil.save(mContext, "username", username);
-				XtomSharedPreferencesUtil.save(mContext, "password", password);
-//				XtomActivityManager.finishAll();
-				Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-				startActivity(intent);
-				overridePendingTransition(R.anim.right_in, R.anim.none);
-				this.finish();
-			}
+			cancelProgressDialog();
+			String username = netTask.getParams().get("username");
+			String password = netTask.getParams().get("password");
+			XtomSharedPreferencesUtil.save(mContext, "username", username);
+			XtomSharedPreferencesUtil.save(mContext, "password", password);
+			Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+			startActivity(intent);
+			overridePendingTransition(R.anim.right_in, R.anim.none);
+			this.finish();
 			break;
 		}
 		

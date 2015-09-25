@@ -67,7 +67,11 @@ public enum GtsdpHttpInformation implements HemaHttpInfomation {
 	 * 硬件注册保存
 	 */
 	DEVICE_SAVE(12, "device_save", "硬件注册保存", false),
-
+	/**
+	 * 修改密码
+	 */
+	PASSWORD_SAVE(13, "password_save", "修改密码", false),
+	
 	;
 
 	private int id;// 对应NetTask的id

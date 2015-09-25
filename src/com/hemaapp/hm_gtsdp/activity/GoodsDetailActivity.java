@@ -100,7 +100,7 @@ public class GoodsDetailActivity extends GtsdpActivity implements OnClickListene
 		txtTitle = (TextView)findViewById(R.id.txtTitle);
 		txtTitle.setText("ฯ๊ว้");
 		txtNext = (TextView)findViewById(R.id.txtNext);
-		txtNext.setVisibility(View.GONE);
+		txtNext.setVisibility(View.INVISIBLE);
 		imageQuitActivity = (ImageView)findViewById(R.id.imageQuitActivity);
 		btnConfirmReceive = (Button)findViewById(R.id.btnConfirmReceive);
 		btnSiteAgree = (Button) findViewById(R.id.btnSiteAgree);

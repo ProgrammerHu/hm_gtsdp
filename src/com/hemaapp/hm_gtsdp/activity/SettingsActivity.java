@@ -221,6 +221,7 @@ public class SettingsActivity extends GtsdpActivity implements OnClickListener, 
 		@Override
 		public void onRightButtonClick(GtsdpTwoButtonDialog dialog) {
 			dialog.cancel();
+			showProgressDialog("«Î…‘∫Û");
 			GtsdpApplication application = getApplicationContext();
 			User user = application.getUser();
 			getNetWorker().clientLoginout(user.getToken());

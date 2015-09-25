@@ -33,6 +33,7 @@ import com.hemaapp.hm_gtsdp.view.SelectPopupWindow;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.content.Loader.OnLoadCompleteListener;
+import android.text.InputType;
 
 
 public class FixDataActivity extends GtsdpActivity implements OnClickListener{
@@ -40,7 +41,10 @@ public class FixDataActivity extends GtsdpActivity implements OnClickListener{
 	private final int REQUEST_CODE_CAPTURE_CAMEIA = 2;//œ‡ª˙ªÒ»°
 	private  final int EDIT_IMAGE = 3;//ºÙ≤√Õº∆¨
 	
-	private TextView txtTitle, txtNext, txtSex;
+	private final int INPUT_SICK_NAME = 4;// ‰»ÎÍ«≥∆
+	private final int SELECT_ADDRESS = 5;//—°‘Òµÿ÷∑
+	
+	private TextView txtTitle, txtNext, txtSex, txtSickName, txtAddress;
 	private ImageView imageQuitActivity;
 	private RelativeLayout layoutAddress, layoutSex, layoutHead, layoutSickName;
 	
@@ -71,6 +75,8 @@ public class FixDataActivity extends GtsdpActivity implements OnClickListener{
 		layoutHead = (RelativeLayout)findViewById(R.id.layoutHead);
 		layoutSickName = (RelativeLayout)findViewById(R.id.layoutSickName);
 		image_avatar = (RoundedImageView)findViewById(R.id.imageHead);
+		txtSickName = (TextView)findViewById(R.id.txtSickName);
+		txtAddress = (TextView)findViewById(R.id.txtAddress);
 	}
 
 	@Override
@@ -108,6 +114,17 @@ public class FixDataActivity extends GtsdpActivity implements OnClickListener{
 			break;
 		case R.id.imageQuitActivity:
 			finish(R.anim.none, R.anim.right_out);
+			break;
+		case R.id.layoutSickName:
+			Intent intent = new Intent(this, InputActivity.class);
+			intent.putExtra("Title", "Í«≥∆");
+			intent.putExtra("Next", "»∑∂®");
+			intent.putExtra("InputType", InputType.TYPE_CLASS_TEXT);
+			intent.putExtra("InputHint", "Í«≥∆");
+			if(!txtSickName.getText().equals("«ÎÃÓ–¥"))
+				intent.putExtra("Text", txtSickName.getText());
+			startActivityForResult(intent, INPUT_SICK_NAME);
+			overridePendingTransition(R.anim.right_in, R.anim.none);
 			break;
 		}
 
@@ -261,6 +278,10 @@ public class FixDataActivity extends GtsdpActivity implements OnClickListener{
 					mContext, new Size(180, 180)));
 			if(selectPop != null)
 				selectPop.dismiss();
+			break;
+		case INPUT_SICK_NAME:
+			String SickName = data.getStringExtra("Result");
+			txtSickName.setText(SickName);
 			break;
 		}
 	}

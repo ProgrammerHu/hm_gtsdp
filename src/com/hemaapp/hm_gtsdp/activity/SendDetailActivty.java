@@ -41,6 +41,8 @@ import com.hemaapp.hm_gtsdp.zxing.camera.CameraManager;
 public class SendDetailActivty extends GtsdpActivity implements OnClickListener {
 	private final int REQUEST_CODE_PICK_IMAGE = 1;// 相册获取
 	private final int REQUEST_CODE_CAPTURE_CAMEIA = 2;// 相机获取
+	private final int SENDER = 100;//发件人
+	private final int RECIVER = 200;//收件人
 
 	private View detialMainLinear;
 	
@@ -136,6 +138,24 @@ public class SendDetailActivty extends GtsdpActivity implements OnClickListener 
 			case REQUEST_CODE_CAPTURE_CAMEIA:
 				camera();
 				break;
+			case SENDER: {
+				String Name = data.getStringExtra("Name");
+				String Address = data.getStringExtra("Address");
+				String Phone = data.getStringExtra("Phone");
+				editSenderName.setText(Name);
+				txtSenderAddress.setText(Address);
+				editSenderPhone.setText(Phone);
+			}
+				break;
+			case RECIVER: {
+				String Name = data.getStringExtra("Name");
+				String Address = data.getStringExtra("Address");
+				String Phone = data.getStringExtra("Phone");
+				editReciverName.setText(Name);
+				txtReciverAddress.setText(Address);
+				editReciverPhone.setText(Phone);
+			}
+				break;
 			}
 		}
 	}
@@ -201,9 +221,10 @@ public class SendDetailActivty extends GtsdpActivity implements OnClickListener 
 
 	@Override
 	public void onClick(View v) {
+		Intent intent;
 		switch (v.getId()) {
 		case R.id.imageQuitActivity:
-			finish();
+			finish(R.anim.none, R.anim.right_out);
 			break;
 		case R.id.layoutReciverAddress:
 			myDistrictPicker.setOnClickListener(clickReciver);
@@ -218,8 +239,27 @@ public class SendDetailActivty extends GtsdpActivity implements OnClickListener 
 					Gravity.CENTER | Gravity.CENTER_HORIZONTAL, 0, 0);
 
 			break;
+		case R.id.txtSenderTemplet:
+			intent = new Intent(this, TemplateListActivty.class);
+			intent.putExtra("ActivityType", SENDER);
+			startActivityForResult(intent, SENDER);
+			overridePendingTransition(R.anim.right_in, R.anim.none);
+			break;
+		case R.id.txtReciverTemplet:
+			intent = new Intent(this, TemplateListActivty.class);
+			intent.putExtra("ActivityType", RECIVER);
+			startActivityForResult(intent, RECIVER);
+			overridePendingTransition(R.anim.right_in, R.anim.none);
+			break;
 		}
 	}
+	
+	@Override
+	protected boolean onKeyBack() {
+		finish(R.anim.none, R.anim.right_out);
+		return super.onKeyBack();
+	}
+	
 
 	/**
 	 * 点击收件人地址

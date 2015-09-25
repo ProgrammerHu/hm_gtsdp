@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ImageView;
 
 import com.hemaapp.hm_FrameWork.HemaNetTask;
@@ -20,13 +22,15 @@ import com.hemaapp.hm_gtsdp.view.SelectPopupWindow;
 import com.hemaapp.hm_gtsdp.view.SlideView;
 import com.hemaapp.hm_gtsdp.view.SlideView.OnSlideListener;
 
-public class MessagesActivity extends GtsdpActivity implements OnClickListener, OnSlideListener{
+public class MessagesActivity extends GtsdpActivity implements OnClickListener, OnSlideListener,
+OnItemClickListener{
 	
 	private ListViewCompat listViewCompat;
 	private ImageView imageQuitActivity, imageSetting;
 	private SlideView mLastSlideViewWithStatusOn;
 	private SelectPopupWindow selectPopupWindow;
 	private List<MessageItem> listData;
+	private MessageListAdapter adapter;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		setContentView(R.layout.activity_messages);
@@ -48,7 +52,8 @@ public class MessagesActivity extends GtsdpActivity implements OnClickListener, 
 		listData.add(new MessageItem("系统消息", "恭喜您成功注册高铁捎带", "6分钟前", true));
 		listData.add(new MessageItem("系统消息", "您否货物已经在济南市历下区网点接收，敬请等待", "7分钟前", true));
 		listData.add(new MessageItem("系统消息", "恭喜您成功注册高铁捎带", "8分钟前", false));
-		listViewCompat.setAdapter(new MessageListAdapter(mContext, this, listData));
+		adapter = new MessageListAdapter(mContext, this, listData);
+		listViewCompat.setAdapter(adapter);
 		selectPopupWindow = new SelectPopupWindow(mContext, this, "清空", "全部设为已读");
 	}
 	
@@ -100,6 +105,7 @@ public class MessagesActivity extends GtsdpActivity implements OnClickListener, 
 	protected void setListener() {
 		imageQuitActivity.setOnClickListener(this);
 		imageSetting.setOnClickListener(this);
+		listViewCompat.setOnItemClickListener(this);
 	}
 
 	@Override
@@ -129,6 +135,14 @@ public class MessagesActivity extends GtsdpActivity implements OnClickListener, 
 		 if (status == SLIDE_STATUS_ON) {
 	            mLastSlideViewWithStatusOn = (SlideView) view;
 		 }
+	}
+
+	@Override
+	public void onItemClick(AdapterView<?> parent, View view, int position,
+			long id) {
+		listData.get(position).IsNew = false;
+		adapter.notifyDataSetChanged();
+		
 	}
 
 }
