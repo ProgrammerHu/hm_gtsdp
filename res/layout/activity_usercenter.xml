@@ -51,7 +51,7 @@
                 android:paddingLeft="15dp"
                 android:paddingRight="15dp"
                 android:paddingTop="7dp"
-                android:text="胡胡胡"
+                android:text="配送员"
                 android:textColor="@color/main_blue"
                 android:textSize="@dimen/textsize_8" />
         </LinearLayout>
