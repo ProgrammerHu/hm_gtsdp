@@ -3,6 +3,7 @@ package com.hemaapp.hm_gtsdp.activity;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -122,7 +123,15 @@ public class DispatchingActivity extends GtsdpActivity implements OnCheckedChang
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
-				showTextDialog("123");
+				Intent intent = new Intent(DispatchingActivity.this, OrderDetailActivity.class);
+				if (rbtnLeft.isSelected()) {
+					intent.putExtra("Id", "listDataOnPassage_ID");
+				} else {
+					intent.putExtra("Id", "listDataServed_ID");
+				}
+				startActivity(intent);
+				overridePendingTransition(R.anim.right_in, R.anim.none);
+
 			}
 		});
 	}

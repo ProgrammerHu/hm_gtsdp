@@ -1,9 +1,11 @@
 package com.hemaapp.hm_gtsdp.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -102,12 +104,18 @@ public class InputActivity extends GtsdpActivity {
 		imageQuitActivity.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);  
+				imm.hideSoftInputFromWindow(editEmail.getWindowToken(), 0); //Ç¿ÖÆÒþ²Ø¼üÅÌ  
+			
 				finish(R.anim.none, R.anim.right_out);
 			}
 		});
 		txtNext.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);  
+				imm.hideSoftInputFromWindow(editEmail.getWindowToken(), 0); //Ç¿ÖÆÒþ²Ø¼üÅÌ  
+			
 				String Account = editEmail.getEditableText().toString().trim();
 				Intent result = new Intent();
 				result.putExtra("Result", Account);

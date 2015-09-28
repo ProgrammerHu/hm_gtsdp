@@ -50,26 +50,29 @@
 		            />
 		        <LinearLayout 
 		            android:layout_width="match_parent"
-		            android:layout_height="wrap_content"
+		            android:layout_height="match_parent"
 		            android:layout_weight="1"
 		            android:layout_marginLeft="2dp"
 		            android:orientation="vertical"
 		            >
 		            <ImageView 
 		                android:layout_width="match_parent"
-		                android:layout_height="wrap_content"
+		                android:layout_height="match_parent"
 		                android:src="@drawable/get_goods"
 		            	android:layout_marginBottom="5dp"
     					android:adjustViewBounds="true"
     					android:id="@+id/imageGet"
+    					android:layout_weight="2"
 		                />
 
 		            <ImageView
 		                android:layout_width="match_parent"
-		                android:layout_height="wrap_content"
+		                android:layout_height="match_parent"
     					android:adjustViewBounds="true"
 		                android:src="@drawable/find_goods" 
-		                android:id="@+id/imageFind"/>
+		                android:id="@+id/imageFind"
+    					android:layout_weight="2"
+    					android:scaleType="fitEnd"/>
 		        </LinearLayout>
 	        </LinearLayout>
 	        <LinearLayout 

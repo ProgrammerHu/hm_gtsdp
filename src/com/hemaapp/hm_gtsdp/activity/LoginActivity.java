@@ -1,6 +1,7 @@
 package com.hemaapp.hm_gtsdp.activity;
 
 import xtom.frame.util.XtomSharedPreferencesUtil;
+import android.app.DownloadManager.Query;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -14,12 +15,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.hemaapp.GtsdpConfig;
 import com.hemaapp.hm_gtsdp.R;
 import com.hemaapp.hm_FrameWork.HemaNetTask;
 import com.hemaapp.hm_FrameWork.result.HemaBaseResult;
 import com.hemaapp.hm_gtsdp.GtsdpActivity;
 import com.hemaapp.hm_gtsdp.GtsdpHttpInformation;
 import com.hemaapp.hm_gtsdp.GtsdpUtil;
+import com.hemaapp.hm_gtsdp.dialog.GtsdpTwoButtonDialog;
+import com.hemaapp.hm_gtsdp.dialog.GtsdpTwoButtonDialog.OnButtonListener;
 
 /**
  * 登录界面
@@ -89,6 +93,9 @@ public class LoginActivity extends GtsdpActivity implements OnClickListener
 			overridePendingTransition(R.anim.right_in, R.anim.none);
 			break;
 		case R.id.txtForgetPwd:
+			intent = new Intent(LoginActivity.this, AnswerQuestionActivity.class);
+			startActivity(intent);
+			overridePendingTransition(R.anim.right_in, R.anim.none);
 			break;
 		case R.id.btnConfirm:
 			clickConfirm();
@@ -166,4 +173,23 @@ public class LoginActivity extends GtsdpActivity implements OnClickListener
 		
 	}
 
+    @Override
+    protected boolean onKeyBack() {
+		GtsdpTwoButtonDialog dialog = new GtsdpTwoButtonDialog(mContext);
+		dialog.setText("确定要退出吗？");
+		dialog.setRightButtonTextColor(GtsdpConfig.Main_Blue);
+		dialog.setButtonListener(new OnButtonListener() {
+			@Override
+			public void onRightButtonClick(GtsdpTwoButtonDialog dialog) {
+				dialog.cancel();
+				finish(R.anim.none, R.anim.right_out);
+			}
+
+			@Override
+			public void onLeftButtonClick(GtsdpTwoButtonDialog dialog) {
+				dialog.cancel();
+			}
+		});
+		return false;
+    }
 }

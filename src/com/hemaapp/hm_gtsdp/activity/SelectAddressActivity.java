@@ -260,11 +260,11 @@ OnInfoWindowClickListener, OnMapClickListener, OnGeocodeSearchListener, OnMyLoca
 		case R.id.txtNext:
 			Intent result = new Intent();
 			result.putExtra("Address", editAddress.getEditableText().toString());
-			setResult(0, result);
-			finish();
+			setResult(RESULT_OK, result);
+			finish(R.anim.none, R.anim.right_out);
 			break;
 		case R.id.imageQuitActivity:
-			finish();
+			finish(R.anim.none, R.anim.right_out);
 			break;
 		case R.id.layoutFind1:
 			Intent intent = new Intent(SelectAddressActivity.this, FindAddressActivity.class);
@@ -390,17 +390,18 @@ OnInfoWindowClickListener, OnMapClickListener, OnGeocodeSearchListener, OnMyLoca
 					// ignore
 				}
 			showMarker();
+			
+
+			doSearchQuery(result.getRegeocodeAddress().getCity(), Double.parseDouble(lat), Double.parseDouble(lng));//查询当前点击点周边的地址
+//			locationName.setText(address);
+			ClickAddress = result.getRegeocodeAddress().getProvince()+
+					result.getRegeocodeAddress().getCity()+
+					result.getRegeocodeAddress().getDistrict() +
+					result.getRegeocodeAddress().getStreetNumber().getStreet()+ 
+					result.getRegeocodeAddress().getStreetNumber().getNumber();
 		} else {
 			// nothing
 		}
-		doSearchQuery(result.getRegeocodeAddress().getCity(), Double.parseDouble(lat), Double.parseDouble(lng));//查询当前点击点周边的地址
-//		locationName.setText(address);
-		ClickAddress = result.getRegeocodeAddress().getProvince()+
-				result.getRegeocodeAddress().getCity()+
-				result.getRegeocodeAddress().getDistrict() +
-				result.getRegeocodeAddress().getStreetNumber().getStreet()+ 
-				result.getRegeocodeAddress().getStreetNumber().getNumber();
-//		locationDetails.setText();
 		
 	}
 

@@ -107,15 +107,22 @@ public class ToCashActivity extends GtsdpActivity implements OnClickListener{
 			finish(R.anim.none, R.anim.right_out);
 			break;
 		case R.id.layoutBank:
+		{
 			Intent intent = new Intent(ToCashActivity.this, SelectBankActivity.class);
 			startActivityForResult(intent, SELECT_BANK);
 			overridePendingTransition(R.anim.right_in, R.anim.none);
+		}
 			break;
 		case R.id.btnConfirm:
 			clickConfirm();
 			break;
 		case R.id.layoutDirection:
-			showTextDialog("钱包使用说明");
+		{
+			Intent intent = new Intent(this, WebViewActivity.class);
+			intent.putExtra("Title", "钱包使用说明");
+			startActivity(intent);
+			overridePendingTransition(R.anim.right_in, R.anim.none);
+		}
 			break;
 		}
 	}

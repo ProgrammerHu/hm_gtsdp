@@ -110,12 +110,17 @@ public class FixDataActivity extends GtsdpActivity implements OnClickListener{
 					Gravity.CENTER|Gravity.CENTER_HORIZONTAL, 0, 0);
 			break;
 		case R.id.layoutAddress:
-			
+		{
+			Intent intent = new Intent(this, SelectAddressActivity.class);
+			startActivityForResult(intent, SELECT_ADDRESS);
+			overridePendingTransition(R.anim.right_in, R.anim.none);
+		}
 			break;
 		case R.id.imageQuitActivity:
 			finish(R.anim.none, R.anim.right_out);
 			break;
 		case R.id.layoutSickName:
+		{
 			Intent intent = new Intent(this, InputActivity.class);
 			intent.putExtra("Title", "Í«≥∆");
 			intent.putExtra("Next", "»∑∂®");
@@ -125,6 +130,7 @@ public class FixDataActivity extends GtsdpActivity implements OnClickListener{
 				intent.putExtra("Text", txtSickName.getText());
 			startActivityForResult(intent, INPUT_SICK_NAME);
 			overridePendingTransition(R.anim.right_in, R.anim.none);
+		}
 			break;
 		}
 
@@ -282,6 +288,10 @@ public class FixDataActivity extends GtsdpActivity implements OnClickListener{
 		case INPUT_SICK_NAME:
 			String SickName = data.getStringExtra("Result");
 			txtSickName.setText(SickName);
+			break;
+		case SELECT_ADDRESS:
+			String address = data.getStringExtra("Address");
+			txtAddress.setText(address);
 			break;
 		}
 	}

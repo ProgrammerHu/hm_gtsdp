@@ -26,6 +26,7 @@ import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -38,6 +39,7 @@ import com.hemaapp.GtsdpConfig;
 import com.hemaapp.hm_FrameWork.HemaNetTask;
 import com.hemaapp.hm_FrameWork.result.HemaBaseResult;
 import com.hemaapp.hm_FrameWork.view.RoundedImageView;
+import com.hemaapp.hm_FrameWork.view.ShowLargeImageView;
 import com.hemaapp.hm_gtsdp.GtsdpActivity;
 import com.hemaapp.hm_gtsdp.R;
 import com.hemaapp.hm_gtsdp.model.User;
@@ -134,6 +136,17 @@ public class UserCenterActivity extends GtsdpActivity implements OnClickListener
 		layoutPwdSafety.setOnClickListener(this);
 		layoutOrders.setOnClickListener(this);
 		image_avatar.setOnClickListener(this);
+		image_avatar.setOnLongClickListener(new OnLongClickListener() {
+			@Override
+			public boolean onLongClick(View v) {
+				String iPath = (String) v.getTag(R.id.TAG);
+				ShowLargeImageView mView = new ShowLargeImageView(mContext, findViewById(R.id.father));
+				mView.show();
+//				mView.setImagePath(iPath);
+				mView.setImageURL(iPath);
+				return false;
+			}
+		});
 	}
 	private void init()
 	{
@@ -162,6 +175,7 @@ public class UserCenterActivity extends GtsdpActivity implements OnClickListener
 			ImageTask imageTask = new ImageTask(image_avatar, url,
 					mContext, new Size(180, 180));
 			imageWorker.loadImage(imageTask);
+			image_avatar.setTag(R.id.TAG, user.getAvatarbig());
 		} catch (MalformedURLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

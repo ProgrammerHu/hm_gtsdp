@@ -6,12 +6,14 @@ import java.util.ArrayList;
 import xtom.frame.util.XtomFileUtil;
 import xtom.frame.util.XtomImageUtil;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -221,6 +223,9 @@ public class SendDetailActivty extends GtsdpActivity implements OnClickListener 
 
 	@Override
 	public void onClick(View v) {
+		InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);  
+		imm.hideSoftInputFromWindow(editReciverName.getWindowToken(), 0); //强制隐藏键盘  
+		
 		Intent intent;
 		switch (v.getId()) {
 		case R.id.imageQuitActivity:
@@ -249,6 +254,12 @@ public class SendDetailActivty extends GtsdpActivity implements OnClickListener 
 			intent = new Intent(this, TemplateListActivty.class);
 			intent.putExtra("ActivityType", RECIVER);
 			startActivityForResult(intent, RECIVER);
+			overridePendingTransition(R.anim.right_in, R.anim.none);
+			break;
+		case R.id.txtSendProtocol:
+			intent = new Intent(this, WebViewActivity.class);
+			intent.putExtra("Title", "发货协议");
+			startActivity(intent);
 			overridePendingTransition(R.anim.right_in, R.anim.none);
 			break;
 		}
@@ -318,6 +329,8 @@ public class SendDetailActivty extends GtsdpActivity implements OnClickListener 
 	
 	public void showImageWay() 
 	{
+		InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);  
+		imm.hideSoftInputFromWindow(editReciverName.getWindowToken(), 0); //强制隐藏键盘  
 		popupWindow.showAtLocation(detialMainLinear, Gravity.BOTTOM, 0, 0);
 	}
 	/**

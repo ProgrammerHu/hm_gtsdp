@@ -39,6 +39,7 @@ import com.amap.api.services.geocoder.RegeocodeResult;
 import com.amap.api.services.poisearch.PoiItemDetail;
 import com.amap.api.services.poisearch.PoiResult;
 import com.amap.api.services.poisearch.PoiSearch.OnPoiSearchListener;
+import com.hemaapp.GtsdpConfig;
 import com.hemaapp.hm_FrameWork.HemaNetTask;
 import com.hemaapp.hm_FrameWork.result.HemaBaseResult;
 import com.hemaapp.hm_gtsdp.GtsdpActivity;
@@ -105,7 +106,6 @@ OnInfoWindowClickListener, OnMapClickListener, OnGeocodeSearchListener
 		aMap.setOnMarkerClickListener(this);
 		aMap.setOnInfoWindowClickListener(this);
 		aMap.setInfoWindowAdapter(this);
-		
 	}
 	@Override
 	protected void callAfterDataBack(HemaNetTask arg0) {
@@ -352,7 +352,11 @@ OnInfoWindowClickListener, OnMapClickListener, OnGeocodeSearchListener
 
 	@Override
 	public void onInfoWindowClick(Marker marker) {
-		marker.hideInfoWindow();
+		Intent intent = new Intent(this, GoodsDetailActivity.class);
+		intent.putExtra("ActivityType", GtsdpConfig.USER_IDENTIFY_CURSOR);
+		startActivity(intent);
+		overridePendingTransition(R.anim.right_in, R.anim.none);
+//		marker.hideInfoWindow();
 	}
 
 	@Override

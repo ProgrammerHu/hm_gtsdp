@@ -127,7 +127,10 @@ public class RegisterActivity extends GtsdpActivity implements OnClickListener{
 			editRegisterPhone.setText("");
 			break;
 		case R.id.txtDeclare:
-			showTextDialog("È¥×¢²áÉùÃ÷");
+			Intent intent = new Intent(this, WebViewActivity.class);
+			intent.putExtra("Title", "×¢²áÉùÃ÷");
+			startActivity(intent);
+			overridePendingTransition(R.anim.right_in, R.anim.none);
 			break;
 		}
 	}

@@ -49,13 +49,15 @@ public class GoodsDetailActivity extends GtsdpActivity implements OnClickListene
 		super.onCreate(savedInstanceState);
 		images = new ArrayList<String>();
 		images.add("http://d.hiphotos.baidu.com/baike/w%3D268/sign=ce66e2ab940a304e5222a7fce9c9a7c3/ac6eddc451da81cb0aa215625166d016082431dc.jpg");
+		images.add("http://7tszkm.com1.z0.glb.clouddn.com/keep-calm-and-carry-on_083060.jpg");
+		images.add("http://7tszkm.com1.z0.glb.clouddn.com/keep-calm-and-carry-on_143376.jpg");
+		images.add("http://7tszkm.com1.z0.glb.clouddn.com/keep-calm-and-carry-on_143411.png");
+		images.add("http://7tszkm.com1.z0.glb.clouddn.com/keep-calm-and-carry-on_1423461.jpg");
+		images.add("http://7tszkm.com1.z0.glb.clouddn.com/keep-calm-and-carry-on_1423462.jpg");
+		images.add("http://7tszkm.com1.z0.glb.clouddn.com/keep-calm-and-carry-on_1423463.jpg");
 		images.add("http://d.hiphotos.baidu.com/baike/c0%3Dbaike150%2C5%2C5%2C150%2C50/sign=78fb3c9ffbdcd100d991f07313e22c75/0eb30f2442a7d9338ba972e1ae4bd11373f0011a.jpg");
-		images.add("http://d.hiphotos.baidu.com/baike/w%3D268/sign=ce66e2ab940a304e5222a7fce9c9a7c3/ac6eddc451da81cb0aa215625166d016082431dc.jpg");
-		images.add("http://d.hiphotos.baidu.com/baike/c0%3Dbaike150%2C5%2C5%2C150%2C50/sign=78fb3c9ffbdcd100d991f07313e22c75/0eb30f2442a7d9338ba972e1ae4bd11373f0011a.jpg");
-		images.add("http://d.hiphotos.baidu.com/baike/w%3D268/sign=ce66e2ab940a304e5222a7fce9c9a7c3/ac6eddc451da81cb0aa215625166d016082431dc.jpg");
-		images.add("http://d.hiphotos.baidu.com/baike/c0%3Dbaike150%2C5%2C5%2C150%2C50/sign=78fb3c9ffbdcd100d991f07313e22c75/0eb30f2442a7d9338ba972e1ae4bd11373f0011a.jpg");
-		images.add("http://d.hiphotos.baidu.com/baike/w%3D268/sign=ce66e2ab940a304e5222a7fce9c9a7c3/ac6eddc451da81cb0aa215625166d016082431dc.jpg");
-		images.add("http://7tszkm.com1.z0.glb.clouddn.com/1.png");
+//		images.add("http://d.hiphotos.baidu.com/baike/w%3D268/sign=ce66e2ab940a304e5222a7fce9c9a7c3/ac6eddc451da81cb0aa215625166d016082431dc.jpg");
+//		images.add("http://7tszkm.com1.z0.glb.clouddn.com/1.png");
 		gridview.setAdapter(new FindGoodsImageAdapter(mContext, findViewById(R.id.father), images, gridview));
 		
 	}

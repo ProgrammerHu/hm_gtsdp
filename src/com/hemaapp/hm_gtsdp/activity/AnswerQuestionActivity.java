@@ -1,5 +1,6 @@
 package com.hemaapp.hm_gtsdp.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -108,7 +109,10 @@ public class AnswerQuestionActivity extends GtsdpActivity implements OnClickList
 			finish(R.anim.none, R.anim.right_out);
 			break;
 		case R.id.btnConfirm:
-			
+			Intent intent = new Intent(this, SetPwdActivity.class);
+			intent.putExtra("ActivityType", 1);
+			startActivity(intent);
+			overridePendingTransition(R.anim.right_in, R.anim.none);
 			break;
 		}
 	}

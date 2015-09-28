@@ -51,7 +51,7 @@ public class ListViewCompat extends ListView {
             if (position != INVALID_POSITION) {
                 MessageItem data = (MessageItem) getItemAtPosition(position);
                 mFocusedItemView = data.slideView;
-                Log.e(TAG, "FocusedItemView=" + mFocusedItemView);
+//                Log.e(TAG, "FocusedItemView=" + mFocusedItemView);
             }
         }
         default:

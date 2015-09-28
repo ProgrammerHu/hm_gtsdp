@@ -109,6 +109,7 @@ public class AlipayIncashActivity extends GtsdpActivity implements OnClickListen
 			finish(R.anim.none, R.anim.right_out);
 			break;
 		case R.id.layoutAlipay:
+		{
 			Intent intent = new Intent(AlipayIncashActivity.this, InputActivity.class);
 			intent.putExtra("Title", "支付宝账号");
 			intent.putExtra("Next", "确定");
@@ -116,12 +117,18 @@ public class AlipayIncashActivity extends GtsdpActivity implements OnClickListen
 			intent.putExtra("InputHint", "输入支付宝账号");
 			startActivityForResult(intent, INPUT_ALIPAY_ACCOUNT);
 			overridePendingTransition(R.anim.right_in, R.anim.none);
+		}
 			break;
 		case R.id.btnConfirm:
 			clickConfirm();
 			break;
 		case R.id.layoutDirection:
-			showTextDialog("钱包使用说明");
+		{
+			Intent intent = new Intent(this, WebViewActivity.class);
+			intent.putExtra("Title", "钱包使用说明");
+			startActivity(intent);
+			overridePendingTransition(R.anim.right_in, R.anim.none);
+		}
 			break;
 		}
 	}

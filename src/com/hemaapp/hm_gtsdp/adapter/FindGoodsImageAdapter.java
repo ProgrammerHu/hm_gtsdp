@@ -10,6 +10,7 @@ import xtom.frame.util.XtomImageUtil;
 import xtom.frame.view.XtomListView;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +19,8 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 
+import com.hemaapp.hm_FrameWork.model.Image;
+import com.hemaapp.hm_FrameWork.showlargepic.ShowLargePicActivity;
 import com.hemaapp.hm_FrameWork.view.HemaGridView;
 import com.hemaapp.hm_FrameWork.view.RoundedImageView;
 import com.hemaapp.hm_FrameWork.view.ShowLargeImageView;
@@ -80,7 +83,7 @@ public class FindGoodsImageAdapter extends GtsdpAdapter implements OnClickListen
 		ViewHolder holder = new ViewHolder();
 		holder.imageView = (ImageView)convertView.findViewById(R.id.imageview);
 		String path = images.get(position);
-		holder.imageView.setTag(R.id.TAG, path);
+		holder.imageView.setTag(R.id.TAG, position);
 		try
 		{
 			URL url = new URL(path);
@@ -98,10 +101,11 @@ public class FindGoodsImageAdapter extends GtsdpAdapter implements OnClickListen
 
 	@Override
 	public void onClick(View v) {
-		String iPath = (String) v.getTag(R.id.TAG);
-		mView = new ShowLargeImageView((Activity) mContext, rootView);
-		mView.show();
-		mView.setImagePath(iPath);
+		int position = Integer.parseInt(v.getTag(R.id.TAG).toString());
+		Intent sIt = new Intent(mContext, ShowLargePicActivity.class);
+		sIt.putExtra("position", position);
+		sIt.putExtra("images", getImages());
+		mContext.startActivity(sIt);
 		
 	}
 	
@@ -123,5 +127,18 @@ public class FindGoodsImageAdapter extends GtsdpAdapter implements OnClickListen
 			bitmap = XtomImageUtil.getRoundedCornerBitmap(bitmap, 15);
 			super.setBitmap(bitmap);
 		}
+	}
+	
+	private ArrayList<Image> getImages()
+	{
+		ArrayList<Image> imageList = new ArrayList<Image>();
+		int i=0;
+		for(String url : this.images)
+		{
+			imageList.add(new Image(String.valueOf(i), String.valueOf(i), String.valueOf(i+1), "", url, url, String.valueOf(i)));
+			i++;
+		}
+		
+		return imageList;
 	}
 }
