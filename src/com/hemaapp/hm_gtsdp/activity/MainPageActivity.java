@@ -2,8 +2,10 @@ package com.hemaapp.hm_gtsdp.activity;
 
 import java.lang.reflect.Field;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.view.ViewPager;
@@ -19,6 +21,8 @@ import android.widget.RelativeLayout;
 import android.widget.Scroller;
 import android.widget.TextView;
 
+import com.baidu.android.pushservice.PushConstants;
+import com.baidu.android.pushservice.PushManager;
 import com.hemaapp.GtsdpConfig;
 import com.hemaapp.hm_FrameWork.HemaNetTask;
 import com.hemaapp.hm_FrameWork.result.HemaBaseResult;
@@ -27,6 +31,8 @@ import com.hemaapp.hm_gtsdp.R;
 import com.hemaapp.hm_gtsdp.adapter.ImageViewPagerAdapter;
 import com.hemaapp.hm_gtsdp.dialog.GtsdpTwoButtonDialog;
 import com.hemaapp.hm_gtsdp.dialog.GtsdpTwoButtonDialog.OnButtonListener;
+import com.hemaapp.hm_gtsdp.model.User;
+import com.hemaapp.hm_gtsdp.push.PushUtils;
 
 public class MainPageActivity extends GtsdpFragmentActivity implements OnClickListener {
 	private TextView txtTitle, txtNext;
@@ -38,6 +44,8 @@ public class MainPageActivity extends GtsdpFragmentActivity implements OnClickLi
 	protected void onCreate(Bundle savedInstanceState) {
 		setContentView(R.layout.activity_mainpage);
 		super.onCreate(savedInstanceState);
+
+		startPush();
 	}
 
 	@Override
@@ -88,7 +96,7 @@ public class MainPageActivity extends GtsdpFragmentActivity implements OnClickLi
 		params.height = mScreenWidth * 4 / 7;
 		mainViewPager.setLayoutParams(params);
 		pointsImage = (ImageView)findViewById(R.id.pointsImage);
-		setScrollSpeed();
+//		setScrollSpeed();
 		imageSend = (ImageView)findViewById(R.id.imageSend);
 		imageGet = (ImageView)findViewById(R.id.imageGet);
 		imageFind = (ImageView)findViewById(R.id.imageFind);
@@ -147,7 +155,8 @@ public class MainPageActivity extends GtsdpFragmentActivity implements OnClickLi
 		switch(v.getId())
 		{
 		case R.id.imageSend:
-			intent = new Intent(this, SendDetailActivty.class);
+			intent = new Intent(this, CodeCaptureActivity.class);
+			intent.putExtra("ActivityType", GtsdpConfig.CODE_SEND);
 			startActivity(intent);
 			overridePendingTransition(R.anim.right_in, R.anim.none);
 			break;
@@ -158,9 +167,17 @@ public class MainPageActivity extends GtsdpFragmentActivity implements OnClickLi
 //			overridePendingTransition(R.anim.right_in, R.anim.none);
 			break;
 		case R.id.imageFind:
-			intent = new Intent(this, FindGoodsActivity.class);
+			
+			intent = new Intent();
+			/* 找货界面*/
+//			intent.setClass(this, FindGoodsActivity.class);
+			/*不是配送员*/
+//			intent.setClass(this, NotCursorActivity.class);
+			/*审核中*/
+			intent.setClass(this, IdentifyingActivity.class);
 			startActivity(intent);
 			overridePendingTransition(R.anim.right_in, R.anim.none);
+			
 			break;
 		case R.id.UserCenter:
 			intent = new Intent(this,UserCenterActivity.class);
@@ -187,7 +204,7 @@ public class MainPageActivity extends GtsdpFragmentActivity implements OnClickLi
 	         FixedSpeedScroller scroller = new FixedSpeedScroller(MainPageActivity.this,
 	                 new AccelerateInterpolator());
 	         field.set(mainViewPager, scroller);
-	         scroller.setmDuration(250);//还是250比较好，神奇的数字
+	         scroller.setmDuration(200);//还是250比较好，神奇的数字
 		}
 		catch(Exception e)
 		{
@@ -274,4 +291,95 @@ public class MainPageActivity extends GtsdpFragmentActivity implements OnClickLi
 
         switchTask.run();
     }
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		unregisterPushReceiver();
+	}
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    /* 推送相关 */
+	private PushReceiver pushReceiver;
+	
+	private void startPush() {
+		User user = getApplicationContext().getUser();
+		if (user == null) {
+			log_i("未登录，无需启动推送服务");
+			return;
+		}
+		if (!PushUtils.hasBind(getApplicationContext())) {
+			PushManager.startWork(getApplicationContext(),
+					PushConstants.LOGIN_TYPE_API_KEY,
+					PushUtils.getMetaValue(this, "api_key"));
+			// Push: 如果想基于地理位置推送，可以打开支持地理位置的推送的开关
+			// PushManager.enableLbs(getApplicationContext());
+		} else {
+			saveDevice();
+		}
+		registerPushReceiver();
+	}
+	
+
+	private void stopPush() {
+		PushManager.stopWork(getApplicationContext());
+		PushUtils.setBind(mContext, false);
+		unregisterPushReceiver();
+	}
+	
+	private void registerPushReceiver() {
+		if (pushReceiver == null) {
+			pushReceiver = new PushReceiver();
+			IntentFilter mFilter = new IntentFilter("com.hemaapp.push.connect");
+			mFilter.addAction("com.hemaapp.push.msg");
+			registerReceiver(pushReceiver, mFilter);
+		}
+	}
+
+	private void unregisterPushReceiver() {
+		if (pushReceiver != null)
+			unregisterReceiver(pushReceiver);
+	}
+	
+	private class PushReceiver extends BroadcastReceiver {
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			handleEvent(intent);
+		}
+
+		private void handleEvent(Intent intent) {
+			String action = intent.getAction();
+
+			if ("com.hemaapp.push.connect".equals(action)) {
+				saveDevice();
+
+			} else if ("com.hemaapp.push.msg".equals(action)) {
+				boolean unread = PushUtils.getmsgreadflag(
+						getApplicationContext(), "2");
+				if (unread) {
+					// showNoticePoint();
+					log_i("有未读推送");
+				} else {
+					log_i("无未读推送");
+					// hideNoticePoint();
+				}
+			}
+		}
+	}
+	public void saveDevice() {
+		User user = getApplicationContext().getUser();
+		getNetWorker().deviceSave(user.getToken(),
+				PushUtils.getUserId(mContext), "2",
+				PushUtils.getChannelId(mContext));
+	}
+	
+	/*推送相关END*/
 }

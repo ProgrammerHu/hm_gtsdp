@@ -46,6 +46,5 @@
         <item name="android:windowExitAnimation">@anim/input_method_exit</item>
     </style>
 
-    
 
 </resources>

@@ -21,7 +21,12 @@ public abstract class GtsdpFragmentActivity extends HemaFragmentActivity {
 	public GtsdpNetWorker getNetWorker() {
 		return (GtsdpNetWorker)super.getNetWorker();
 	}
-
+	
+	@Override
+	public GtsdpApplication getApplicationContext() {
+		return (GtsdpApplication) super.getApplicationContext();
+	}
+	
 	@Override
 	public boolean onAutoLoginFailed(HemaNetWorker netWorker,
 			HemaNetTask netTask, int failedType, HemaBaseResult baseResult) {

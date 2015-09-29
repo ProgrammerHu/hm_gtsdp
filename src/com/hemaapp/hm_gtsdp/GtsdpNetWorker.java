@@ -12,6 +12,7 @@ import com.hemaapp.hm_gtsdp.nettask.ChangePwdTask;
 import com.hemaapp.hm_gtsdp.nettask.ClientLoginTask;
 import com.hemaapp.hm_gtsdp.nettask.ClientLoginoutTask;
 import com.hemaapp.hm_gtsdp.nettask.DeviceSaveTask;
+import com.hemaapp.hm_gtsdp.nettask.FileUploadTask;
 import com.hemaapp.hm_gtsdp.nettask.InitTask;
 import com.hemaapp.hm_gtsdp.nettask.UnionTradeTask;
 
@@ -31,7 +32,6 @@ public class GtsdpNetWorker extends HemaNetWorker {
 
 	@Override
 	public void clientLogin() {
-		// TODO Auto-generated method stub
 		
 	}
 	
@@ -160,6 +160,30 @@ public class GtsdpNetWorker extends HemaNetWorker {
 		GtsdpNetTask task = new UnionTradeTask(information, params);
 		executeTask(task);
 	}
+	/**
+	 * 上传文件（图片，音频，视频）
+	 * @param token 登录令牌
+	 * @param keytype 上传操作类型 1：用户头像; 
+	 * @param keyid 主键id 当keytype=1时，keyid=client_id；
+	 * @param duration 播放时长 上传图片时，此值固定传"0"即可 单位：S(秒)
+	 * @param orderby 排序上传多副图片时，传递上传次序  从0开始，依次递增
+	 * @param content 内容描述  有的项目中，展示性图片需要附属一段文字说明信息。  默认传"无"
+	 * @param temp_file 文件 临时需要上传的文件控件名称  对应表单type="file" 中的name值 ，相关文件请先在客户端压缩再上传（压缩尺寸宽度固定640）
+	 */
+	public void fileUpload(String token, String keytype, String keyid,
+			String duration, String orderby, String content, String temp_file) {
+		GtsdpHttpInformation information = GtsdpHttpInformation.FILE_UPLOAD;
+		HashMap<String, String> params = new HashMap<String, String>();
+		params.put("token", token);//
+		params.put("keytype", keytype); //
+		params.put("keyid", keyid); //
+		params.put("duration", duration); //
+		params.put("orderby", orderby); //
+		params.put("content", content);// 内容描述 有的项目中，展示性图片需要附属一段文字说明信息。默认传"无"
+		HashMap<String, String> files = new HashMap<String, String>();
+		files.put("temp_file", temp_file); //
 
-
+		GtsdpNetTask task = new FileUploadTask(information, params, files);
+		executeTask(task);
+	}
 }

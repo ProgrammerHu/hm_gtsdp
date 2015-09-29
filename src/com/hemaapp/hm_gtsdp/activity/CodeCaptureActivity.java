@@ -104,11 +104,6 @@ public class CodeCaptureActivity extends GtsdpActivity implements Callback, OnCl
 		hasSurface = false;
 		inactivityTimer = new InactivityTimer(this);
 		viewfinderView = (ViewfinderView) findViewById(R.id.viewfinder_view);
-
-		dialog = new GtsdpTwoButtonDialog(mContext);
-		dialog.setButtonListener(buttonListener);
-		dialog.setRightButtonTextColor(GtsdpConfig.Main_Blue);
-		dialog.cancel();
 	}
 
 	private void init(){
@@ -292,7 +287,6 @@ public class CodeCaptureActivity extends GtsdpActivity implements Callback, OnCl
 //			bundle.putParcelable("bitmap", barcode);
 //			resultIntent.putExtras(bundle);
 //			startActivity(resultIntent);
-			dialog.setText(result.getText());
 			dialog.show();
 		}
 	}
@@ -383,6 +377,11 @@ public class CodeCaptureActivity extends GtsdpActivity implements Callback, OnCl
 		txtTop = (TextView)findViewById(R.id.txtTop);
 		txtBottom = (TextView)findViewById(R.id.txtBottom);
 		txtTitle = (TextView)findViewById(R.id.txtTitle);
+
+		dialog = new GtsdpTwoButtonDialog(mContext);
+		dialog.setButtonListener(buttonListener);
+		dialog.setRightButtonTextColor(GtsdpConfig.Main_Blue);
+		dialog.cancel();
 		switch(ActivityType)
 		{
 		case -1:
@@ -392,11 +391,16 @@ public class CodeCaptureActivity extends GtsdpActivity implements Callback, OnCl
 			txtTitle.setText("收货");
 			txtTop.setText("扫描二维码确认接货/收货");
 			txtBottom.setText("");
+			dialog.setText("确认收货？");
 			break;
 		case GtsdpConfig.CODE_SITE:
 			txtTitle.setText("网点");
 			txtTop.setText("扫描二维码接单");
 			txtBottom.setText("");
+			dialog.setText("确认接单？");
+			break;
+		case GtsdpConfig.CODE_SEND:
+			dialog.setText("确认填写详细信息？");
 			break;
 		}
 	}
@@ -440,13 +444,7 @@ public class CodeCaptureActivity extends GtsdpActivity implements Callback, OnCl
 		@Override
 		public void onRightButtonClick(GtsdpTwoButtonDialog dialog) {
 			dialog.cancel();
-			//重新开始扫描
-			if (handler != null) {
-				handler.quitSynchronously();
-				handler = null;
-			}
-			CameraManager.get().closeDriver();
-			onResume();
+			clickRightButton();
 		}
 		
 		@Override
@@ -459,5 +457,38 @@ public class CodeCaptureActivity extends GtsdpActivity implements Callback, OnCl
 		finish();
 		return super.onKeyBack();
 	};
+	
+	/**
+	 * 扫描二维码之后点击弹出框的确定
+	 * 需要在这里进行区分，执行不同的操作
+	 */
+	private void clickRightButton()
+	{
+		//重新开始扫描
+		if (handler != null) 
+		{
+			handler.quitSynchronously();
+			handler = null;
+		}
+		CameraManager.get().closeDriver();
+		onResume();
+		Intent intent;
+		switch(ActivityType)
+		{
+		case GtsdpConfig.CODE_SEND:
+			intent = new Intent(this, SendDetailActivty.class);
+			startActivity(intent);
+			overridePendingTransition(R.anim.right_in, R.anim.none);
+			finish();
+			break;
+		case GtsdpConfig.CODE_SITE:
+			showTextDialog("接货成功");
+			break;
+			
+		case GtsdpConfig.CODE_CURSOR:
+			showTextDialog("接货成功");
+			break;
+		}
+	}
 
 }

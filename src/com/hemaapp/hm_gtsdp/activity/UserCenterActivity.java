@@ -11,6 +11,7 @@ import xtom.frame.image.load.XtomImageTask.Size;
 import xtom.frame.util.XtomBaseUtil;
 import xtom.frame.util.XtomFileUtil;
 import xtom.frame.util.XtomImageUtil;
+import xtom.frame.util.XtomSharedPreferencesUtil;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -41,6 +42,7 @@ import com.hemaapp.hm_FrameWork.result.HemaBaseResult;
 import com.hemaapp.hm_FrameWork.view.RoundedImageView;
 import com.hemaapp.hm_FrameWork.view.ShowLargeImageView;
 import com.hemaapp.hm_gtsdp.GtsdpActivity;
+import com.hemaapp.hm_gtsdp.GtsdpHttpInformation;
 import com.hemaapp.hm_gtsdp.R;
 import com.hemaapp.hm_gtsdp.model.User;
 import com.hemaapp.hm_gtsdp.view.SelectPopupWindow;
@@ -59,7 +61,7 @@ public class UserCenterActivity extends GtsdpActivity implements OnClickListener
 	private String tempPath;//保存图片路径
 	private String imagePathCamera;//相机拍照路径
 	private RoundedImageView image_avatar;
-	
+	private boolean IsChangeImage = false;
 	private User user;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -87,15 +89,32 @@ public class UserCenterActivity extends GtsdpActivity implements OnClickListener
 	}
 
 	@Override
-	protected void callBackForServerSuccess(HemaNetTask arg0,
-			HemaBaseResult arg1) {
-		// TODO Auto-generated method stub
+	protected void callBackForServerSuccess(HemaNetTask nettask, HemaBaseResult result) {
+		GtsdpHttpInformation infomation = (GtsdpHttpInformation)nettask.getHttpInformation();
+		
+		switch(infomation)
+		{
+		case FILE_UPLOAD:
+			String userName = XtomSharedPreferencesUtil.get(mContext, "username");
+			String pwd = XtomSharedPreferencesUtil.get(mContext, "password");
+			getNetWorker().clientLogin(userName, pwd);//重新登陆更新头像数据
+			break;
+		case CLIENT_LOGIN:
+			cancelProgressDialog();
+			break;
+		}
 		
 	}
 
 	@Override
-	protected void callBeforeDataBack(HemaNetTask arg0) {
-		// TODO Auto-generated method stub
+	protected void callBeforeDataBack(HemaNetTask nettask) {
+		GtsdpHttpInformation infomation = (GtsdpHttpInformation)nettask.getHttpInformation();
+		switch(infomation)
+		{
+		case FILE_UPLOAD:
+			showProgressDialog("图片上传中");
+			break;
+		}
 		
 	}
 
@@ -142,8 +161,10 @@ public class UserCenterActivity extends GtsdpActivity implements OnClickListener
 				String iPath = (String) v.getTag(R.id.TAG);
 				ShowLargeImageView mView = new ShowLargeImageView(mContext, findViewById(R.id.father));
 				mView.show();
-//				mView.setImagePath(iPath);
-				mView.setImageURL(iPath);
+				if(IsChangeImage)
+					mView.setImagePath(iPath);
+				else
+					mView.setImageURL(iPath);
 				return false;
 			}
 		});
@@ -376,10 +397,13 @@ public class UserCenterActivity extends GtsdpActivity implements OnClickListener
 			album(data);
 			break;
 		case EDIT_IMAGE:
+			image_avatar.setTag(R.id.TAG, tempPath);
+			IsChangeImage = true;
 			imageWorker.loadImage(new ImageTask(image_avatar, tempPath,
 					mContext, new Size(180, 180)));
 			if(selectPop != null)
 				selectPop.dismiss();
+			getNetWorker().fileUpload(getApplicationContext().getUser().getToken(), "1", "1", "0", "0", "无", tempPath);
 			break;
 		}
 	}

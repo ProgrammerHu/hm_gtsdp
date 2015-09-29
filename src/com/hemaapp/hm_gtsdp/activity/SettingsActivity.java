@@ -118,6 +118,7 @@ public class SettingsActivity extends GtsdpActivity implements OnClickListener, 
 
 	@Override
 	public void onClick(View v) {
+		Intent intent;
 		switch(v.getId())
 		{
 		case R.id.imageQuitActivity:
@@ -127,12 +128,15 @@ public class SettingsActivity extends GtsdpActivity implements OnClickListener, 
 			new ClearTask().execute();
 			break;
 		case R.id.layoutSuggestion:
-			Intent intent = new Intent(this, SuggestionActivity.class);
+			intent = new Intent(this, SuggestionActivity.class);
 			startActivity(intent);
 			overridePendingTransition(R.anim.right_in, R.anim.none);
 			break;
 		case R.id.layoutAboutUs:
-			
+			intent = new Intent(this, WebViewActivity.class);
+			intent.putExtra("Title", "关于我们");
+			startActivity(intent);
+			overridePendingTransition(R.anim.right_in, R.anim.none);
 			break;
 		case R.id.layoutShare:
 			shareWindow.showAtLocation(findViewById(R.id.father), Gravity.BOTTOM, 0, 0);

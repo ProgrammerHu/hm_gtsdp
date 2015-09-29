@@ -114,4 +114,8 @@ public class GtsdpConfig {
 	 * 扫描二维码配送员接货
 	 */
 	public static final int CODE_CURSOR = 3;
+	/**
+	 * 发货扫码
+	 */
+	public static final int CODE_SEND = 4;
 }

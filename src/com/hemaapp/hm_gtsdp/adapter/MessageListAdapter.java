@@ -13,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.hemaapp.hm_gtsdp.GtsdpActivity;
 import com.hemaapp.hm_gtsdp.GtsdpAdapter;
 import com.hemaapp.hm_gtsdp.R;
 import com.hemaapp.hm_gtsdp.model.MessageItem;
@@ -23,9 +24,11 @@ import com.hemaapp.hm_gtsdp.view.SlideView.OnSlideListener;
 public class MessageListAdapter extends GtsdpAdapter  {
 	private OnSlideListener mOnSlideListener;
 	private List<MessageItem> listData;
+	private GtsdpActivity mContext;
 	
 	public MessageListAdapter(Context mContext, OnSlideListener mOnSlideListener, List<MessageItem> listData) {
 		super(mContext);
+		this.mContext = (GtsdpActivity)mContext;
 		this.mOnSlideListener = mOnSlideListener;
 		this.listData = listData;
 	}
@@ -69,6 +72,7 @@ public class MessageListAdapter extends GtsdpAdapter  {
 		holder.txtMsgDetail = (TextView)slideView.findViewById(R.id.txtMsgDetail);
 		holder.txtTimeDiff = (TextView)slideView.findViewById(R.id.txtTimeDiff);
 		holder.layoutHolder = (LinearLayout)slideView.findViewById(R.id.layoutHolder);
+		holder.father = (LinearLayout)slideView.findViewById(R.id.father);
         setData(position, holder);
 		return slideView;
 	}
@@ -86,6 +90,7 @@ public class MessageListAdapter extends GtsdpAdapter  {
 		public ImageView imageLogo;
 		public SlideView slideView;
 		public LinearLayout layoutHolder;
+		public LinearLayout father;
 	}
 	private void setData(final int position, final ViewHolder holder)
 	{
@@ -98,7 +103,6 @@ public class MessageListAdapter extends GtsdpAdapter  {
 			holder.imageLogo.setImageResource(R.drawable.message_item_logo);
 		
 		holder.layoutHolder.setOnClickListener(new OnClickListener() {
-			
 			@Override
 			public void onClick(View v) {
 				listData.remove(position);
@@ -106,6 +110,11 @@ public class MessageListAdapter extends GtsdpAdapter  {
 				holder.slideView.scrollTo(0, 0);
 			}
 		});
+	}
+	
+	public void changeData(List<MessageItem> listData)
+	{
+		this.listData = listData;
 	}
 
 }

@@ -18,7 +18,6 @@ import android.util.Log;
 
 import com.baidu.android.pushservice.PushMessageReceiver;
 import com.hemaapp.hm_gtsdp.R;
-import com.hemaapp.hm_gtsdp.activity.MainActivity;
 import com.hemaapp.hm_gtsdp.activity.MessagesActivity;
 
 /**
@@ -68,7 +67,7 @@ public class MyPushMessageReceiver extends PushMessageReceiver {
 				+ appid + " userId=" + userId + " channelId=" + channelId
 				+ " requestId=" + requestId;
 
-		Log.d("mlp", responseString);
+		Log.e("mlp", responseString);
 
 		// 绑定成功，设置已绑定flag，可以有效的减少不必要的绑定请求
 		if (errorCode == 0) {
@@ -99,9 +98,10 @@ public class MyPushMessageReceiver extends PushMessageReceiver {
 	@Override
 	public void onMessage(Context context, String message,
 			String customContentString) {
+		mynotify(context, message, "2", "3");
 		String messageString = "透传消息 message=\"" + message
 				+ "\" customContentString=" + customContentString;
-		Log.d(TAG, messageString);
+		Log.e(TAG, messageString);
 
 		if (notificationManager == null)
 			notificationManager = (NotificationManager) context
@@ -164,7 +164,7 @@ public class MyPushMessageReceiver extends PushMessageReceiver {
 			String description, String customContentString) {
 		String notifyString = "通知点击 title=\"" + title + "\" description=\""
 				+ description + "\" customContent=" + customContentString;
-		Log.d(TAG, notifyString);
+		Log.e(TAG, notifyString);
 
 		// 自定义内容获取方式，mykey和myvalue对应通知推送时自定义内容中设置的键和值
 		if (!TextUtils.isEmpty(customContentString)) {
@@ -183,6 +183,7 @@ public class MyPushMessageReceiver extends PushMessageReceiver {
 
 		// Demo更新界面展示代码，应用请在这里加入自己的处理逻辑
 //		 updateContent(context, notifyString);
+		
 		Intent intent = new Intent();
 		intent.setClass(context.getApplicationContext(), MessagesActivity.class);
 		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -210,7 +211,7 @@ public class MyPushMessageReceiver extends PushMessageReceiver {
 		String notifyString = "onNotificationArrived  title=\"" + title
 				+ "\" description=\"" + description + "\" customContent="
 				+ customContentString;
-		Log.d(TAG, notifyString);
+		Log.e(TAG, notifyString);
 
 		// 自定义内容获取方式，mykey和myvalue对应通知推送时自定义内容中设置的键和值
 		if (!TextUtils.isEmpty(customContentString)) {
@@ -251,7 +252,7 @@ public class MyPushMessageReceiver extends PushMessageReceiver {
 		String responseString = "onSetTags errorCode=" + errorCode
 				+ " sucessTags=" + sucessTags + " failTags=" + failTags
 				+ " requestId=" + requestId;
-		Log.d(TAG, responseString);
+		Log.e(TAG, responseString);
 
 		// Demo更新界面展示代码，应用请在这里加入自己的处理逻辑
 		updateContent(context, responseString);
@@ -277,7 +278,7 @@ public class MyPushMessageReceiver extends PushMessageReceiver {
 		String responseString = "onDelTags errorCode=" + errorCode
 				+ " sucessTags=" + sucessTags + " failTags=" + failTags
 				+ " requestId=" + requestId;
-		Log.d(TAG, responseString);
+		Log.e(TAG, responseString);
 
 		// Demo更新界面展示代码，应用请在这里加入自己的处理逻辑
 		updateContent(context, responseString);
@@ -300,7 +301,7 @@ public class MyPushMessageReceiver extends PushMessageReceiver {
 			String requestId) {
 		String responseString = "onListTags errorCode=" + errorCode + " tags="
 				+ tags;
-		Log.d(TAG, responseString);
+		Log.e(TAG, responseString);
 
 		// Demo更新界面展示代码，应用请在这里加入自己的处理逻辑
 		updateContent(context, responseString);
@@ -320,7 +321,7 @@ public class MyPushMessageReceiver extends PushMessageReceiver {
 	public void onUnbind(Context context, int errorCode, String requestId) {
 		String responseString = "onUnbind errorCode=" + errorCode
 				+ " requestId = " + requestId;
-		Log.d(TAG, responseString);
+		Log.e(TAG, responseString);
 
 		// 解绑定成功，设置未绑定flag，
 		if (errorCode == 0) {
@@ -332,7 +333,7 @@ public class MyPushMessageReceiver extends PushMessageReceiver {
 
 	private void updateContent(Context context, String content) {
 		
-//		  Log.d(TAG, "updateContent"); String logText = "" +
+//		  Log.e(TAG, "updateContent"); String logText = "" +
 //		  Utils.logStringCache;
 //		  
 //		  if (!logText.equals("")) { logText += "\n"; }
@@ -348,9 +349,9 @@ public class MyPushMessageReceiver extends PushMessageReceiver {
 	@SuppressWarnings("deprecation")
 	public void mynotify(Context context, String content, String title,
 			String keytype) {
-		Log.d(TAG, "notify()...");
-		Log.d(TAG, "content=" + content);
-		Log.d(TAG, "keytype=" + keytype);
+		Log.e(TAG, "notify()...");
+		Log.e(TAG, "content=" + content);
+		Log.e(TAG, "keytype=" + keytype);
 
 		NotificationManager nm = (NotificationManager) context
 				.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -362,7 +363,7 @@ public class MyPushMessageReceiver extends PushMessageReceiver {
 		builder.setWhen(System.currentTimeMillis());
 		builder.setContentTitle(context.getString(R.string.app_name));
 		builder.setContentText(content).setTicker(content);
-		it = new Intent(context, MainActivity.class);
+		it = new Intent(context, MessagesActivity.class);
 		PendingIntent pi = PendingIntent.getActivity(context, 0, it,
 				PendingIntent.FLAG_CANCEL_CURRENT);
 		builder.setContentIntent(pi);
@@ -378,4 +379,5 @@ public class MyPushMessageReceiver extends PushMessageReceiver {
 		nm.notify(0, notification);
 	}
 
+	
 }

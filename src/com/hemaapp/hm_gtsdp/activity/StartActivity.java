@@ -1,7 +1,10 @@
 package com.hemaapp.hm_gtsdp.activity;
 
 import xtom.frame.util.XtomSharedPreferencesUtil;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -9,6 +12,8 @@ import android.view.animation.Animation.AnimationListener;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.baidu.android.pushservice.PushConstants;
+import com.baidu.android.pushservice.PushManager;
 import com.hemaapp.hm_gtsdp.GtsdpArrayResult;
 import com.hemaapp.hm_gtsdp.GtsdpHttpInformation;
 import com.hemaapp.hm_gtsdp.GtsdpNetWorker;
@@ -18,6 +23,7 @@ import com.hemaapp.hm_FrameWork.result.HemaBaseResult;
 import com.hemaapp.hm_gtsdp.GtsdpActivity;
 import com.hemaapp.hm_gtsdp.model.SysInitInfo;
 import com.hemaapp.hm_gtsdp.model.User;
+import com.hemaapp.hm_gtsdp.push.PushUtils;
 
 /**
  * ≥ı º“≥
@@ -50,14 +56,24 @@ public class StartActivity extends GtsdpActivity
 
 		@Override
 		public void onAnimationStart(Animation animation) {
-			// TODO Auto-generated method stub
-
 		}
 
 		@Override
 		public void onAnimationEnd(Animation animation) {
-			GtsdpNetWorker netWorker = getNetWorker();
-			netWorker.init();
+			new Thread(new Runnable() {
+				
+				@Override
+				public void run() {
+					try {
+						Thread.sleep(1000);
+					} 
+					catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+					GtsdpNetWorker netWorker = getNetWorker();
+					netWorker.init();
+				}
+			}).start();
 		}
 
 		@Override
@@ -180,4 +196,5 @@ public class StartActivity extends GtsdpActivity
 		
 	}
 
+	
 }

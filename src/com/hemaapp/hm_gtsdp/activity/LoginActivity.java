@@ -118,6 +118,11 @@ public class LoginActivity extends GtsdpActivity implements OnClickListener
 			showTextDialog("手机号格式不正确！请重输");
 			return;
 		}
+		if(password.length() < 6 || password.length() > 16)
+		{
+			showTextDialog("请输入6-16位密码");
+			return;
+		}
 		showProgressDialog("登录中，请稍后");
 		getNetWorker().clientLogin(phoneNumber, password);
 	}
@@ -135,8 +140,14 @@ public class LoginActivity extends GtsdpActivity implements OnClickListener
 	}
 
 	@Override
-	protected void callBackForServerFailed(HemaNetTask arg0, HemaBaseResult arg1) {
-		// TODO Auto-generated method stub
+	protected void callBackForServerFailed(HemaNetTask netTask, HemaBaseResult result) {
+		GtsdpHttpInformation information = (GtsdpHttpInformation)netTask.getHttpInformation();
+		switch(information)
+		{
+		case CLIENT_LOGIN:
+			cancelProgressDialog();
+			showTextDialog(result.getMsg());
+		}
 		
 	}
 

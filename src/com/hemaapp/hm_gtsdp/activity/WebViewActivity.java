@@ -1,5 +1,7 @@
 package com.hemaapp.hm_gtsdp.activity;
 
+import org.xbill.DNS.RPRecord;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -11,9 +13,12 @@ import android.widget.TextView;
 import com.hemaapp.hm_FrameWork.HemaNetTask;
 import com.hemaapp.hm_FrameWork.result.HemaBaseResult;
 import com.hemaapp.hm_gtsdp.GtsdpActivity;
+import com.hemaapp.hm_gtsdp.GtsdpApplication;
 import com.hemaapp.hm_gtsdp.R;
+import com.hemaapp.hm_gtsdp.model.SysInitInfo;
 
 public class WebViewActivity extends GtsdpActivity{
+	private final String MIDDLE = "webview/parm/";
 	private Intent beforeIntent;
 	private String Title;
 	
@@ -22,6 +27,8 @@ public class WebViewActivity extends GtsdpActivity{
 	private ImageView imageQuitActivity;
 	private TextView txtTitle;
 	
+	private String AboutUsUrl;//关于我们
+	private String ProtocalUrl;//注册协议
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -73,10 +80,21 @@ public class WebViewActivity extends GtsdpActivity{
 	@Override
 	protected void findView() {
 		webview = (WebView)findViewById(R.id.webview);
-		webview.loadUrl(Baidu);
 		imageQuitActivity = (ImageView)findViewById(R.id.imageQuitActivity);
 		txtTitle = (TextView)findViewById(R.id.txtTitle);
 		txtTitle.setText(Title);
+		if("关于我们".equals(Title))
+		{
+			webview.loadUrl(AboutUsUrl);
+		}
+		else if("注册声明".equals(Title))
+		{
+			webview.loadUrl(ProtocalUrl);
+		}
+		else
+		{
+			webview.loadUrl(Baidu);
+		}
 	}
 
 	@Override
@@ -84,6 +102,10 @@ public class WebViewActivity extends GtsdpActivity{
 		beforeIntent = getIntent();
 		Title = beforeIntent.getStringExtra("Title");
 		
+		GtsdpApplication application = GtsdpApplication.getInstance();
+		SysInitInfo info = application.getSysInitInfo();
+		AboutUsUrl = info.getSys_web_service() + MIDDLE + "aboutus";
+		ProtocalUrl = info.getSys_web_service() + MIDDLE + "protocal";
 	}
 
 	@Override

@@ -48,10 +48,10 @@
         android:theme="@style/AppTheme" >
         
         
-          <!-- 百度推送相关, 开发：bZfMxWEVpEiPBkyCTaGlM8WC -->
+          <!-- 百度推送相关, 开发：j5hx2AxzIbQf6b5mgic69quM -->
         <meta-data
             android:name="api_key"
-            android:value="bZfMxWEVpEiPBkyCTaGlM8WC" />
+            android:value="j5hx2AxzIbQf6b5mgic69quM" />
         <!-- 注意：此值不同项目不同(新项目需申请新的key值) -->
 
 
@@ -211,6 +211,7 @@
             android:name="com.hemaapp.hm_gtsdp.activity.MainPageActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
+            android:launchMode="singleTask"
 			android:windowSoftInputMode="stateHidden"/>
 		<activity
             android:name="com.hemaapp.hm_gtsdp.activity.SendDetailActivty"
