@@ -12,7 +12,7 @@ import java.util.HashMap;
 
 import org.json.JSONObject;
 
-import com.hemaapp.hm_gtsdp.GtsdpArrayResult;
+import com.hemaapp.hm_FrameWork.result.HemaArrayResult;
 import com.hemaapp.hm_gtsdp.GtsdpHttpInformation;
 import com.hemaapp.hm_gtsdp.GtsdpNetTask;
 import com.hemaapp.hm_gtsdp.model.User;
@@ -39,7 +39,7 @@ public class ClientLoginTask extends GtsdpNetTask {
 		return new Result(jsonObject);
 	}
 
-	private class Result extends GtsdpArrayResult<User> {
+	private class Result extends HemaArrayResult<User> {
 
 		public Result(JSONObject jsonObject) throws DataParseException {
 			super(jsonObject);
@@ -49,6 +49,5 @@ public class ClientLoginTask extends GtsdpNetTask {
 		public User parse(JSONObject jsonObject) throws DataParseException {
 			return new User(jsonObject);
 		}
-
 	}
 }

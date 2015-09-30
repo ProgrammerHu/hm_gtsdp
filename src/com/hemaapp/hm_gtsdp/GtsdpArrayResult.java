@@ -1,11 +1,3 @@
-/*
- * Copyright (C) 2014 The Android Client Of Demo Project
- * 
- *     The BeiJing PingChuanJiaHeng Technology Co., Ltd.
- * 
- * Author:Yang ZiTian
- * You Can Contact QQ:646172820 Or Email:mail_yzt@163.com
- */
 package com.hemaapp.hm_gtsdp;
 
 import java.util.ArrayList;
@@ -14,16 +6,19 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.hemaapp.hm_FrameWork.result.HemaArrayResult;
-import com.hemaapp.hm_FrameWork.result.HemaBaseResult;
-
 import xtom.frame.exception.DataParseException;
 
+import com.hemaapp.hm_FrameWork.result.HemaBaseResult;
 /**
- * 对BaseResult的拓展，适用返回数据中有数组的情况
+ * 用的时候一定要前后一致
+ * @author Wen
+ * @author HuFanglin
+ *
+ * @param <T>
  */
-public abstract class GtsdpArrayResult<T> extends HemaArrayResult {
+public abstract class GtsdpArrayResult<T> extends HemaBaseResult {
 	private ArrayList<T> objects = new ArrayList<T>();
+	private int totalCount;
 
 	public GtsdpArrayResult(JSONObject jsonObject) throws DataParseException {
 		super(jsonObject);
@@ -31,16 +26,30 @@ public abstract class GtsdpArrayResult<T> extends HemaArrayResult {
 			try {
 				if (!jsonObject.isNull("infor")
 						&& !isNull(jsonObject.getString("infor"))) {
-					JSONArray jsonList = jsonObject.getJSONArray("infor");
-					int size = jsonList.length();
-					for (int i = 0; i < size; i++) {
-						objects.add(parse(jsonList.getJSONObject(i)));
+					JSONObject object = jsonObject.getJSONObject("infor");
+					if (!object.isNull("totalCount")) {
+						totalCount = object.getInt("totalCount");
+					}
+					if (!object.isNull("listItems")
+							&& !isNull(object.getString("listItems"))) {
+						JSONArray jsonList = object.getJSONArray("listItems");
+						int size = jsonList.length();
+						for (int i = 0; i < size; i++) {
+							objects.add(parse(jsonList.getJSONObject(i)));
+						}
 					}
 				}
 			} catch (JSONException e) {
 				throw new DataParseException(e);
 			}
 		}
+	}
+
+	/**
+	 * @return the totalCount 表示所有符合查询条件的总记录的个数（totalCount=0 表示暂无数据）
+	 */
+	public int getTotalCount() {
+		return totalCount;
 	}
 
 	/**

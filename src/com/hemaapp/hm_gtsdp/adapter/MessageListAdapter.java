@@ -1,6 +1,5 @@
 package com.hemaapp.hm_gtsdp.adapter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
@@ -11,22 +10,20 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.hemaapp.hm_gtsdp.GtsdpActivity;
 import com.hemaapp.hm_gtsdp.GtsdpAdapter;
 import com.hemaapp.hm_gtsdp.R;
-import com.hemaapp.hm_gtsdp.model.MessageItem;
-import com.hemaapp.hm_gtsdp.view.ListViewCompat;
+import com.hemaapp.hm_gtsdp.model.NoticeModel;
 import com.hemaapp.hm_gtsdp.view.SlideView;
 import com.hemaapp.hm_gtsdp.view.SlideView.OnSlideListener;
 
 public class MessageListAdapter extends GtsdpAdapter  {
 	private OnSlideListener mOnSlideListener;
-	private List<MessageItem> listData;
+	private List<NoticeModel> listData;
 	private GtsdpActivity mContext;
 	
-	public MessageListAdapter(Context mContext, OnSlideListener mOnSlideListener, List<MessageItem> listData) {
+	public MessageListAdapter(Context mContext, OnSlideListener mOnSlideListener, List<NoticeModel> listData) {
 		super(mContext);
 		this.mContext = (GtsdpActivity)mContext;
 		this.mOnSlideListener = mOnSlideListener;
@@ -94,10 +91,10 @@ public class MessageListAdapter extends GtsdpAdapter  {
 	}
 	private void setData(final int position, final ViewHolder holder)
 	{
-		holder.txtMsgTitle.setText(listData.get(position).MsgTitle);
-		holder.txtMsgDetail.setText(listData.get(position).MsgDetail);
-		holder.txtTimeDiff.setText(listData.get(position).TimeDiff);
-		if(listData.get(position).IsNew)
+		holder.txtMsgTitle.setText("系统消息");
+		holder.txtMsgDetail.setText(listData.get(position).getContent());
+		holder.txtTimeDiff.setText("7分钟前");
+		if(listData.get(position).getLooktype().equals("1"))
 			holder.imageLogo.setImageResource(R.drawable.message_item_logo_red);
 		else
 			holder.imageLogo.setImageResource(R.drawable.message_item_logo);
@@ -112,7 +109,7 @@ public class MessageListAdapter extends GtsdpAdapter  {
 		});
 	}
 	
-	public void changeData(List<MessageItem> listData)
+	public void changeData(List<NoticeModel> listData)
 	{
 		this.listData = listData;
 	}

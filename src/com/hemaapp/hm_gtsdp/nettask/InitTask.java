@@ -4,13 +4,7 @@ import java.util.HashMap;
 
 import org.json.JSONObject;
 
-
-
-
-
-
-
-import com.hemaapp.hm_gtsdp.GtsdpArrayResult;
+import com.hemaapp.hm_FrameWork.result.HemaArrayResult;
 import com.hemaapp.hm_gtsdp.GtsdpHttpInformation;
 import com.hemaapp.hm_gtsdp.GtsdpNetTask;
 import com.hemaapp.hm_gtsdp.model.SysInitInfo;
@@ -37,7 +31,7 @@ public class InitTask extends GtsdpNetTask {
 		return new Result(jsonObject);
 	}
 
-	private class Result extends GtsdpArrayResult<SysInitInfo> {
+	private class Result extends HemaArrayResult<SysInitInfo> {
 
 		public Result(JSONObject jsonObject) throws DataParseException {
 			super(jsonObject);

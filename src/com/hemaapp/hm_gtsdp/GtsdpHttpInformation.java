@@ -71,9 +71,17 @@ public enum GtsdpHttpInformation implements HemaHttpInfomation {
 	 * 修改密码
 	 */
 	PASSWORD_SAVE(13, "password_save", "修改密码", false),
-	
+	/**
+	 * 获取用户信息
+	 */
+	CLIENT_GET(14, "client_get", "获取用户信息", false),
+	/**
+	 * 通知列表
+	 */
+	NOTICE_LIST(15, "notice_list", "通知列表", false),
 	;
 
+	
 	private int id;// 对应NetTask的id
 	private String urlPath;// 请求地址
 	private String description;// 请求描述

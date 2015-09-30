@@ -24,6 +24,7 @@ import android.widget.TextView;
 
 import com.hemaapp.GtsdpConfig;
 import com.hemaapp.hm_gtsdp.R;
+import com.hemaapp.hm_FrameWork.HemaImageWay;
 import com.hemaapp.hm_FrameWork.HemaNetTask;
 import com.hemaapp.hm_FrameWork.result.HemaBaseResult;
 import com.hemaapp.hm_FrameWork.view.RoundedImageView;
@@ -54,12 +55,22 @@ public class FixDataActivity extends GtsdpActivity implements OnClickListener{
 	private String tempPath;//保存图片路径
 	private String imagePathCamera;//相机拍照路径
 	private RoundedImageView image_avatar;
+	private HemaImageWay imageWay;
 	
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		setContentView(R.layout.activity_fixdata);
 		super.onCreate(savedInstanceState);
+		imageWay = new HemaImageWay(mContext, 1, 2) {
+			@Override
+			public void album() {
+				// 注意：若不重写该方法则使用系统相册选取(对应的onActivityResult中的处理方法也应不同)
+				Intent it = new Intent(mContext, AlbumActivity.class);
+				it.putExtra("limitCount", 1);// 图片选择张数限制
+				startActivityForResult(it, albumRequestCode);
+			}
+		};
 	}
 
 	@Override
@@ -159,7 +170,7 @@ public class FixDataActivity extends GtsdpActivity implements OnClickListener{
 		public void onClick(View v) {
 			if(v.getId() == R.id.btnTop)
 			{
-				getImageFromCamera();
+				imageWay.camera();
 			}
 			else if(v.getId() == R.id.btnMiddle)
 			{
@@ -167,21 +178,6 @@ public class FixDataActivity extends GtsdpActivity implements OnClickListener{
 			}
 		}
 	};
-	
-	/**
-	 * 调用相机
-	 */
-	protected void getImageFromCamera() {  
-	       String state = Environment.getExternalStorageState();  
-	       if (state.equals(Environment.MEDIA_MOUNTED)) {  
-	           Intent getImageByCamera = new Intent("android.media.action.IMAGE_CAPTURE");     
-	           startActivityForResult(getImageByCamera, REQUEST_CODE_CAPTURE_CAMEIA);  
-	       }  
-	       else 
-	       {
-	    	   showTextDialog("请确认已经插入SD卡");
-	       }  
-	   }  
 	
 	/**
 	 * 从相册获取图片
@@ -192,13 +188,6 @@ public class FixDataActivity extends GtsdpActivity implements OnClickListener{
 	       intent.setType("image/*");//相片类型  
 	       startActivityForResult(intent, REQUEST_CODE_PICK_IMAGE);  
 	}  
-	
-//	private void camera() {
-//		if (imagePathCamera == null) {
-//			imagePathCamera = imageWay.getCameraImage();
-//		}
-//		editImage(imagePathCamera, 3);
-//	}
 	
 	/**
 	 * 通过相册获取图片的后续处理
@@ -276,6 +265,9 @@ public class FixDataActivity extends GtsdpActivity implements OnClickListener{
 		switch(requestCode)
 		{
 		case REQUEST_CODE_CAPTURE_CAMEIA:
+			String imagepath = imageWay.getCameraImage();
+			editImage(imagepath, EDIT_IMAGE);
+			break;
 		case REQUEST_CODE_PICK_IMAGE:
 			album(data);
 			break;

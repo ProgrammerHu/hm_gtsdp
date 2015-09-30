@@ -1,8 +1,5 @@
 package com.hemaapp.hm_gtsdp.activity;
-
-import java.util.ArrayList;
 import java.util.List;
-
 import xtom.frame.view.XtomRefreshLoadmoreLayout;
 import xtom.frame.view.XtomRefreshLoadmoreLayout.OnStartListener;
 import android.content.Intent;
@@ -13,53 +10,44 @@ import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ImageView;
-
 import com.hemaapp.hm_FrameWork.HemaNetTask;
 import com.hemaapp.hm_FrameWork.result.HemaBaseResult;
 import com.hemaapp.hm_gtsdp.GtsdpActivity;
+import com.hemaapp.hm_gtsdp.GtsdpArrayResult;
 import com.hemaapp.hm_gtsdp.R;
 import com.hemaapp.hm_gtsdp.adapter.MessageListAdapter;
-import com.hemaapp.hm_gtsdp.model.MessageItem;
+import com.hemaapp.hm_gtsdp.model.NoticeModel;
 import com.hemaapp.hm_gtsdp.view.GtsdpRefreshLoadmoreLayout;
 import com.hemaapp.hm_gtsdp.view.ListViewCompat;
 import com.hemaapp.hm_gtsdp.view.SelectPopupWindow;
 import com.hemaapp.hm_gtsdp.view.SlideView;
 import com.hemaapp.hm_gtsdp.view.SlideView.OnSlideListener;
-
+/**
+ * 消息列表界面
+ * @author Wen
+ * @author HuFanglin
+ *
+ */
 public class MessagesActivity extends GtsdpActivity implements OnClickListener, OnSlideListener,
 OnItemClickListener, OnStartListener{
+	private String token;
 	private boolean ActivityType;//标记退出时是否需要启动MainPageActivity，true则需要
 	private ListViewCompat listViewCompat;
 	private ImageView imageQuitActivity, imageSetting;
 	private SlideView mLastSlideViewWithStatusOn;
 	private SelectPopupWindow selectPopupWindow;
-	private List<MessageItem> listData;
+	private List<NoticeModel> listNotices;
 	private MessageListAdapter adapter;
 	private GtsdpRefreshLoadmoreLayout refreshLoadmoreLayout;
+	private int page;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		setContentView(R.layout.activity_messages);
 		super.onCreate(savedInstanceState);
-
-		listData = new ArrayList<MessageItem>();
-		listData.add(new MessageItem("系统消息", "恭喜您成功注册高铁捎带", "6分钟前", true));
-		listData.add(new MessageItem("系统消息", "您否货物已经在济南市历下区网点接收，敬请等待", "7分钟前", true));
-		listData.add(new MessageItem("系统消息", "恭喜您成功注册高铁捎带", "8分钟前", false));
-		listData.add(new MessageItem("系统消息", "恭喜您成功注册高铁捎带", "6分钟前", true));
-		listData.add(new MessageItem("系统消息", "您否货物已经在济南市历下区网点接收，敬请等待", "7分钟前", true));
-		listData.add(new MessageItem("系统消息", "恭喜您成功注册高铁捎带", "8分钟前", false));
-		listData.add(new MessageItem("系统消息", "恭喜您成功注册高铁捎带", "6分钟前", true));
-		listData.add(new MessageItem("系统消息", "您否货物已经在济南市历下区网点接收，敬请等待", "7分钟前", true));
-		listData.add(new MessageItem("系统消息", "恭喜您成功注册高铁捎带", "8分钟前", false));
-		listData.add(new MessageItem("系统消息", "恭喜您成功注册高铁捎带", "6分钟前", true));
-		listData.add(new MessageItem("系统消息", "您否货物已经在济南市历下区网点接收，敬请等待", "7分钟前", true));
-		listData.add(new MessageItem("系统消息", "恭喜您成功注册高铁捎带", "8分钟前", false));
-		listData.add(new MessageItem("系统消息", "恭喜您成功注册高铁捎带", "6分钟前", true));
-		listData.add(new MessageItem("系统消息", "您否货物已经在济南市历下区网点接收，敬请等待", "7分钟前", true));
-		listData.add(new MessageItem("系统消息", "恭喜您成功注册高铁捎带", "8分钟前", false));
-		adapter = new MessageListAdapter(mContext, this, listData);
-		listViewCompat.setAdapter(adapter);
+		token = getApplicationContext().getUser().getToken();
 		selectPopupWindow = new SelectPopupWindow(mContext, this, "清空", "全部设为已读");
+		getNetWorker().getNoticeList(token, "3", String.valueOf(page));
+		refreshLoadmoreLayout.refreshDrawableState();
 	}
 	
 	@Override
@@ -81,9 +69,24 @@ OnItemClickListener, OnStartListener{
 	}
 
 	@Override
-	protected void callBackForServerSuccess(HemaNetTask arg0,
-			HemaBaseResult arg1) {
-		// TODO Auto-generated method stub
+	protected void callBackForServerSuccess(HemaNetTask nettask,
+			HemaBaseResult result) {
+		GtsdpArrayResult<NoticeModel> mResult = (GtsdpArrayResult<NoticeModel>)result;
+		if(page == 0)
+		{
+			listNotices = mResult.getObjects();
+			adapter = new MessageListAdapter(mContext, this, listNotices);
+			listViewCompat.setAdapter(adapter);
+			refreshLoadmoreLayout.refreshSuccess();
+		}
+		else
+		{
+			for(NoticeModel notice : mResult.getObjects())
+			{
+				listNotices.add(notice);
+			}
+			refreshLoadmoreLayout.loadmoreSuccess();
+		}
 		
 	}
 
@@ -132,9 +135,9 @@ OnItemClickListener, OnStartListener{
 			break;
 		case R.id.btnMiddle:
 			selectPopupWindow.dismiss();
-			for(MessageItem item : listData)
+			for(NoticeModel item : listNotices)
 			{
-				item.IsNew = false;
+				item.setLooktype("2");
 			}
 			adapter.notifyDataSetChanged();
 			break;
@@ -154,7 +157,7 @@ OnItemClickListener, OnStartListener{
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position,
 			long id) {
-		listData.get(position).IsNew = false;
+		listNotices.get(position).setLooktype("2");
 		adapter.notifyDataSetChanged();
 		
 	}
@@ -162,51 +165,17 @@ OnItemClickListener, OnStartListener{
 	@Override
 	public void onStartLoadmore(XtomRefreshLoadmoreLayout arg0) {
 		// TODO 加载更多
-
-		listData.add(new MessageItem("系统消息", "恭喜您成功注册高铁捎带", "6分钟前", true));
-		listData.add(new MessageItem("系统消息", "您否货物已经在济南市历下区网点接收，敬请等待", "7分钟前", true));
-		listData.add(new MessageItem("系统消息", "恭喜您成功注册高铁捎带", "8分钟前", false));
-		listData.add(new MessageItem("系统消息", "恭喜您成功注册高铁捎带", "6分钟前", true));
-		listData.add(new MessageItem("系统消息", "您否货物已经在济南市历下区网点接收，敬请等待", "7分钟前", true));
-		listData.add(new MessageItem("系统消息", "恭喜您成功注册高铁捎带", "8分钟前", false));
-		listData.add(new MessageItem("系统消息", "恭喜您成功注册高铁捎带", "6分钟前", true));
-		listData.add(new MessageItem("系统消息", "您否货物已经在济南市历下区网点接收，敬请等待", "7分钟前", true));
-		listData.add(new MessageItem("系统消息", "恭喜您成功注册高铁捎带", "8分钟前", false));
-		listData.add(new MessageItem("系统消息", "恭喜您成功注册高铁捎带", "6分钟前", true));
-		listData.add(new MessageItem("系统消息", "您否货物已经在济南市历下区网点接收，敬请等待", "7分钟前", true));
-		listData.add(new MessageItem("系统消息", "恭喜您成功注册高铁捎带", "8分钟前", false));
-		listData.add(new MessageItem("系统消息", "恭喜您成功注册高铁捎带", "6分钟前", true));
-		listData.add(new MessageItem("系统消息", "您否货物已经在济南市历下区网点接收，敬请等待", "7分钟前", true));
-		listData.add(new MessageItem("系统消息", "恭喜您成功注册高铁捎带", "8分钟前", false));
-		adapter.changeData(listData);
-		adapter.notifyDataSetChanged();
-		refreshLoadmoreLayout.loadmoreSuccess();
+		page++;
+		getNetWorker().getNoticeList(token, "3", String.valueOf(page));
+		
 	}
 
 	@Override
 	public void onStartRefresh(XtomRefreshLoadmoreLayout arg0) {
 		// TODO 刷新
-
-
-		listData = new ArrayList<MessageItem>();
-		listData.add(new MessageItem("系统消息", "恭喜您成功注册高铁捎带", "6分钟前", true));
-		listData.add(new MessageItem("系统消息", "您否货物已经在济南市历下区网点接收，敬请等待", "7分钟前", true));
-		listData.add(new MessageItem("系统消息", "恭喜您成功注册高铁捎带", "8分钟前", false));
-		listData.add(new MessageItem("系统消息", "恭喜您成功注册高铁捎带", "6分钟前", true));
-		listData.add(new MessageItem("系统消息", "您否货物已经在济南市历下区网点接收，敬请等待", "7分钟前", true));
-		listData.add(new MessageItem("系统消息", "恭喜您成功注册高铁捎带", "8分钟前", false));
-		listData.add(new MessageItem("系统消息", "恭喜您成功注册高铁捎带", "6分钟前", true));
-		listData.add(new MessageItem("系统消息", "您否货物已经在济南市历下区网点接收，敬请等待", "7分钟前", true));
-		listData.add(new MessageItem("系统消息", "恭喜您成功注册高铁捎带", "8分钟前", false));
-		listData.add(new MessageItem("系统消息", "恭喜您成功注册高铁捎带", "6分钟前", true));
-		listData.add(new MessageItem("系统消息", "您否货物已经在济南市历下区网点接收，敬请等待", "7分钟前", true));
-		listData.add(new MessageItem("系统消息", "恭喜您成功注册高铁捎带", "8分钟前", false));
-		listData.add(new MessageItem("系统消息", "恭喜您成功注册高铁捎带", "6分钟前", true));
-		listData.add(new MessageItem("系统消息", "您否货物已经在济南市历下区网点接收，敬请等待", "7分钟前", true));
-		listData.add(new MessageItem("系统消息", "恭喜您成功注册高铁捎带", "8分钟前", false));
-		adapter.changeData(listData);
-		adapter.notifyDataSetChanged();
-		refreshLoadmoreLayout.refreshSuccess();
+		page = 0;
+		getNetWorker().getNoticeList(token, "3", String.valueOf(page));
+		
 	}
 
 }

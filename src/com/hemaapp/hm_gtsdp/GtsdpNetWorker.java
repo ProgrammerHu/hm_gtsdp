@@ -9,11 +9,13 @@ import com.hemaapp.GtsdpConfig;
 import com.hemaapp.hm_FrameWork.HemaNetWorker;
 import com.hemaapp.hm_gtsdp.nettask.AlipayTradeTask;
 import com.hemaapp.hm_gtsdp.nettask.ChangePwdTask;
+import com.hemaapp.hm_gtsdp.nettask.ClientGetTask;
 import com.hemaapp.hm_gtsdp.nettask.ClientLoginTask;
 import com.hemaapp.hm_gtsdp.nettask.ClientLoginoutTask;
 import com.hemaapp.hm_gtsdp.nettask.DeviceSaveTask;
 import com.hemaapp.hm_gtsdp.nettask.FileUploadTask;
 import com.hemaapp.hm_gtsdp.nettask.InitTask;
+import com.hemaapp.hm_gtsdp.nettask.NoticeListTask;
 import com.hemaapp.hm_gtsdp.nettask.UnionTradeTask;
 
 /**
@@ -184,6 +186,38 @@ public class GtsdpNetWorker extends HemaNetWorker {
 		files.put("temp_file", temp_file); //
 
 		GtsdpNetTask task = new FileUploadTask(information, params, files);
+		executeTask(task);
+	}
+	/**
+	 * 获取用户信息
+	 * @param token 登录令牌
+	 * @param id 通过被访问用户主键获取
+	 */
+	public void clientGet(String token, String id)
+	{
+		GtsdpHttpInformation information = GtsdpHttpInformation.CLIENT_GET;
+		HashMap<String, String> params = new HashMap<String, String>();
+		params.put("token", token);
+		params.put("id", id); 
+		
+		GtsdpNetTask task = new ClientGetTask(information, params);
+		executeTask(task);
+	}
+	/**
+	 * 获取通知列表
+	 * @param token 登录令牌
+	 * @param keytype 业务类型 1：评论回复 2：好友申请 3：系统通知 
+	 * @param page 页数
+	 */
+	public void getNoticeList(String token, String keytype, String page)
+	{
+		GtsdpHttpInformation information = GtsdpHttpInformation.NOTICE_LIST;
+		HashMap<String, String> params = new HashMap<String, String>();
+		params.put("token", token);
+		params.put("keytype", keytype); 
+		params.put("page", page); 
+		
+		GtsdpNetTask task = new NoticeListTask(information, params);
 		executeTask(task);
 	}
 }

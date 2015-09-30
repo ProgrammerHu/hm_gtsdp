@@ -14,11 +14,11 @@ import android.widget.Toast;
 
 import com.baidu.android.pushservice.PushConstants;
 import com.baidu.android.pushservice.PushManager;
-import com.hemaapp.hm_gtsdp.GtsdpArrayResult;
 import com.hemaapp.hm_gtsdp.GtsdpHttpInformation;
 import com.hemaapp.hm_gtsdp.GtsdpNetWorker;
 import com.hemaapp.hm_gtsdp.R;
 import com.hemaapp.hm_FrameWork.HemaNetTask;
+import com.hemaapp.hm_FrameWork.result.HemaArrayResult;
 import com.hemaapp.hm_FrameWork.result.HemaBaseResult;
 import com.hemaapp.hm_gtsdp.GtsdpActivity;
 import com.hemaapp.hm_gtsdp.model.SysInitInfo;
@@ -119,13 +119,13 @@ public class StartActivity extends GtsdpActivity
 		switch(infomation)
 		{
 		case INIT:
-			GtsdpArrayResult<SysInitInfo> sResult = (GtsdpArrayResult<SysInitInfo>)baseResult;
+			HemaArrayResult<SysInitInfo> sResult = (HemaArrayResult<SysInitInfo>)baseResult;
 			sysInitInfo = sResult.getObjects().get(0);
 			getApplicationContext().setSysInitInfo(sysInitInfo);
 			checkLogin();
 			break;
 		case CLIENT_LOGIN:
-			GtsdpArrayResult<User> sUser = (GtsdpArrayResult<User>)baseResult;
+			HemaArrayResult<User> sUser = (HemaArrayResult<User>)baseResult;
 			this.user = sUser.getObjects().get(0);
 			getApplicationContext().setUser(user);
 			Intent intent = new Intent(StartActivity.this, MainPageActivity.class);

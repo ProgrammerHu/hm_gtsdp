@@ -1,7 +1,8 @@
 package com.hemaapp.hm_gtsdp.view;
 
 
-import com.hemaapp.hm_gtsdp.model.MessageItem;
+
+import com.hemaapp.hm_gtsdp.model.NoticeModel;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -49,7 +50,7 @@ public class ListViewCompat extends ListView {
             int position = pointToPosition(x, y);
             Log.e(TAG, "postion=" + position);
             if (position != INVALID_POSITION) {
-                MessageItem data = (MessageItem) getItemAtPosition(position);
+            	NoticeModel data = (NoticeModel) getItemAtPosition(position);
                 mFocusedItemView = data.slideView;
 //                Log.e(TAG, "FocusedItemView=" + mFocusedItemView);
             }
