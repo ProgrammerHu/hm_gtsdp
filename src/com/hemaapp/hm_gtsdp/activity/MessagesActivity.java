@@ -177,5 +177,10 @@ OnItemClickListener, OnStartListener{
 		getNetWorker().getNoticeList(token, "3", String.valueOf(page));
 		
 	}
-
+	
+	@Override
+	protected boolean onKeyBack() {
+		finish(R.anim.none, R.anim.right_out);
+		return super.onKeyBack();
+	}
 }

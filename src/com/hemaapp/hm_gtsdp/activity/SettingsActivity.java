@@ -9,6 +9,7 @@ import xtom.frame.util.XtomSharedPreferencesUtil;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler.Callback;
 import android.os.Message;
 import android.view.Gravity;
 import android.view.View;
@@ -16,10 +17,13 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 import cn.sharesdk.framework.Platform;
 import cn.sharesdk.framework.Platform.ShareParams;
 import cn.sharesdk.framework.PlatformActionListener;
 import cn.sharesdk.framework.ShareSDK;
+import cn.sharesdk.framework.utils.UIHandler;
+import cn.sharesdk.sina.weibo.SinaWeibo;
 import cn.sharesdk.tencent.qzone.QZone;
 
 import com.hemaapp.hm_FrameWork.HemaNetTask;
@@ -35,7 +39,8 @@ import com.hemaapp.hm_gtsdp.dialog.GtsdpTwoButtonDialog.OnButtonListener;
 import com.hemaapp.hm_gtsdp.model.User;
 import com.hemaapp.hm_gtsdp.view.SharePopupWindow;
 
-public class SettingsActivity extends GtsdpActivity implements OnClickListener, PlatformActionListener{
+public class SettingsActivity extends GtsdpActivity implements OnClickListener, PlatformActionListener, Callback{
+	private String ImageUrl = "http://f1.sharesdk.cn/imgs/2013/10/17/okvCkwz_144x114.gif";
 	private ImageView imageQuitActivity;
 	private View layoutClean, layoutSuggestion, layoutAboutUs, layoutShare, layoutScore;
 	private Button btnQuit;
@@ -119,6 +124,16 @@ public class SettingsActivity extends GtsdpActivity implements OnClickListener, 
 	@Override
 	public void onClick(View v) {
 		Intent intent;
+		ShareParams sp = new ShareParams();
+        sp.setShareType(Platform.SHARE_TEXT);
+        sp.setShareType(Platform.SHARE_WEBPAGE);
+		sp.setTitle("Test");
+		sp.setTitleUrl("http://sharesdk.cn"); // 标题的超链接
+		sp.setText("换成这图可以了吧");
+		sp.setImageUrl(ImageUrl);
+		sp.setComment("我对此分享内容的评论");
+		sp.setSite("Title");
+		sp.setSiteUrl("http://sharesdk.cn");
 		switch(v.getId())
 		{
 		case R.id.imageQuitActivity:
@@ -149,47 +164,29 @@ public class SettingsActivity extends GtsdpActivity implements OnClickListener, 
 			break;
 
 		case R.id.layoutQQ:// qq分享
-			ShareParams sp = new ShareParams();
-			sp.setTitle("Test");
-			sp.setTitleUrl("http://sharesdk.cn"); // 标题的超链接
-			sp.setText("TestDetail");
-			// sp.setImageUrl(shareParams.getImageUrl());
-			sp.setComment("我对此分享内容的评论");
-			sp.setSite("Title");
-			sp.setSiteUrl("http://sharesdk.cn");
+			shareWindow.dismiss();
 			Platform qq = ShareSDK.getPlatform(mContext, "QQ");
-			// qq.setPlatformActionListener(platformActionListener);
+			qq.setPlatformActionListener(this);
 			qq.share(sp);
 			break;
 		case R.id.layoutWechat://微信分享
-			ShareParams wechatSp = new ShareParams();
-			wechatSp.setTitle("Test");
-			wechatSp.setTitleUrl("http://sharesdk.cn"); // 标题的超链接
-			wechatSp.setText("TestDetail");
-			// sp.setImageUrl(shareParams.getImageUrl());
-			wechatSp.setComment("我对此分享内容的评论");
-			wechatSp.setSite("Title");
-			wechatSp.setSiteUrl("http://sharesdk.cn");
-			wechatSp.setShareType(Platform.SHARE_TEXT);
-			String wechatName = cn.sharesdk.wechat.friends.Wechat.NAME;
+			shareWindow.dismiss();
+			String wechatName = cn.sharesdk.wechat.moments.WechatMoments.NAME;
 			Platform Wechat = ShareSDK.getPlatform(wechatName);
 			Wechat.setPlatformActionListener(this);
-			Wechat.share(wechatSp);
+			Wechat.share(sp);
 			break;
 		case R.id.layoutQQZone://空间分享
-			ShareParams spZone = new ShareParams();
-			spZone.setTitle("Test");
-			spZone.setTitleUrl("http://sharesdk.cn"); // 标题的超链接
-			spZone.setText("TestDetail");
-			// sp.setImageUrl(shareParams.getImageUrl());
-			spZone.setComment("我对此分享内容的评论");
-			spZone.setSite("Title");
-			spZone.setSiteUrl("http://sharesdk.cn");
+			shareWindow.dismiss();
 			Platform qqZone = ShareSDK.getPlatform(mContext, QZone.NAME);
-			// qq.setPlatformActionListener(platformActionListener);
-			qqZone.share(spZone);
+			qqZone.setPlatformActionListener(this);
+			qqZone.share(sp);
 			break;
 		case R.id.layoutWeibo://微博分享
+			shareWindow.dismiss();
+			Platform weibo = ShareSDK.getPlatform(mContext, SinaWeibo.NAME);
+			weibo.setPlatformActionListener(this);
+			weibo.share(sp);
 			break;
 		}
 	}
@@ -257,13 +254,16 @@ public class SettingsActivity extends GtsdpActivity implements OnClickListener, 
 		}
 	}
 	
+	/**
+	 * 清除登录信息
+	 */
 	private void cancellationSuccess() {
 		UserDBHelper dbHelper = new UserDBHelper(mContext);
 		dbHelper.clear();
 		// 清空登录信息
 		GtsdpApplication.getInstance().setUser(null);
 		XtomSharedPreferencesUtil.save(mContext, "username", "");// 清空用户名
-		XtomSharedPreferencesUtil.save(mContext, "password", "");// 青空密码
+		XtomSharedPreferencesUtil.save(mContext, "password", "");// 清空密码
 		HemaUtil.setThirdSave(mContext, false);// 将第三方登录标记置为false
 		XtomActivityManager.finishAll();
 		Intent intent = new Intent(mContext, LoginActivity.class);
@@ -273,22 +273,85 @@ public class SettingsActivity extends GtsdpActivity implements OnClickListener, 
 	}
 
 	@Override
-	public void onCancel(Platform arg0, int arg1) {
-		showTextDialog("cancel");
-		
-	}
+    protected void onDestroy() {
+        super.onDestroy();
+        ShareSDK.stopSDK(this);
+    }
 
-	@Override
+
 	public void onComplete(Platform plat, int action,
 			HashMap<String, Object> res) {
-		showTextDialog(res.toString());
+		Message msg = new Message();
+		msg.arg1 = 1;
+		msg.arg2 = action;
+		msg.obj = plat;
+		UIHandler.sendMessage(msg, this);
 	}
 
-	@Override
-	public void onError(Platform arg0, int arg1, Throwable arg2) {
-		showTextDialog("Error");
-		
+	public void onCancel(Platform plat, int action) {
+		Message msg = new Message();
+		msg.arg1 = 3;
+		msg.arg2 = action;
+		msg.obj = plat;
+		UIHandler.sendMessage(msg, this);
 	}
 
+	public void onError(Platform plat, int action, Throwable t) {
+		t.printStackTrace();
 
+		Message msg = new Message();
+		msg.arg1 = 2;
+		msg.arg2 = action;
+		msg.obj = t;
+		UIHandler.sendMessage(msg, this);
+	}
+
+	public boolean handleMessage(Message msg) {
+		String text = actionToString(msg.arg2);
+		switch (msg.arg1) {
+		case 1: {
+			// 成功
+			Platform plat = (Platform) msg.obj;
+			text = plat.getName() + " completed at " + text;
+		}
+			break;
+		case 2: {
+			// 失败
+			if ("WechatClientNotExistException".equals(msg.obj.getClass()
+					.getSimpleName())) {
+				text = getString(R.string.wechat_client_inavailable);
+			} else if ("WechatTimelineNotSupportedException".equals(msg.obj
+					.getClass().getSimpleName())) {
+				text = getString(R.string.wechat_client_inavailable);
+			} else {
+				text = getString(R.string.share_failed);
+			}
+			showTextDialog(text);
+		}
+			break;
+		case 3: {
+			// 取消
+			Platform plat = (Platform) msg.obj;
+			text = "取消分享";
+		}
+			break;
+		}
+		return false;
+	}
+	
+	/** 将action转换为String */
+	public String actionToString(int action) {
+		switch (action) {
+			case Platform.ACTION_AUTHORIZING: return "ACTION_AUTHORIZING";
+			case Platform.ACTION_GETTING_FRIEND_LIST: return "ACTION_GETTING_FRIEND_LIST";
+			case Platform.ACTION_FOLLOWING_USER: return "ACTION_FOLLOWING_USER";
+			case Platform.ACTION_SENDING_DIRECT_MESSAGE: return "ACTION_SENDING_DIRECT_MESSAGE";
+			case Platform.ACTION_TIMELINE: return "ACTION_TIMELINE";
+			case Platform.ACTION_USER_INFOR: return "ACTION_USER_INFOR";
+			case Platform.ACTION_SHARE: return "ACTION_SHARE";
+			default: {
+				return "UNKNOWN";
+			}
+		}
+	}
 }

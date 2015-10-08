@@ -1,14 +1,8 @@
 package com.hemaapp.hm_gtsdp.nettask;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-
 import org.json.JSONObject;
-
 import xtom.frame.exception.DataParseException;
-
-import com.hemaapp.hm_FrameWork.result.HemaArrayResult;
 import com.hemaapp.hm_gtsdp.GtsdpArrayResult;
 import com.hemaapp.hm_gtsdp.GtsdpHttpInformation;
 import com.hemaapp.hm_gtsdp.GtsdpNetTask;
