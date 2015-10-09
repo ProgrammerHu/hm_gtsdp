@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
+import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -24,6 +25,7 @@ import com.hemaapp.hm_gtsdp.GtsdpHttpInformation;
 import com.hemaapp.hm_gtsdp.GtsdpUtil;
 import com.hemaapp.hm_gtsdp.dialog.GtsdpTwoButtonDialog;
 import com.hemaapp.hm_gtsdp.dialog.GtsdpTwoButtonDialog.OnButtonListener;
+import com.hemaapp.hm_gtsdp.view.SelectPopupWindow;
 
 /**
  * 登录界面
@@ -37,11 +39,12 @@ public class LoginActivity extends GtsdpActivity implements OnClickListener
 	private TextView txtRegister, txtForgetPwd;
 	private Button btnConfirm;
 	private ImageView imageRegister, imageClear;
-	
+	private SelectPopupWindow selectFindWay;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		setContentView(R.layout.activity_login);
 		super.onCreate(savedInstanceState);
+		selectFindWay = new SelectPopupWindow(mContext, itemsOnClick, "手机号码找回", "密保找回");
 	}
 
 	@Override
@@ -88,14 +91,12 @@ public class LoginActivity extends GtsdpActivity implements OnClickListener
 		case R.id.txtRegister:
 		case R.id.imageRegister:
 			intent = new Intent(LoginActivity.this, RegisterActivity.class);
-			intent.putExtra("activityType", 0);//0代表注册
+			intent.putExtra("ActivityType", 0);//0代表注册
 			startActivity(intent);
 			overridePendingTransition(R.anim.right_in, R.anim.none);
 			break;
 		case R.id.txtForgetPwd:
-			intent = new Intent(LoginActivity.this, AnswerQuestionActivity.class);
-			startActivity(intent);
-			overridePendingTransition(R.anim.right_in, R.anim.none);
+			selectFindWay.showAtLocation(findViewById(R.id.father), Gravity.BOTTOM, 0, 0);
 			break;
 		case R.id.btnConfirm:
 			clickConfirm();
@@ -106,6 +107,30 @@ public class LoginActivity extends GtsdpActivity implements OnClickListener
 		}
 	}
 
+    /**
+     * 点击找回密码
+     */
+    private OnClickListener itemsOnClick = new OnClickListener() {
+		@Override
+		public void onClick(View v) {
+			selectFindWay.dismiss();
+			Intent intent;
+			switch (v.getId()) {
+			case R.id.btnTop:
+				intent = new Intent(LoginActivity.this, RegisterActivity.class);
+				intent.putExtra("ActivityType", 1);//1代表找回密码
+				startActivity(intent);
+				overridePendingTransition(R.anim.right_in, R.anim.none);
+				break;
+			case R.id.btnMiddle:
+				intent = new Intent(LoginActivity.this, AnswerQuestionActivity.class);
+				startActivity(intent);
+				overridePendingTransition(R.anim.right_in, R.anim.none);
+				break;
+			}
+		}
+	};
+	
 	/**
 	 * 点击确定按钮
 	 */
@@ -203,4 +228,5 @@ public class LoginActivity extends GtsdpActivity implements OnClickListener
 		});
 		return false;
     }
+    
 }

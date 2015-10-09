@@ -171,7 +171,8 @@ public class SettingsActivity extends GtsdpActivity implements OnClickListener, 
 			break;
 		case R.id.layoutWechat://微信分享
 			shareWindow.dismiss();
-			String wechatName = cn.sharesdk.wechat.moments.WechatMoments.NAME;
+//			String wechatName = cn.sharesdk.wechat.moments.WechatMoments.NAME;
+			String wechatName = cn.sharesdk.wechat.friends.Wechat.NAME;
 			Platform Wechat = ShareSDK.getPlatform(wechatName);
 			Wechat.setPlatformActionListener(this);
 			Wechat.share(sp);
@@ -307,12 +308,10 @@ public class SettingsActivity extends GtsdpActivity implements OnClickListener, 
 	}
 
 	public boolean handleMessage(Message msg) {
-		String text = actionToString(msg.arg2);
+		String text = "";
 		switch (msg.arg1) {
 		case 1: {
 			// 成功
-			Platform plat = (Platform) msg.obj;
-			text = plat.getName() + " completed at " + text;
 		}
 			break;
 		case 2: {
@@ -331,27 +330,10 @@ public class SettingsActivity extends GtsdpActivity implements OnClickListener, 
 			break;
 		case 3: {
 			// 取消
-			Platform plat = (Platform) msg.obj;
-			text = "取消分享";
 		}
 			break;
 		}
 		return false;
 	}
 	
-	/** 将action转换为String */
-	public String actionToString(int action) {
-		switch (action) {
-			case Platform.ACTION_AUTHORIZING: return "ACTION_AUTHORIZING";
-			case Platform.ACTION_GETTING_FRIEND_LIST: return "ACTION_GETTING_FRIEND_LIST";
-			case Platform.ACTION_FOLLOWING_USER: return "ACTION_FOLLOWING_USER";
-			case Platform.ACTION_SENDING_DIRECT_MESSAGE: return "ACTION_SENDING_DIRECT_MESSAGE";
-			case Platform.ACTION_TIMELINE: return "ACTION_TIMELINE";
-			case Platform.ACTION_USER_INFOR: return "ACTION_USER_INFOR";
-			case Platform.ACTION_SHARE: return "ACTION_SHARE";
-			default: {
-				return "UNKNOWN";
-			}
-		}
-	}
 }

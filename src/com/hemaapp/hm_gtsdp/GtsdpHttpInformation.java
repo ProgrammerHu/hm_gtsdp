@@ -79,6 +79,27 @@ public enum GtsdpHttpInformation implements HemaHttpInfomation {
 	 * 通知列表
 	 */
 	NOTICE_LIST(15, "notice_list", "通知列表", false),
+	/**
+	 * 添加模板
+	 */
+	TEMPLATE_ADD(16, "template_add", "添加模板", false),
+	/**
+	 * 修改模板
+	 */
+	TEMPLATE_SAVE(17, "template_save", "修改模板", false),
+	/**
+	 * 添加模板
+	 */
+	TEMPLATE_LIST(18, "template_list", "模板列表", false),
+	/**
+	 * 验证密保
+	 */
+	PASSWORD_ASK_CHECK(19, "password_ask_check", "验证密保", false),
+	/**
+	 * 保存密保
+	 */
+	PASSWORD_ASK_SAVE(20, "password_ask_save", "保存密保", false),
+	
 	;
 
 	

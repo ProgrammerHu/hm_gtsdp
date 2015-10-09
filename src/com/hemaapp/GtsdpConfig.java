@@ -56,12 +56,8 @@ public class GtsdpConfig {
 	/**
 	 * 后台服务接口根路径
 	 */
-	// public static final String SYS_ROOT =
-	// "http://192.168.2.146:8008/group1/hm_5m/";
-	// public static final String SYS_ROOT =
-	// "http://124.128.23.74:8008/group1/hm_5m/";
-	public static final String SYS_ROOT = "http://124.128.23.74:8008/group4/hm_rrg/";
-	
+//	public static final String SYS_ROOT = "http://124.128.23.74:8008/group4/hm_rrg/";
+	public static final String SYS_ROOT = "http://192.168.2.146:8008/group4/hm_gtsd/";
 	/**
 	 * 配送员（捎带者）
 	 */

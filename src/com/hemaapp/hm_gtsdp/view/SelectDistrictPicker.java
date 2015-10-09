@@ -114,7 +114,7 @@ public class SelectDistrictPicker extends PopupWindow implements
 		// 设置SelectPicPopupWindow弹出窗体动画效果
 		this.setAnimationStyle(R.style.AnimationBottomDialog);
 		// 实例化一个ColorDrawable颜色为半透明
-		ColorDrawable dw = new ColorDrawable(0xb0000000);
+		ColorDrawable dw = new ColorDrawable(0x90000000);
 		// 设置SelectPicPopupWindow弹出窗体的背景
 		this.setBackgroundDrawable(dw);
 		setUpData();
@@ -295,7 +295,10 @@ public class SelectDistrictPicker extends PopupWindow implements
 	 */
 	public String getDistrcictString()
 	{
-		return mCurrentProviceName + mCurrentCityName + mCurrentDistrictName;
+//		return mCurrentProviceName + mCurrentCityName + mCurrentDistrictName;
+		if(mCurrentProviceName.equals(mCurrentCityName))
+			return mCurrentProviceName;
+		return mCurrentProviceName + mCurrentCityName;
 	}
 	
 	private String[] getProvinces() throws Exception

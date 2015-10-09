@@ -7,32 +7,32 @@ import org.json.JSONObject;
 import xtom.frame.exception.DataParseException;
 
 import com.hemaapp.hm_FrameWork.result.HemaArrayResult;
+import com.hemaapp.hm_gtsdp.GtsdpArrayResult;
 import com.hemaapp.hm_gtsdp.GtsdpHttpInformation;
 import com.hemaapp.hm_gtsdp.GtsdpNetTask;
-import com.hemaapp.hm_gtsdp.model.UserInfo;
+import com.hemaapp.hm_gtsdp.model.TemplateItemModel;
 
-public class ClientGetTask extends GtsdpNetTask {
+public class GetTemplateTask extends GtsdpNetTask {
 
-	public ClientGetTask(GtsdpHttpInformation information,
+	public GetTemplateTask(GtsdpHttpInformation information,
 			HashMap<String, String> params) {
 		super(information, params);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
 	public Object parse(JSONObject jsonObject) throws DataParseException {
 		return new Result(jsonObject);
 	}
-	
-	private class Result extends HemaArrayResult<UserInfo> {
+
+	private class Result extends GtsdpArrayResult<TemplateItemModel> {
 
 		public Result(JSONObject jsonObject) throws DataParseException {
 			super(jsonObject);
 		} 
 
 		@Override
-		public UserInfo parse(JSONObject jsonObject) throws DataParseException {
-			return new UserInfo(jsonObject);
+		public TemplateItemModel parse(JSONObject jsonObject) throws DataParseException {
+			return new TemplateItemModel(jsonObject);
 		}
 	}
 }

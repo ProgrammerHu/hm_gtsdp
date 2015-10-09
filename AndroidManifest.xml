@@ -222,7 +222,7 @@
             android:name="com.hemaapp.hm_gtsdp.activity.TemplateListActivty"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
-			android:windowSoftInputMode="stateHidden"/>
+			android:windowSoftInputMode="stateAlwaysHidden"/>
 		<activity
             android:name="com.hemaapp.hm_gtsdp.activity.TemplateEditActivty"
             android:label="@string/app_name"
@@ -395,6 +395,11 @@
 			android:windowSoftInputMode="stateHidden"/>
         <activity
             android:name="com.hemaapp.hm_FrameWork.showlargepic.ShowLargePicActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.hemaapp.hm_gtsdp.activity.MyShowLargePicActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name"
             android:screenOrientation="portrait" />

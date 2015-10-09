@@ -30,8 +30,7 @@ import com.hemaapp.hm_gtsdp.R;
  */
 public class RegisterActivity extends GtsdpActivity implements OnClickListener{
 	private final String actionStr = "验证码已经发送到 ";
-	private int activityType;//标记是找回密码还是注册，0：注册；1：找回密码；其他都不对
-	
+	private int ActivityType;//标记是找回密码还是注册，0：注册；1：找回密码；其他都不对
 	private Intent beforeIntent;
 	
 	private ImageView imageQuitActivity,imageClear;
@@ -47,7 +46,7 @@ public class RegisterActivity extends GtsdpActivity implements OnClickListener{
 	protected void onCreate(Bundle savedInstanceState) {
 		setContentView(R.layout.activity_register);
 		super.onCreate(savedInstanceState);
-		if(activityType != 0 && activityType != 1)
+		if(ActivityType != 0 && ActivityType != 1)
 		{
 			showTextDialog("界面使用错误");
 		}
@@ -56,8 +55,6 @@ public class RegisterActivity extends GtsdpActivity implements OnClickListener{
 
 	@Override
 	protected void findView() {
-		beforeIntent = getIntent();
-		activityType = beforeIntent.getIntExtra("activityType", -1);
 		txtTitle = (TextView)findViewById(R.id.txtTitle);
 		txtNext = (TextView)findViewById(R.id.txtNext);
 		txtRemainingTime = (TextView)findViewById(R.id.txtRemainingTime);
@@ -66,9 +63,14 @@ public class RegisterActivity extends GtsdpActivity implements OnClickListener{
 		txtActionStr = (TextView)findViewById(R.id.txtActionStr);
 		imageQuitActivity = (ImageView)findViewById(R.id.imageQuitActivity);
 		imageClear = (ImageView)findViewById(R.id.imageClear);
-		if(activityType == 0)
-		{//改界面是注册
+		if(ActivityType == 0)
+		{//界面是注册
 			txtTitle.setText("注册");
+			txtNext.setText("下一步");
+		}
+		else if(ActivityType == 1)
+		{//界面是通过手机号找回密码
+			txtTitle.setText("找回密码");
 			txtNext.setText("下一步");
 		}
 		btnSendIdentifyCode = (Button)findViewById(R.id.btnSendIdentifyCode);
@@ -79,7 +81,11 @@ public class RegisterActivity extends GtsdpActivity implements OnClickListener{
 	}
 
 	@Override
-	protected void getExras() {}
+	protected void getExras() 
+	{
+		beforeIntent = getIntent();
+		ActivityType = beforeIntent.getIntExtra("ActivityType", -1);
+	}
 
 	@Override
 	protected void setListener() {
@@ -161,7 +167,7 @@ public class RegisterActivity extends GtsdpActivity implements OnClickListener{
 	 */
 	private void clickNext()
 	{
-		if(activityType == 0)
+		if(ActivityType == 0)
 		{//注册
 			if(!checkAgree.isChecked())
 			{
@@ -169,10 +175,10 @@ public class RegisterActivity extends GtsdpActivity implements OnClickListener{
 				return;
 			}
 			//TODO 加下来要验证验证码和手机号是否有效
+			Intent intent = new Intent(RegisterActivity.this, FixDataActivity.class);
+			startActivity(intent);
+			overridePendingTransition(R.anim.right_in, R.anim.none);
 		}
-		Intent intent = new Intent(RegisterActivity.this, FixDataActivity.class);
-		startActivity(intent);
-		overridePendingTransition(R.anim.right_in, R.anim.none);
 	}
 	
 

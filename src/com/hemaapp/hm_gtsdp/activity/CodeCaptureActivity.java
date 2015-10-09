@@ -482,7 +482,11 @@ public class CodeCaptureActivity extends GtsdpActivity implements Callback, OnCl
 			finish();
 			break;
 		case GtsdpConfig.CODE_SITE:
-			showTextDialog("接货成功");
+			intent = new Intent(this, GoodsDetailActivity.class);
+			intent.putExtra("ActivityType", GtsdpConfig.CODE_SITE);
+			startActivity(intent);
+			overridePendingTransition(R.anim.right_in, R.anim.none);
+			finish();
 			break;
 			
 		case GtsdpConfig.CODE_CURSOR:

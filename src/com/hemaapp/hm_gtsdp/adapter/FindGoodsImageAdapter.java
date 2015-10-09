@@ -26,6 +26,7 @@ import com.hemaapp.hm_FrameWork.view.RoundedImageView;
 import com.hemaapp.hm_FrameWork.view.ShowLargeImageView;
 import com.hemaapp.hm_gtsdp.GtsdpAdapter;
 import com.hemaapp.hm_gtsdp.R;
+import com.hemaapp.hm_gtsdp.activity.MyShowLargePicActivity;
 import com.hemaapp.hm_gtsdp.view.MyGridView;
 
 public class FindGoodsImageAdapter extends GtsdpAdapter implements OnClickListener {
@@ -102,7 +103,7 @@ public class FindGoodsImageAdapter extends GtsdpAdapter implements OnClickListen
 	@Override
 	public void onClick(View v) {
 		int position = Integer.parseInt(v.getTag(R.id.TAG).toString());
-		Intent sIt = new Intent(mContext, ShowLargePicActivity.class);
+		Intent sIt = new Intent(mContext, MyShowLargePicActivity.class);
 		sIt.putExtra("position", position);
 		sIt.putExtra("images", getImages());
 		mContext.startActivity(sIt);

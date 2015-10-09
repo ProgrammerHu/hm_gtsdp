@@ -1,19 +1,22 @@
 package com.hemaapp.hm_gtsdp.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.hemaapp.hm_FrameWork.HemaNetTask;
-import com.hemaapp.hm_FrameWork.dialog.HemaButtonDialog;
 import com.hemaapp.hm_FrameWork.result.HemaBaseResult;
 import com.hemaapp.hm_gtsdp.GtsdpActivity;
+import com.hemaapp.hm_gtsdp.GtsdpHttpInformation;
 import com.hemaapp.hm_gtsdp.R;
 import com.hemaapp.hm_gtsdp.dialog.GtsdptOneButtonDialog;
 import com.hemaapp.hm_gtsdp.dialog.GtsdptOneButtonDialog.OnButtonListener;
@@ -31,6 +34,14 @@ public class TemplateEditActivty extends GtsdpActivity implements OnClickListene
 	private ImageView imageQuitActivity;
 	private RelativeLayout layoutSelectAddress;
 	private SelectDistrictPicker myDistrictPicker;
+	private EditText editName, editPhone;
+	
+	private String token;//登录令牌
+	private String keytype;// 业务类型 1：发件人模板；2：收件人模板
+	private String name;//姓名
+	private String address;//姓名
+	private String telphone;//联系电话
+	private String templateId;//模板Id
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		setContentView(R.layout.activity_template_edit);
@@ -40,6 +51,7 @@ public class TemplateEditActivty extends GtsdpActivity implements OnClickListene
 			myDistrictPicker = new SelectDistrictPicker(mContext);
 			myDistrictPicker.setOnClickListener(clickReciver);
 		}
+		token = getApplicationContext().getUser().getToken();
 	}
 	
 	@Override
@@ -61,15 +73,22 @@ public class TemplateEditActivty extends GtsdpActivity implements OnClickListene
 	}
 
 	@Override
-	protected void callBackForServerSuccess(HemaNetTask arg0,
-			HemaBaseResult arg1) {
-		// TODO Auto-generated method stub
-		
+	protected void callBackForServerSuccess(HemaNetTask netTask,
+			HemaBaseResult baseResult) {
+		GtsdpHttpInformation information = (GtsdpHttpInformation)netTask.getHttpInformation();
+		switch (information) {
+		case TEMPLATE_ADD:
+		case TEMPLATE_SAVE:
+			cancelProgressDialog();
+			setResult(RESULT_OK);
+			finish(R.anim.none, R.anim.right_out);
+			break;
+		}
 	}
 
 	@Override
 	protected void callBeforeDataBack(HemaNetTask arg0) {
-		// TODO Auto-generated method stub
+		showProgressDialog("保存中");
 		
 	}
 
@@ -84,22 +103,30 @@ public class TemplateEditActivty extends GtsdpActivity implements OnClickListene
 		if(ActivityType == SENDER)
 		{
 			txtTemplateTitle.setText("发件人");
+			keytype = "1";
 		}
 		else if(ActivityType == RECIVER)
 		{
 			txtTemplateTitle.setText("收件人");
+			keytype = "2";
 		}
 		layoutSelectAddress = (RelativeLayout)findViewById(R.id.layoutSelectAddress);
 		txtAddress = (TextView)findViewById(R.id.txtAddress);
+		txtAddress.setText(beforeAddress);
+		editName = (EditText)findViewById(R.id.editName);
+		editName.setText(beforeName);
+		editPhone = (EditText)findViewById(R.id.editPhone);
+		editPhone.setText(beforePhone);
 	}
 
 	@Override
 	protected void getExras() {
 		beforeIntent = getIntent();
-		beforeName = beforeIntent.getStringExtra("Name");
-		beforeAddress = beforeIntent.getStringExtra("Address");
-		beforePhone = beforeIntent.getStringExtra("Phone");
+		beforeName = beforeIntent.getStringExtra("name");
+		beforeAddress = beforeIntent.getStringExtra("address");
+		beforePhone = beforeIntent.getStringExtra("telphone");
 		ActivityType = beforeIntent.getIntExtra("ActivityType", 300);
+		templateId = beforeIntent.getStringExtra("id");
 	}
 
 	@Override
@@ -111,10 +138,13 @@ public class TemplateEditActivty extends GtsdpActivity implements OnClickListene
 
 	@Override
 	public void onClick(View v) {
+		InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);  
+		imm.hideSoftInputFromWindow(editName.getWindowToken(), 0); //强制隐藏键盘
 		switch(v.getId())
 		{
 		case R.id.imageQuitActivity:
-			finish();
+			setResult(RESULT_CANCELED);
+			finish(R.anim.none, R.anim.right_out);
 			break;
 		case R.id.txtNext:
 			clickSubmit();
@@ -134,10 +164,22 @@ public class TemplateEditActivty extends GtsdpActivity implements OnClickListene
 	 */
 	private void clickSubmit()
 	{
+		name = editName.getEditableText().toString();
+		address = txtAddress.getText().toString();
+		telphone = editPhone.getEditableText().toString();
+		if(beforePhone == null || beforePhone.equals(""))
+		{//没有传入数据，表示是新增
+			getNetWorker().addTemplate(token, keytype, name, address, telphone);
+		}
+		else
+		{
+			getNetWorker().saveTemplate(token, templateId, keytype, name, address, telphone);
+		}
+		
+		
 		GtsdptOneButtonDialog dialog = new GtsdptOneButtonDialog(this);
 		dialog.setText("对不起，手机号尚未注册！");
 		dialog.setRightButtonTextColor(Color.rgb(0, 161, 216));
-//		dialog.show();
 		dialog.setButtonListener(new OnButtonListener() {
 			@Override
 			public void onRightButtonClick(
@@ -145,6 +187,7 @@ public class TemplateEditActivty extends GtsdpActivity implements OnClickListene
 				gtsdptOneButtonDialog.cancel();
 			}
 		});
+		dialog.cancel();
 	}
 	
 	@Override
@@ -183,5 +226,11 @@ public class TemplateEditActivty extends GtsdpActivity implements OnClickListene
 		}
 	};
 	
+	@Override
+	protected boolean onKeyBack() {
+		setResult(RESULT_CANCELED);
+		finish(R.anim.none, R.anim.right_out);
+		return super.onKeyBack();
+	};
 
 }

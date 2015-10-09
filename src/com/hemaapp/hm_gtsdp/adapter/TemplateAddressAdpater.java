@@ -4,25 +4,32 @@ import java.util.List;
 
 import u.aly.da;
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.hemaapp.hm_gtsdp.GtsdpActivity;
 import com.hemaapp.hm_gtsdp.GtsdpAdapter;
 import com.hemaapp.hm_gtsdp.R;
-import com.hemaapp.hm_gtsdp.model.ContactsTemplateModel;
+import com.hemaapp.hm_gtsdp.activity.StartActivity;
+import com.hemaapp.hm_gtsdp.activity.TemplateEditActivty;
+import com.hemaapp.hm_gtsdp.model.TemplateItemModel;
 
 public class TemplateAddressAdpater extends GtsdpAdapter{
 	private int SENDER = 100;//发件人
 	private int RECIVER = 200;//收件人
-	private List<ContactsTemplateModel> dataList;
+	private List<TemplateItemModel> dataList;
 	private int beforePosition = 0;//记录上次选择的位置
 	private int ActivityType;
-
-	public TemplateAddressAdpater(Context mContext, List<ContactsTemplateModel> dataList, int activtyType) {
+	private GtsdpActivity Activity;
+	
+	public TemplateAddressAdpater(Context mContext, List<TemplateItemModel> dataList, int activtyType) {
 		super(mContext);
+		Activity = (GtsdpActivity)mContext;
 		this.dataList = dataList;
 		this.ActivityType = activtyType;
 	}
@@ -59,6 +66,8 @@ public class TemplateAddressAdpater extends GtsdpAdapter{
 		holder.txtName = (TextView)convertView.findViewById(R.id.txtName);
 		holder.txtAddress = (TextView)convertView.findViewById(R.id.txtAddress);
 		holder.txtPhone = (TextView)convertView.findViewById(R.id.txtPhone);
+		holder.layoutTitle = convertView.findViewById(R.id.layoutTitle);
+		holder.layoutBody = convertView.findViewById(R.id.layoutBody);
 		setData(position, holder);
 		return convertView;
 	}
@@ -67,13 +76,14 @@ public class TemplateAddressAdpater extends GtsdpAdapter{
 	{
 		public ImageView imageCheck;
 		public TextView txtTitle, txtName, txtAddress, txtPhone;
+		public View layoutTitle, layoutBody;
 	}
 	
-	private void setData(int position, ViewHolder holder)
+	private void setData(final int position, ViewHolder holder)
 	{
 		holder.txtAddress.setText(dataList.get(position).getAddress());
 		holder.txtName.setText(dataList.get(position).getName());
-		holder.txtPhone.setText(dataList.get(position).getPhoneNumber());
+		holder.txtPhone.setText(dataList.get(position).getTelphone());
 		if(dataList.get(position).isCheck)
 		{
 			holder.imageCheck.setImageResource(R.drawable.check_blue);
@@ -90,6 +100,19 @@ public class TemplateAddressAdpater extends GtsdpAdapter{
 		{
 			holder.txtTitle.setText("收件人");
 		}
+		holder.layoutBody.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent(mContext, TemplateEditActivty.class);
+				intent.putExtra("ActivityType", ActivityType);
+				intent.putExtra("id", dataList.get(position).getId());
+				intent.putExtra("name", dataList.get(position).getName());
+				intent.putExtra("address", dataList.get(position).getAddress());
+				intent.putExtra("telphone", dataList.get(position).getTelphone());
+				Activity.startActivityForResult(intent, 0);
+				Activity.overridePendingTransition(R.anim.right_in, R.anim.none);
+			}
+		});
 	}
 	
 	/**
@@ -102,5 +125,9 @@ public class TemplateAddressAdpater extends GtsdpAdapter{
 		dataList.get(position).isCheck  = true;
 		beforePosition = position;
 	}
-
+	
+	public void changeDataList(List<TemplateItemModel> dataList)
+	{
+		this.dataList = dataList;
+	}
 }

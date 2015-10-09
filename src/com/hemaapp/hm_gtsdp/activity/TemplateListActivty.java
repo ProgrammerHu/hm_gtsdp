@@ -3,6 +3,9 @@ package com.hemaapp.hm_gtsdp.activity;
 import java.util.ArrayList;
 import java.util.List;
 
+import u.aly.da;
+import xtom.frame.view.XtomRefreshLoadmoreLayout;
+import xtom.frame.view.XtomRefreshLoadmoreLayout.OnStartListener;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -15,12 +18,16 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.amap.api.mapcore.ba;
 import com.hemaapp.hm_FrameWork.HemaNetTask;
 import com.hemaapp.hm_FrameWork.result.HemaBaseResult;
 import com.hemaapp.hm_gtsdp.GtsdpActivity;
+import com.hemaapp.hm_gtsdp.GtsdpArrayResult;
+import com.hemaapp.hm_gtsdp.GtsdpHttpInformation;
 import com.hemaapp.hm_gtsdp.R;
 import com.hemaapp.hm_gtsdp.adapter.TemplateAddressAdpater;
-import com.hemaapp.hm_gtsdp.model.ContactsTemplateModel;
+import com.hemaapp.hm_gtsdp.model.TemplateItemModel;
+import com.hemaapp.hm_gtsdp.view.GtsdpRefreshLoadmoreLayout;
 
 /**
  * 模板列表界面
@@ -34,17 +41,23 @@ public class TemplateListActivty extends GtsdpActivity implements OnClickListene
 	private Intent beforeIntent;
 	private int ActivityType;
 	private LinearLayout layoutAddTemplate;
+	private GtsdpRefreshLoadmoreLayout refreshLoadmoreLayout;
 	private ListView templateList;
 	private TemplateAddressAdpater addressAdapter;
 	private TextView txtTitle, txtNext, txtAdd;
 	private ImageView imageQuitActivity;
 	private int SelectPosition = -1;
-	private List<ContactsTemplateModel> dataList;
+	private List<TemplateItemModel> dataList;
+	private int page;//第几页 从0开始
+	private String token;// 登录令牌
+	private String keytype;// 业务类型 1：收件人模板； 2：发件人模板； 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		setContentView(R.layout.activity_template_list);
 		super.onCreate(savedInstanceState);
-		setListViewData();
+		page = 0;
+		token = getApplicationContext().getUser().getToken();
+		getNetWorker().getTemplateList(token, keytype, page);
 	}
 
 	@Override
@@ -60,21 +73,41 @@ public class TemplateListActivty extends GtsdpActivity implements OnClickListene
 	}
 
 	@Override
-	protected void callBackForServerFailed(HemaNetTask arg0, HemaBaseResult arg1) {
-		// TODO Auto-generated method stub
+	protected void callBackForServerFailed(HemaNetTask netTask, HemaBaseResult arg1) {
+		GtsdpHttpInformation infomation = (GtsdpHttpInformation)netTask.getHttpInformation();
+		switch (infomation) {
+		case TEMPLATE_LIST:
+			if(page == 0)
+				refreshLoadmoreLayout.refreshFailed();
+			else
+				refreshLoadmoreLayout.loadmoreFailed();
+			break;
+
+		}
+	}
+
+	@Override
+	protected void callBackForServerSuccess(HemaNetTask netTask,
+			HemaBaseResult baseResult) {
+		cancelProgressDialog();
+		GtsdpHttpInformation infomation = (GtsdpHttpInformation)netTask.getHttpInformation();
+		switch (infomation) {
+		case TEMPLATE_LIST:
+			setListViewData(baseResult);
+			if(page == 0)
+				refreshLoadmoreLayout.refreshSuccess();
+			else
+				refreshLoadmoreLayout.loadmoreSuccess();
+				
+			break;
+
+		}
 		
 	}
 
 	@Override
-	protected void callBackForServerSuccess(HemaNetTask arg0,
-			HemaBaseResult arg1) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	protected void callBeforeDataBack(HemaNetTask arg0) {
-		// TODO Auto-generated method stub
+	protected void callBeforeDataBack(HemaNetTask netTask) {
+	
 		
 	}
 
@@ -82,6 +115,7 @@ public class TemplateListActivty extends GtsdpActivity implements OnClickListene
 	protected void findView() {
 		layoutAddTemplate = (LinearLayout)findViewById(R.id.layoutAddTemplate);
 		templateList = (ListView)findViewById(R.id.templateList);
+		refreshLoadmoreLayout = (GtsdpRefreshLoadmoreLayout)findViewById(R.id.refreshLoadmoreLayout);
 		txtTitle = (TextView)findViewById(R.id.txtTitle);
 		txtTitle.setText("模板");
 		txtNext = (TextView)findViewById(R.id.txtNext);
@@ -91,10 +125,12 @@ public class TemplateListActivty extends GtsdpActivity implements OnClickListene
 		if(ActivityType == SENDER)
 		{
 			txtAdd.setText("添加发件人模板");
+			keytype = "1";
 		}
 		else if(ActivityType == RECIVER)
 		{
 			txtAdd.setText("添加收件人模板");
+			keytype = "2";
 		}
 	}
 
@@ -117,6 +153,22 @@ public class TemplateListActivty extends GtsdpActivity implements OnClickListene
 				addressAdapter.notifyDataSetChanged();
 			}
 		});
+		refreshLoadmoreLayout.setOnStartListener(new OnStartListener() {
+			
+			@Override
+			public void onStartRefresh(XtomRefreshLoadmoreLayout arg0) {
+				page = 0;
+				token = getApplicationContext().getUser().getToken();
+				getNetWorker().getTemplateList(token, keytype, page);
+			}
+			
+			@Override
+			public void onStartLoadmore(XtomRefreshLoadmoreLayout arg0) {
+				page++;
+				token = getApplicationContext().getUser().getToken();
+				getNetWorker().getTemplateList(token, keytype, page);
+			}
+		});
 	}
 
 	@Override
@@ -129,7 +181,7 @@ public class TemplateListActivty extends GtsdpActivity implements OnClickListene
 				Intent result = new Intent();
 				result.putExtra("Name", dataList.get(SelectPosition).getName());
 				result.putExtra("Address", dataList.get(SelectPosition).getAddress());
-				result.putExtra("Phone", dataList.get(SelectPosition).getPhoneNumber());
+				result.putExtra("Phone", dataList.get(SelectPosition).getTelphone());
 				setResult(RESULT_OK, result);
 			}
 			finish(R.anim.none, R.anim.right_out);
@@ -137,7 +189,8 @@ public class TemplateListActivty extends GtsdpActivity implements OnClickListene
 		case R.id.layoutAddTemplate:
 			Intent intent = new Intent(TemplateListActivty.this, TemplateEditActivty.class);
 			intent.putExtra("ActivityType", ActivityType);
-			startActivity(intent);
+			startActivityForResult(intent, 0);
+			overridePendingTransition(R.anim.right_in, R.anim.none);
 			break;
 		}
 		
@@ -145,19 +198,40 @@ public class TemplateListActivty extends GtsdpActivity implements OnClickListene
 	/**
 	 * 设置ListView数据
 	 */
-
-	private void setListViewData()
+	private void setListViewData(HemaBaseResult baseResult)
 	{
-		dataList = new ArrayList<ContactsTemplateModel>();
-		ContactsTemplateModel model = new ContactsTemplateModel("陈程程","山东省济南市","18215968686qq");
-		dataList.add(model);model = new ContactsTemplateModel("陈程程","山东省济南市","18215968686qq");
-		dataList.add(model);model = new ContactsTemplateModel("陈程程","山东省济南市","18215968686qq");
-		dataList.add(model);model = new ContactsTemplateModel("陈程程","山东省济南市","18215968686qq");
-		dataList.add(model);model = new ContactsTemplateModel("陈程程","山东省济南市","18215968686qq");
-		dataList.add(model);
-		addressAdapter = new TemplateAddressAdpater(TemplateListActivty.this, dataList, ActivityType);
-		templateList.setAdapter(addressAdapter);
-
+		GtsdpArrayResult<TemplateItemModel> result = (GtsdpArrayResult<TemplateItemModel>)baseResult;
+		if(page == 0)
+		{
+			dataList = result.getObjects();
+			addressAdapter = new TemplateAddressAdpater(TemplateListActivty.this, dataList, ActivityType);
+			templateList.setAdapter(addressAdapter);
+		}
+		else
+		{
+			if(dataList == null)
+			{
+				dataList = new ArrayList<TemplateItemModel>();
+			}
+			for(TemplateItemModel model : result.getObjects())
+			{
+				dataList.add(model);
+			}
+			addressAdapter.changeDataList(dataList);
+			addressAdapter.notifyDataSetChanged();
+		}
+	}
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		if(resultCode == RESULT_OK)
+		{
+			showProgressDialog("更新中");
+			page = 0;
+			token = getApplicationContext().getUser().getToken();
+			getNetWorker().getTemplateList(token, keytype, page);
+		}
 	}
 	
 	@Override

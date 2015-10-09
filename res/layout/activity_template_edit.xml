@@ -50,6 +50,7 @@
 
         <EditText
             android:id="@+id/editName"
+			android:textSize="@dimen/textsize_8"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="15dp"
@@ -101,6 +102,7 @@
 
         <TextView
             android:id="@+id/txtAddress"
+			android:textSize="@dimen/textsize_8"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_toLeftOf="@id/id3"
@@ -113,12 +115,11 @@
             android:singleLine="true" />
     </RelativeLayout>
 
-    <LinearLayout
+    <View
         android:layout_width="match_parent"
         android:layout_height="1px"
         android:layout_marginLeft="15dp"
-        android:background="@color/grey_line" >
-    </LinearLayout>
+        android:background="@color/grey_line" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -140,6 +141,7 @@
 
         <EditText
             android:id="@+id/editPhone"
+			android:textSize="@dimen/textsize_8"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="15dp"
@@ -150,4 +152,9 @@
             android:inputType="phone" />
     </LinearLayout>
 
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="@color/grey_line" />
 </LinearLayout>

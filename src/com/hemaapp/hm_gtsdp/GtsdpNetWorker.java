@@ -14,8 +14,10 @@ import com.hemaapp.hm_gtsdp.nettask.ClientLoginTask;
 import com.hemaapp.hm_gtsdp.nettask.ClientLoginoutTask;
 import com.hemaapp.hm_gtsdp.nettask.DeviceSaveTask;
 import com.hemaapp.hm_gtsdp.nettask.FileUploadTask;
+import com.hemaapp.hm_gtsdp.nettask.GetTemplateTask;
 import com.hemaapp.hm_gtsdp.nettask.InitTask;
 import com.hemaapp.hm_gtsdp.nettask.NoticeListTask;
+import com.hemaapp.hm_gtsdp.nettask.CurrentTask;
 import com.hemaapp.hm_gtsdp.nettask.UnionTradeTask;
 
 /**
@@ -86,6 +88,15 @@ public class GtsdpNetWorker extends HemaNetWorker {
 		GtsdpNetTask task = new InitTask(information, params);
 		executeTask(task);
 	}
+	public void clientVerify(String username)
+	{
+		GtsdpHttpInformation information = GtsdpHttpInformation.CLIENT_VERIFY;
+		HashMap<String, String> params = new HashMap<String, String>();
+		params.put("username", username);
+		GtsdpNetTask task = new CurrentTask(information, params);
+		executeTask(task);
+	}
+	
 	/**
 	 * 修改密码
 	 * @param token 登录令牌
@@ -119,9 +130,6 @@ public class GtsdpNetWorker extends HemaNetWorker {
 		GtsdpNetTask task = new DeviceSaveTask(information, params);
 		executeTask(task);
 	}
-	
-
-	
 	/**
 	 * 获取支付宝交易签名串
 	 * @param token 登陆令牌
@@ -218,6 +226,116 @@ public class GtsdpNetWorker extends HemaNetWorker {
 		params.put("page", page); 
 		
 		GtsdpNetTask task = new NoticeListTask(information, params);
+		executeTask(task);
+	}
+	/**
+	 * 添加模板接口
+	 * @param token 登录令牌
+	 * @param keytype 业务类型 1：发件人模板；2：收件人模板
+	 * @param name 姓名
+	 * @param address 地址
+	 * @param telphone 联系电话
+	 */
+	public void addTemplate(String token, String keytype, String name, String address, String telphone)
+	{
+		GtsdpHttpInformation information = GtsdpHttpInformation.TEMPLATE_ADD;
+		HashMap<String, String> params = new HashMap<String, String>();
+		params.put("token", token);// 登陆令牌
+		params.put("keytype", keytype);
+		params.put("name", name);
+		params.put("address", address);
+		params.put("telphone", telphone);
+		GtsdpNetTask task = new CurrentTask(information, params);
+		executeTask(task);
+	}
+	/**
+	 * 修改模板
+	 * @param token 登录令牌
+	 * @param id ID
+	 * @param keytype 业务类型 1：发件人模板；2：收件人模板
+	 * @param name 姓名
+	 * @param address 地址
+	 * @param telphone 联系电话
+	 */
+	public void saveTemplate(String token,String id, String keytype, String name, String address, String telphone)
+	{
+		GtsdpHttpInformation information = GtsdpHttpInformation.TEMPLATE_SAVE;
+		HashMap<String, String> params = new HashMap<String, String>();
+		params.put("token", token);// 登陆令牌
+		params.put("id", id);
+		params.put("keytype", keytype);
+		params.put("name", name);
+		params.put("address", address);
+		params.put("telphone", telphone);
+		GtsdpNetTask task = new CurrentTask(information, params);
+		executeTask(task);
+	}
+	/**
+	 * 获取模板列表
+	 * @param token 登录令牌
+	 * @param keytype 业务类型 1：发件人模板；2：收件人模板
+	 * @param page 第几页 从0开始
+	 */
+	public void getTemplateList(String token, String keytype, int page)
+	{
+		GtsdpHttpInformation information = GtsdpHttpInformation.TEMPLATE_LIST;
+		HashMap<String, String> params = new HashMap<String, String>();
+		params.put("token", token);// 登陆令牌
+		params.put("keytype", keytype);
+		params.put("page", String.valueOf(page));
+		GtsdpNetTask task = new GetTemplateTask(information, params);
+		executeTask(task);
+	}
+	/**
+	 * 验证密保接口
+	 * @param username 待修改密码的手机号
+	 * @param ask1_id 密保1问题id
+	 * @param answer1 密保1问题的答案
+	 * @param ask2_id 密保2问题id
+	 * @param answer2 密保2问题的答案
+	 * @param ask3_id 密保3问题id
+	 * @param answer3 密保3问题的答案
+	 */
+	public void checkAsk(String username, String ask1_id, String answer1
+			, String ask2_id, String answer2
+			, String ask3_id, String answer3)
+	{
+		GtsdpHttpInformation information = GtsdpHttpInformation.PASSWORD_ASK_CHECK;
+		HashMap<String, String> params = new HashMap<String, String>();
+		params.put("username", username);// 登陆令牌
+		params.put("ask1_id", ask1_id);
+		params.put("answer1", answer1);
+		params.put("ask2_id", ask2_id);
+		params.put("answer2", answer2);
+		params.put("ask3_id", ask3_id);
+		params.put("answer3", answer3);
+		GtsdpNetTask task = new CurrentTask(information, params);
+		executeTask(task);
+	}
+	/**
+	 * 保存密保接口
+	 * @param token 登录令牌
+	 * @param ask1_id 密保1问题id
+	 * @param answer1 密保1问题的答案
+	 * @param ask2_id 密保2问题id
+	 * @param answer2 密保2问题的答案
+	 * @param ask3_id 密保3问题id
+	 * @param answer3 密保3问题的答案
+	 */
+	public void saveAsk(String token, String ask1_id, String answer1
+			, String ask2_id, String answer2
+			, String ask3_id, String answer3)
+	{
+		GtsdpHttpInformation information = GtsdpHttpInformation.PASSWORD_ASK_SAVE;
+		HashMap<String, String> params = new HashMap<String, String>();
+		params.put("token", token);// 登陆令牌
+		params.put("ask1_id", ask1_id);
+		params.put("answer1", answer1);
+		params.put("ask2_id", ask2_id);
+		params.put("answer2", answer2);
+		params.put("ask3_id", ask3_id);
+		params.put("answer3", answer3);
+		GtsdpNetTask task = new CurrentTask(information, params);
 		executeTask(task);
 	}
 }

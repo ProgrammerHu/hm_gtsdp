@@ -16,6 +16,22 @@ public class OrderModel extends XtomObject {
 	private String OrderEnd;
 	private int Price;
 	
+	private String id;//捎带id
+	private String client_id;//发货人id
+	private String to_client_id;//收货人的id
+	private int total_fee;//支付金额
+	private String tradetype;//交易类型
+	private String receiver_name;//收件人的姓名
+	private String receiver_address;//收件人的地址
+	private String receiver_telphone;//收件人的电话
+	private String sender_name;//发件人姓名
+	private String sender_address;//发件人地址
+	private String sender_telphone;//发件人电话
+	private String code;//二维码信息
+	private String regdate;//提交时间
+	private String trade_no;//订单号
+
+	
 	public OrderModel(String OrderId, String OrderPosition, String OrderDatetime)
 	{
 		this.OrderId = OrderId;
