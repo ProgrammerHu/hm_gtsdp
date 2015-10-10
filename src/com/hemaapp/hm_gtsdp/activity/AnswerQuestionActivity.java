@@ -1,5 +1,11 @@
 package com.hemaapp.hm_gtsdp.activity;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.json.JSONObject;
+
+import xtom.frame.exception.DataParseException;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -21,6 +27,7 @@ import com.hemaapp.hm_gtsdp.GtsdpActivity;
 import com.hemaapp.hm_gtsdp.GtsdpHttpInformation;
 import com.hemaapp.hm_gtsdp.GtsdpUtil;
 import com.hemaapp.hm_gtsdp.R;
+import com.hemaapp.hm_gtsdp.model.User;
 
 /**
  * 回答问题界面
@@ -35,10 +42,11 @@ public class AnswerQuestionActivity extends GtsdpActivity implements OnClickList
 	private TextView txtTitle, txtNext;
 	private ImageView imageQuitActivity;
 	private Spinner spinner1, spinner2, spinner3;
-    private ArrayAdapter<QuestionModel> adapter, adapter1, adapter2, adapter3;
+    private ArrayAdapter<QuestionModel> adapter1, adapter2, adapter3;
     private QuestionModel tempModel1, tempModel2, tempModel3;
     private Button btnConfirm;
     private EditText editPhone, editText1, editText2, editText3;
+    private List<QuestionModel> list1, list2, list3, listTemp;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		setContentView(R.layout.activity_question);
@@ -60,7 +68,7 @@ public class AnswerQuestionActivity extends GtsdpActivity implements OnClickList
 
 	@Override
 	protected void callBackForServerFailed(HemaNetTask netTask, HemaBaseResult baseResult) {
-
+		cancelProgressDialog();
 		GtsdpHttpInformation information = (GtsdpHttpInformation)netTask.getHttpInformation();
 		switch (information) {
 		case CLIENT_VERIFY:
@@ -80,23 +88,38 @@ public class AnswerQuestionActivity extends GtsdpActivity implements OnClickList
 		switch (information) {
 		case CLIENT_VERIFY:
 			getNetWorker().checkAsk(editPhone.getEditableText().toString(), 
-					String.valueOf(spinner1.getSelectedItemPosition()), 
+					String.valueOf(((QuestionModel)spinner1.getSelectedItem()).getId()), 
 					editText1.getEditableText().toString().trim(), 
-					String.valueOf(spinner2.getSelectedItemPosition()), 
+					String.valueOf(((QuestionModel)spinner2.getSelectedItem()).getId()),   
 					editText2.getEditableText().toString().trim(), 
-					String.valueOf(spinner3.getSelectedItemPosition()), 
+					String.valueOf(((QuestionModel)spinner3.getSelectedItem()).getId()), 
 					editText3.getEditableText().toString().trim());
 			break;
 		case PASSWORD_ASK_CHECK:
+			cancelProgressDialog();
 			Toast.makeText(this, "验证成功", Toast.LENGTH_SHORT).show();
+			Intent intent = new Intent(this, SetPwdActivity.class);
+			intent.putExtra("ActivityType", 1);
+			intent.putExtra("username", editPhone.getEditableText().toString().trim());
+			startActivity(intent);
+			overridePendingTransition(R.anim.right_in, R.anim.none);
+			finish();
 			break;
 		}
 		
 	}
 
 	@Override
-	protected void callBeforeDataBack(HemaNetTask arg0) {
-		// TODO Auto-generated method stub
+	protected void callBeforeDataBack(HemaNetTask netTask) {
+
+		GtsdpHttpInformation information = (GtsdpHttpInformation)netTask.getHttpInformation();
+		switch (information) 
+		{
+		case CLIENT_VERIFY:
+			showProgressDialog("验证中，请稍后");
+			break;
+		
+		}
 		
 	}
 
@@ -111,46 +134,37 @@ public class AnswerQuestionActivity extends GtsdpActivity implements OnClickList
 		spinner2 = (Spinner)findViewById(R.id.spinner2); 
 		spinner3 = (Spinner)findViewById(R.id.spinner3); 
 		//将可选内容与ArrayAdapter连接起来
-        adapter = new ArrayAdapter<QuestionModel>(this,android.R.layout.simple_spinner_item);
         adapter1 = new ArrayAdapter<QuestionModel>(this,android.R.layout.simple_spinner_item);
         adapter2 = new ArrayAdapter<QuestionModel>(this,android.R.layout.simple_spinner_item);
         adapter3 = new ArrayAdapter<QuestionModel>(this,android.R.layout.simple_spinner_item);
-        adapter.add(new QuestionModel("0", "请选择"));
-        adapter.add(new QuestionModel("1", "你最喜欢的菜是什么？"));
-        adapter.add(new QuestionModel("2", "你最喜欢的颜色？"));
-        adapter.add(new QuestionModel("3", "你爸爸叫什么名字？"));
-        adapter.add(new QuestionModel("4", "你妈妈叫什么名字？"));
-        adapter.add(new QuestionModel("5", "你的家乡在哪里？"));
-        adapter.add(new QuestionModel("6", "你的大学叫什么？"));
+        list1 = new ArrayList<AnswerQuestionActivity.QuestionModel>();
+        list1.add(new QuestionModel("0", "请选择"));
+        list1.add(new QuestionModel("1", "你最喜欢的菜是什么？"));
+        list1.add(new QuestionModel("2", "你最喜欢的颜色？"));
+        list1.add(new QuestionModel("3", "你爸爸叫什么名字？"));
+        list1.add(new QuestionModel("4", "你妈妈叫什么名字？"));
+        list1.add(new QuestionModel("5", "你的家乡在哪里？"));
+        list1.add(new QuestionModel("6", "你的大学叫什么？"));
+        list2 = new ArrayList<AnswerQuestionActivity.QuestionModel>();
+        list3 = new ArrayList<AnswerQuestionActivity.QuestionModel>();
+        listTemp = new ArrayList<AnswerQuestionActivity.QuestionModel>();
+        for(QuestionModel model : list1)
+        {
+        	adapter1.add(model);
+        	adapter2.add(model);
+        	adapter3.add(model);
+        	list2.add(model);
+        	list3.add(model);
+        	listTemp.add(model);
+        }
 
-        adapter1.add(new QuestionModel("0", "请选择"));
-        adapter1.add(new QuestionModel("1", "你最喜欢的菜是什么？"));
-        adapter1.add(new QuestionModel("2", "你最喜欢的颜色？"));
-        adapter1.add(new QuestionModel("3", "你爸爸叫什么名字？"));
-        adapter1.add(new QuestionModel("4", "你妈妈叫什么名字？"));
-        adapter1.add(new QuestionModel("5", "你的家乡在哪里？"));
-        adapter1.add(new QuestionModel("6", "你的大学叫什么？"));
-
-        adapter2.add(new QuestionModel("0", "请选择"));
-        adapter2.add(new QuestionModel("1", "你最喜欢的菜是什么？"));
-        adapter2.add(new QuestionModel("2", "你最喜欢的颜色？"));
-        adapter2.add(new QuestionModel("3", "你爸爸叫什么名字？"));
-        adapter2.add(new QuestionModel("4", "你妈妈叫什么名字？"));
-        adapter2.add(new QuestionModel("5", "你的家乡在哪里？"));
-        adapter2.add(new QuestionModel("6", "你的大学叫什么？"));
-
-        adapter3.add(new QuestionModel("0", "请选择"));
-        adapter3.add(new QuestionModel("1", "你最喜欢的菜是什么？"));
-        adapter3.add(new QuestionModel("2", "你最喜欢的颜色？"));
-        adapter3.add(new QuestionModel("3", "你爸爸叫什么名字？"));
-        adapter3.add(new QuestionModel("4", "你妈妈叫什么名字？"));
-        adapter3.add(new QuestionModel("5", "你的家乡在哪里？"));
-        adapter3.add(new QuestionModel("6", "你的大学叫什么？"));
         //设置下拉列表的风格
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner1.setAdapter(adapter);
-        spinner2.setAdapter(adapter);
-        spinner3.setAdapter(adapter);
+        adapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        adapter3.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner1.setAdapter(adapter1);
+        spinner2.setAdapter(adapter2);
+        spinner3.setAdapter(adapter3);
         btnConfirm = (Button)findViewById(R.id.btnConfirm);
         editText1 = (EditText)findViewById(R.id.editText1);
         editText2 = (EditText)findViewById(R.id.editText2);
@@ -208,27 +222,87 @@ public class AnswerQuestionActivity extends GtsdpActivity implements OnClickList
 			long id) {
 		if(position == 0)
 		{
-			return;
+			if(tempModel1 == null && tempModel2 == null && tempModel3 == null)
+				return;
+			switch (parent.getId()) 
+			{
+			case R.id.spinner1:
+				ResetAdapter(adapter2, list2, tempModel3);
+				ResetAdapter(adapter3, list3, tempModel2);
+				break;
+			case R.id.spinner2:
+				ResetAdapter(adapter1, list1, tempModel3);
+				ResetAdapter(adapter3, list3, tempModel1);
+				break;
+			case R.id.spinner3:
+				ResetAdapter(adapter1, list1, tempModel2);
+				ResetAdapter(adapter2, list2, tempModel1);
+				break;
+			}
 		}
-		switch (parent.getId()) {
-		case R.id.spinner1:
-			tempModel1 = adapter1.getItem(position);
-			adapter2.remove(tempModel1);
-			break;
-		case R.id.spinner2:
-			tempModel2 = adapter2.getItem(position);
-			break;
-		case R.id.spinner3:
-			tempModel3 = adapter3.getItem(position);
-			break;
+		else
+		{
+			switch (parent.getId()) {
+			case R.id.spinner1:
+				tempModel1 = adapter1.getItem(position);
+				list2.remove(tempModel1);
+				list3.remove(tempModel1);
+				setAdapter(adapter2, list2);
+				setAdapter(adapter3, list3);
+				break;
+			case R.id.spinner2:
+				tempModel2 = adapter2.getItem(position);
+				list1.remove(tempModel2);
+				list3.remove(tempModel2);
+				setAdapter(adapter1, list1);
+				setAdapter(adapter3, list3);
+				break;
+			case R.id.spinner3:
+				tempModel3 = adapter3.getItem(position);
+				list1.remove(tempModel3);
+				list2.remove(tempModel3);
+				setAdapter(adapter1, list1);
+				setAdapter(adapter2, list2);
+				break;
+			}
 		}
-		showTextDialog(""+adapter.getItem(position).getId());
 	}
 
 	@Override
 	public void onNothingSelected(AdapterView<?> parent) {
 	}
-
+	/**
+	 * 点击请选择重置适配器
+	 * @param adapter
+	 * @param list
+	 */
+	private void ResetAdapter(ArrayAdapter<QuestionModel> adapter, List<QuestionModel> list, QuestionModel tempModel)
+	{
+		list.clear();
+		for(QuestionModel model : listTemp)
+		{
+			list.add(model);
+		}
+		if(tempModel != null)
+		{
+			list.remove(tempModel);
+		}
+		setAdapter(adapter, list);
+		tempModel = null;
+	}
+	/**
+	 * 选择时设置适配器
+	 * @param adapter
+	 * @param list
+	 */
+	private void setAdapter(ArrayAdapter<QuestionModel> adapter, List<QuestionModel> list)
+	{
+		adapter.clear();
+		for(QuestionModel model : list)
+		{
+			adapter.add(model);
+		}
+	}
 	private class QuestionModel
 	{
 		public QuestionModel(String id, String name)

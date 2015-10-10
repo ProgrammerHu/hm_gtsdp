@@ -99,6 +99,19 @@ public enum GtsdpHttpInformation implements HemaHttpInfomation {
 	 * 保存密保
 	 */
 	PASSWORD_ASK_SAVE(20, "password_ask_save", "保存密保", false),
+	/**
+	 * 申请配送员
+	 */
+	DELIVERY_ADD(21, "delivery_add", "申请配送员", false),
+	/**
+	 * 保存银行卡
+	 */
+	BANK_SAVE(22, "bank_save", "保存银行卡", false),
+	/**
+	 * 保存支付宝账户
+	 */
+	ALI_SAVE(23, "ali_save", "保存支付宝账户", false),
+	
 	
 	;
 

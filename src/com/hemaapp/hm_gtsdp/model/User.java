@@ -15,43 +15,53 @@ public class User extends HemaUser {
 	 * 
 	 */
 	private static final long serialVersionUID = -8412756093515557415L;
-	private String id;// 用户主键
-	private String username;// 登录名
-	private String email;// 用户邮箱
-	private String nickname;// 用户昵称
-	private String worker;// 用户职位
-	private String password;// 登陆密码 服务器端存储的是32位的MD5加密串
-	private String charindex;// 用户昵称的汉语拼音首字母索引
-	private String sex;// 用户性别 服务器端存储的是32位的MD5加密串
-	private String mobile;// 用户手机
-	private String avatar;// 个人主页头像图片（小） 如果为空请显示系统默认头像（小）
-	private String avatarbig;// 个人主页头像图片（大） 如果为空请显示系统默认头像（大）
-	private String backimg;// 个人主页背景图片 如果为空请显示系统默认背景
-	private String district_name;// 用户地区 0否1是
-	private String onlineflag;// 用户在线标记 0否1是
-	private String validflag;// 用户状态标记 0冻结1有效
-	private String devicetype;// 用户客户端类型 1：苹果 2：安卓
-	private String deviceid;// 用户客户端硬件标识码
-	private String lastlogintime;// 最后一次登录的时间
-	private String lastloginversion;// 最后一次登录的版本
-	private String regdate;// 用户注册时间
-	private String team_id;// 根团队主键id
-	private String team_name;// 根团队名称
-	private String workscore;// 执行力指数
-	private String hardscore;// 勤劳指数
-	private String cardavatar;// 名片头像
-	private String cardavatarbig;// 名片头像大图
-	private String cardname;// 名片姓名
-	private String cardbusiness;// 名片行业
-	private String cardbusinessid;// 名片行业主键
-	private String cardworker;// 名片职位
-	private String cardcompany;// 名片公司
-	private String cardmobile;// 名片电话
-	private String cardemail;// 名片邮箱
-	private String cardweburl;// 名片网址
-	private String cardopenflag;// 名片是否公开 名片公开0否1是 默认公开
-	private String team_validflag;// 团队是否有效
-									// 当team_validflag=0时，登录后需要跳转到“无权限，请联系客服页面”
+	private String id;
+	private String username;
+	private String email;
+	private String password;
+	private String nickname;
+	private String charindex;
+	private String sex;
+	private String mobile;
+	private String age;
+	private String selfsign;
+	private String avatar;
+	private String birthday;
+	private String avatarbig;
+	private String backimg;
+	private String district_name;
+	private String onlineflag;
+	private String validflag;
+	private String vestflag;
+	private String score;
+	private String feeaccount;
+	private String lng;
+	private String lat;
+	private String deviceid;
+	private String devicetype;
+	private String channelid;
+	private String lastloginversion;
+	private String lastlogintime;
+	private String content;
+	private String delflag;
+	private String regdate;
+	private String ask1_id;
+	private String answer1;
+	private String ask2_id;
+	private String answer2;
+	private String ask3_id;
+	private String answer3;
+	private String aliuser;
+	private String bankuser;
+	private String bankname;
+	private String bankcard;
+	private String bankaddress;
+	private String transflag;
+	private String checkflag;
+	private String android_must_update;
+	private String android_last_version;
+	private String android_update_url;
+
 
 	public User(JSONObject jsonObject) throws DataParseException {
 		super(jsonObject);
@@ -60,40 +70,49 @@ public class User extends HemaUser {
 				id = get(jsonObject, "id");
 				username = get(jsonObject, "username");
 				email = get(jsonObject, "email");
-				nickname = get(jsonObject, "nickname");
-				worker = get(jsonObject, "worker");
 				password = get(jsonObject, "password");
+				nickname = get(jsonObject, "nickname");
 				charindex = get(jsonObject, "charindex");
 				sex = get(jsonObject, "sex");
 				mobile = get(jsonObject, "mobile");
+				age = get(jsonObject, "age");
+				selfsign = get(jsonObject, "selfsign");
 				avatar = get(jsonObject, "avatar");
+				birthday = get(jsonObject, "birthday");
 				avatarbig = get(jsonObject, "avatarbig");
 				backimg = get(jsonObject, "backimg");
 				district_name = get(jsonObject, "district_name");
 				onlineflag = get(jsonObject, "onlineflag");
 				validflag = get(jsonObject, "validflag");
-				devicetype = get(jsonObject, "devicetype");
+				vestflag = get(jsonObject, "vestflag");
+				score = get(jsonObject, "score");
+				feeaccount = get(jsonObject, "feeaccount");
+				lng = get(jsonObject, "lng");
+				lat = get(jsonObject, "lat");
 				deviceid = get(jsonObject, "deviceid");
-				lastlogintime = get(jsonObject, "lastlogintime");
+				devicetype = get(jsonObject, "devicetype");
+				channelid = get(jsonObject, "channelid");
 				lastloginversion = get(jsonObject, "lastloginversion");
+				lastlogintime = get(jsonObject, "lastlogintime");
+				content = get(jsonObject, "content");
+				delflag = get(jsonObject, "delflag");
 				regdate = get(jsonObject, "regdate");
-				team_id = get(jsonObject, "team_id");
-				team_name = get(jsonObject, "team_name");
-				workscore = get(jsonObject, "workscore");
-				hardscore = get(jsonObject, "hardscore");
-				cardavatar = get(jsonObject, "cardavatar");
-				cardavatarbig = get(jsonObject, "cardavatarbig");
-				cardname = get(jsonObject, "cardname");
-				cardbusiness = get(jsonObject, "cardbusiness");
-				cardbusinessid = get(jsonObject, "cardbusinessid");
-				cardworker = get(jsonObject, "cardworker");
-				cardcompany = get(jsonObject, "cardcompany");
-				cardmobile = get(jsonObject, "cardmobile");
-				cardemail = get(jsonObject, "cardemail");
-				cardweburl = get(jsonObject, "cardweburl");
-				cardopenflag = get(jsonObject, "cardopenflag");
-				team_validflag = get(jsonObject, "team_validflag");
-
+				ask1_id = get(jsonObject, "ask1_id");
+				answer1 = get(jsonObject, "answer1");
+				ask2_id = get(jsonObject, "ask2_id");
+				answer2 = get(jsonObject, "answer2");
+				ask3_id = get(jsonObject, "ask3_id");
+				answer3 = get(jsonObject, "answer3");
+				aliuser = get(jsonObject, "aliuser");
+				bankuser = get(jsonObject, "bankuser");
+				bankname = get(jsonObject, "bankname");
+				bankcard = get(jsonObject, "bankcard");
+				bankaddress = get(jsonObject, "bankaddress");
+				transflag = get(jsonObject, "transflag");
+				checkflag = get(jsonObject, "checkflag");
+				android_must_update = get(jsonObject, "android_must_update");
+				android_last_version = get(jsonObject, "android_last_version");
+				android_update_url = get(jsonObject, "android_update_url");
 				log_i(toString());
 			} catch (JSONException e) {
 				throw new DataParseException(e);
@@ -101,342 +120,330 @@ public class User extends HemaUser {
 		}
 	}
 
-	public User(String token, String id, String username, String email,
-			String nickname, String worker, String password, String charindex,
-			String sex, String mobile, String avatar, String avatarbig,
-			String backimg, String district_name, String onlineflag,
-			String validflag, String devicetype, String deviceid,
-			String lastlogintime, String lastloginversion, String regdate,
-			String team_id, String team_name, String workscore,
-			String hardscore, String cardavatar, String cardname,
-			String cardbusiness, String cardbusinessid, String cardworker,
-			String cardcompany, String cardmobile, String cardemail,
-			String cardweburl) {
+
+	public User(String id, String username,
+			String email, String password, String nickname, String charindex,
+			String sex, String mobile, String age, String selfsign,
+			String avatar, String birthday, String avatarbig, String backimg,
+			String district_name, String onlineflag, String validflag,
+			String vestflag, String score, String feeaccount, String lng,
+			String lat, String deviceid, String devicetype, String channelid,
+			String lastloginversion, String lastlogintime, String content,
+			String delflag, String regdate, String ask1_id, String answer1,
+			String ask2_id, String answer2, String ask3_id, String answer3,
+			String aliuser, String bankuser, String bankname, String bankcard,
+			String bankaddress, String transflag, String checkflag,
+			String token, String android_must_update,
+			String android_last_version, String android_update_url)
+	{
 		super(token);
 		this.id = id;
 		this.username = username;
 		this.email = email;
-		this.nickname = nickname;
-		this.worker = worker;
 		this.password = password;
+		this.nickname = nickname;
 		this.charindex = charindex;
 		this.sex = sex;
 		this.mobile = mobile;
+		this.age = age;
+		this.selfsign = selfsign;
 		this.avatar = avatar;
+		this.birthday = birthday;
 		this.avatarbig = avatarbig;
 		this.backimg = backimg;
 		this.district_name = district_name;
 		this.onlineflag = onlineflag;
 		this.validflag = validflag;
-		this.devicetype = devicetype;
+		this.vestflag = vestflag;
+		this.score = score;
+		this.feeaccount = feeaccount;
+		this.lng = lng;
+		this.lat = lat;
 		this.deviceid = deviceid;
-		this.lastlogintime = lastlogintime;
+		this.devicetype = devicetype;
+		this.channelid = channelid;
 		this.lastloginversion = lastloginversion;
+		this.lastlogintime = lastlogintime;
+		this.content = content;
+		this.delflag = delflag;
 		this.regdate = regdate;
-		this.team_id = team_id;
-		this.team_name = team_name;
-		this.workscore = workscore;
-		this.hardscore = hardscore;
-		this.cardavatar = cardavatar;
-		this.cardname = cardname;
-		this.cardbusiness = cardbusiness;
-		this.cardbusinessid = cardbusinessid;
-		this.cardworker = cardworker;
-		this.cardcompany = cardcompany;
-		this.cardmobile = cardmobile;
-		this.cardemail = cardemail;
-		this.cardweburl = cardweburl;
+		this.ask1_id = ask1_id;
+		this.answer1 = answer1;
+		this.ask2_id = ask2_id;
+		this.answer2 = answer2;
+		this.ask3_id = ask3_id;
+		this.answer3 = answer3;
+		this.aliuser = aliuser;
+		this.bankuser = bankuser;
+		this.bankname = bankname;
+		this.bankcard = bankcard;
+		this.bankaddress = bankaddress;
+		this.transflag = transflag;
+		this.checkflag = checkflag;
+		this.android_must_update = android_must_update;
+		this.android_last_version = android_last_version;
+		this.android_update_url = android_update_url;
 	}
 
-	@Override
-	public String toString() {
-		return "User [id=" + id + ", username=" + username + ", email=" + email
-				+ ", nickname=" + nickname + ", worker=" + worker
-				+ ", password=" + password + ", charindex=" + charindex
-				+ ", sex=" + sex + ", mobile=" + mobile + ", avatar=" + avatar
-				+ ", avatarbig=" + avatarbig + ", backimg=" + backimg
-				+ ", district_name=" + district_name + ", onlineflag="
-				+ onlineflag + ", validflag=" + validflag + ", devicetype="
-				+ devicetype + ", deviceid=" + deviceid + ", lastlogintime="
-				+ lastlogintime + ", lastloginversion=" + lastloginversion
-				+ ", regdate=" + regdate + ", team_id=" + team_id
-				+ ", team_name=" + team_name + ", workscore=" + workscore
-				+ ", hardscore=" + hardscore + ", cardavatar=" + cardavatar
-				+ ", cardavatarbig=" + cardavatarbig + ", cardname=" + cardname
-				+ ", cardbusiness=" + cardbusiness + ", cardbusinessid="
-				+ cardbusinessid + ", cardworker=" + cardworker
-				+ ", cardcompany=" + cardcompany + ", cardmobile=" + cardmobile
-				+ ", cardemail=" + cardemail + ", cardweburl=" + cardweburl
-				+ ", cardopenflag=" + cardopenflag + ", team_validflag="
-				+ team_validflag + "]";
-	}
 
-	/**
-	 * @return the id
-	 */
 	public String getId() {
 		return id;
 	}
 
-	/**
-	 * @return the username
-	 */
+
 	public String getUsername() {
 		return username;
 	}
 
-	/**
-	 * @return the email
-	 */
+
 	public String getEmail() {
 		return email;
 	}
 
-	/**
-	 * @return the nickname
-	 */
-	public String getNickname() {
-		return nickname;
-	}
 
-	/**
-	 * @return the worker
-	 */
-	public String getWorker() {
-		return worker;
-	}
-
-	/**
-	 * @return the password
-	 */
 	public String getPassword() {
 		return password;
 	}
 
-	/**
-	 * @return the charindex
-	 */
+
+	public String getNickname() {
+		return nickname;
+	}
+
+
 	public String getCharindex() {
 		return charindex;
 	}
 
-	/**
-	 * @return the sex
-	 */
+
 	public String getSex() {
 		return sex;
 	}
 
-	/**
-	 * @return the mobile
-	 */
+
 	public String getMobile() {
 		return mobile;
 	}
 
-	/**
-	 * @return the avatar
-	 */
+
+	public String getAge() {
+		return age;
+	}
+
+
+	public String getSelfsign() {
+		return selfsign;
+	}
+
+
 	public String getAvatar() {
 		return avatar;
 	}
 
-	/**
-	 * @return the avatarbig
-	 */
+
+	public String getBirthday() {
+		return birthday;
+	}
+
+
 	public String getAvatarbig() {
 		return avatarbig;
 	}
 
-	/**
-	 * @return the backimg
-	 */
+
 	public String getBackimg() {
 		return backimg;
 	}
 
-	/**
-	 * @return the district_name
-	 */
+
 	public String getDistrict_name() {
 		return district_name;
 	}
 
-	/**
-	 * @return the onlineflag
-	 */
+
 	public String getOnlineflag() {
 		return onlineflag;
 	}
 
-	/**
-	 * @return the validflag
-	 */
+
 	public String getValidflag() {
 		return validflag;
 	}
 
-	/**
-	 * @return the devicetype
-	 */
-	public String getDevicetype() {
-		return devicetype;
+
+	public String getVestflag() {
+		return vestflag;
 	}
 
-	/**
-	 * @return the deviceid
-	 */
+
+	public String getScore() {
+		return score;
+	}
+
+
+	public String getFeeaccount() {
+		return feeaccount;
+	}
+
+
+	public String getLng() {
+		return lng;
+	}
+
+
+	public String getLat() {
+		return lat;
+	}
+
+
 	public String getDeviceid() {
 		return deviceid;
 	}
 
-	/**
-	 * @return the lastlogintime
-	 */
-	public String getLastlogintime() {
-		return lastlogintime;
+
+	public String getDevicetype() {
+		return devicetype;
 	}
 
-	/**
-	 * @return the lastloginversion
-	 */
+
+	public String getChannelid() {
+		return channelid;
+	}
+
+
 	public String getLastloginversion() {
 		return lastloginversion;
 	}
 
-	/**
-	 * @return the regdate
-	 */
+
+	public String getLastlogintime() {
+		return lastlogintime;
+	}
+
+
+	public String getContent() {
+		return content;
+	}
+
+
+	public String getDelflag() {
+		return delflag;
+	}
+
+
 	public String getRegdate() {
 		return regdate;
 	}
 
-	/**
-	 * @return the team_id
-	 */
-	public String getTeam_id() {
-		return team_id;
+
+	public String getAsk1_id() {
+		return ask1_id;
 	}
 
-	/**
-	 * @return the team_name
-	 */
-	public String getTeam_name() {
-		return team_name;
+
+	public String getAnswer1() {
+		return answer1;
 	}
 
-	/**
-	 * @return the workscore
-	 */
-	public String getWorkscore() {
-		return workscore;
+
+	public String getAsk2_id() {
+		return ask2_id;
 	}
 
-	/**
-	 * @return the hardscore
-	 */
-	public String getHardscore() {
-		return hardscore;
+
+	public String getAnswer2() {
+		return answer2;
 	}
 
-	/**
-	 * @return the cardavatar
-	 */
-	public String getCardavatar() {
-		return cardavatar;
+
+	public String getAsk3_id() {
+		return ask3_id;
 	}
 
-	/**
-	 * @return the cardavatarbig
-	 */
-	public String getCardavatarbig() {
-		return cardavatarbig;
+
+	public String getAnswer3() {
+		return answer3;
 	}
 
-	/**
-	 * @return the cardname
-	 */
-	public String getCardname() {
-		return cardname;
+
+	public String getAliuser() {
+		return aliuser;
 	}
 
-	/**
-	 * @return the cardbusiness
-	 */
-	public String getCardbusiness() {
-		return cardbusiness;
+
+	public String getBankuser() {
+		return bankuser;
 	}
 
-	/**
-	 * @return the cardbusinessid
-	 */
-	public String getCardbusinessid() {
-		return cardbusinessid;
+
+	public String getBankname() {
+		return bankname;
 	}
 
-	/**
-	 * @return the cardworker
-	 */
-	public String getCardworker() {
-		return cardworker;
+
+	public String getBankcard() {
+		return bankcard;
 	}
 
-	/**
-	 * @return the cardcompany
-	 */
-	public String getCardcompany() {
-		return cardcompany;
+
+	public String getBankaddress() {
+		return bankaddress;
 	}
 
-	/**
-	 * @return the cardmobile
-	 */
-	public String getCardmobile() {
-		return cardmobile;
+
+	public String getTransflag() {
+		return transflag;
 	}
 
-	/**
-	 * @return the cardemail
-	 */
-	public String getCardemail() {
-		return cardemail;
+
+	public String getCheckflag() {
+		return checkflag;
 	}
 
-	/**
-	 * @return the cardweburl
-	 */
-	public String getCardweburl() {
-		return cardweburl;
+
+	public String getAndroid_must_update() {
+		return android_must_update;
 	}
 
-	/**
-	 * @return the cardopenflag
-	 */
-	public String getCardopenflag() {
-		return cardopenflag;
+
+	public String getAndroid_last_version() {
+		return android_last_version;
 	}
 
-	/**
-	 * @return the team_validflag
-	 */
-	public String getTeam_validflag() {
-		return team_validflag;
+
+	public String getAndroid_update_url() {
+		return android_update_url;
 	}
 
-	/**
-	 * @param team_id
-	 *            the team_id to set
-	 */
-	public void setTeam_id(String team_id) {
-		this.team_id = team_id;
+
+	@Override
+	public String toString() {
+		return "User [id=" + id + ", username=" + username + ", email=" + email
+				+ ", password=" + password + ", nickname=" + nickname
+				+ ", charindex=" + charindex + ", sex=" + sex + ", mobile="
+				+ mobile + ", age=" + age + ", selfsign=" + selfsign
+				+ ", avatar=" + avatar + ", birthday=" + birthday
+				+ ", avatarbig=" + avatarbig + ", backimg=" + backimg
+				+ ", district_name=" + district_name + ", onlineflag="
+				+ onlineflag + ", validflag=" + validflag + ", vestflag="
+				+ vestflag + ", score=" + score + ", feeaccount=" + feeaccount
+				+ ", lng=" + lng + ", lat=" + lat + ", deviceid=" + deviceid
+				+ ", devicetype=" + devicetype + ", channelid=" + channelid
+				+ ", lastloginversion=" + lastloginversion + ", lastlogintime="
+				+ lastlogintime + ", content=" + content + ", delflag="
+				+ delflag + ", regdate=" + regdate + ", ask1_id=" + ask1_id
+				+ ", answer1=" + answer1 + ", ask2_id=" + ask2_id
+				+ ", answer2=" + answer2 + ", ask3_id=" + ask3_id
+				+ ", answer3=" + answer3 + ", aliuser=" + aliuser
+				+ ", bankuser=" + bankuser + ", bankname=" + bankname
+				+ ", bankcard=" + bankcard + ", bankaddress=" + bankaddress
+				+ ", transflag=" + transflag + ", checkflag=" + checkflag
+				+ ", android_must_update=" + android_must_update
+				+ ", android_last_version=" + android_last_version
+				+ ", android_update_url=" + android_update_url + "]";
 	}
 
-	/**
-	 * @param cardopenflag
-	 *            the cardopenflag to set
-	 */
-	public void setCardopenflag(String cardopenflag) {
-		this.cardopenflag = cardopenflag;
-	}
+
+
 
 }

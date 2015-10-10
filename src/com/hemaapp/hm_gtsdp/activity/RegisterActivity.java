@@ -16,9 +16,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.hemaapp.hm_FrameWork.HemaNetTask;
+import com.hemaapp.hm_FrameWork.result.HemaArrayResult;
 import com.hemaapp.hm_FrameWork.result.HemaBaseResult;
 import com.hemaapp.hm_gtsdp.GtsdpActivity;
 import com.hemaapp.hm_gtsdp.GtsdpCountDownTimer;
+import com.hemaapp.hm_gtsdp.GtsdpHttpInformation;
 import com.hemaapp.hm_gtsdp.GtsdpUtil;
 import com.hemaapp.hm_gtsdp.R;
 
@@ -41,6 +43,9 @@ public class RegisterActivity extends GtsdpActivity implements OnClickListener{
 	private CheckBox checkAgree;
 	
 	private GtsdpCountDownTimer myCount;
+	
+	private String username;
+	private String code;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -167,18 +172,24 @@ public class RegisterActivity extends GtsdpActivity implements OnClickListener{
 	 */
 	private void clickNext()
 	{
-		if(ActivityType == 0)
-		{//注册
-			if(!checkAgree.isChecked())
-			{
-				showTextDialog("请同意注册声明");
-				return;
-			}
-			//TODO 加下来要验证验证码和手机号是否有效
-			Intent intent = new Intent(RegisterActivity.this, FixDataActivity.class);
-			startActivity(intent);
-			overridePendingTransition(R.anim.right_in, R.anim.none);
+		username = editRegisterPhone.getEditableText().toString().trim();
+		code = editCode.getEditableText().toString().trim();
+		if(!GtsdpUtil.checkPhoneNumber(username))
+		{
+			showTextDialog("手机号格式不正确！");
+			return;
 		}
+		if(code.equals(""))
+		{
+			showTextDialog("请输入验证码");
+			return;
+		}
+		if(!checkAgree.isChecked())
+		{
+			showTextDialog("请同意注册声明");
+			return;
+		}
+		getNetWorker().clientVerify(username);
 	}
 	
 
@@ -195,15 +206,57 @@ public class RegisterActivity extends GtsdpActivity implements OnClickListener{
 	}
 
 	@Override
-	protected void callBackForServerFailed(HemaNetTask arg0, HemaBaseResult arg1) {
-		// TODO Auto-generated method stub
-		
+	protected void callBackForServerFailed(HemaNetTask netTask, HemaBaseResult baseResult) {
+		if(ActivityType == 0)
+		{//注册
+			GtsdpHttpInformation information = (GtsdpHttpInformation)netTask.getHttpInformation();
+			switch (information) {
+			case CLIENT_VERIFY:
+				int error_code = baseResult.getError_code();
+				if(error_code == 106)
+				{//用户账号不存在！
+					getNetWorker().getCodeVerify(username, code);
+				}
+				break;
+			default:
+				cancelProgressDialog();
+				showTextDialog(baseResult.getMsg());	
+				break;
+			}
+		}
+		else
+		{//找回密码
+			cancelProgressDialog();
+			showTextDialog(baseResult.getMsg());
+		}
 	}
 
 	@Override
-	protected void callBackForServerSuccess(HemaNetTask arg0,
-			HemaBaseResult arg1) {
-		// TODO Auto-generated method stub
+	protected void callBackForServerSuccess(HemaNetTask netTask,
+			HemaBaseResult baseResult) {
+		GtsdpHttpInformation information = (GtsdpHttpInformation)netTask.getHttpInformation();
+		if(ActivityType == 0)
+		{//注册
+			switch (information) {
+			case CLIENT_VERIFY:
+				showTextDialog("手机号已经被注册");
+				break;
+			case CODE_VERIFY:
+				gotoNext(baseResult);
+				break;
+			}
+		}
+		else
+		{//找回密码
+			switch (information) {
+			case CLIENT_VERIFY:
+				getNetWorker().getCodeVerify(username, code);
+				break;
+			case CODE_VERIFY:
+				gotoNext(baseResult);
+				break;
+			}
+		}
 		
 	}
 
@@ -218,5 +271,20 @@ public class RegisterActivity extends GtsdpActivity implements OnClickListener{
 		finish(R.anim.none, R.anim.right_out);
 		return super.onKeyBack();
 	}
-
+	/**
+	 * 验证成功之后去密码界面
+	 * @param baseResult
+	 */
+	private void gotoNext(HemaBaseResult baseResult)
+	{
+		HemaArrayResult<String> result = (HemaArrayResult<String>)baseResult;
+		String temp_token = result.getObjects().get(0);
+		Intent intent = new Intent(this, SetPwdActivity.class);
+//		Intent intent = new Intent(RegisterActivity.this, FixDataActivity.class);
+		intent.putExtra("ActivityType", ActivityType);
+		intent.putExtra("username", username);
+		intent.putExtra("temp_token", temp_token);
+		startActivity(intent);
+		overridePendingTransition(R.anim.right_in, R.anim.none);
+	}
 }

@@ -79,7 +79,7 @@
                 android:id="@+id/btnSendIdentifyCode"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@drawable/bg_linearlayout"
+                android:background="@drawable/bg_linearlayout_send"
                 android:text="发送验证码"
                 android:textColor="@color/main_blue" />
 

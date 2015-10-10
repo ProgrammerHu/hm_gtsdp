@@ -10,12 +10,12 @@ import org.json.JSONObject;
 import xtom.frame.XtomObject;
 
 /**
- * 用户详细信息模型
+ * 用户详细信息模型(（废弃）
  * @author Wen
  * @author HuFanglin
  *
  */
-public class UserInfo extends XtomObject {
+public class UserInfo1 extends XtomObject {
 	private String id;
 	private String username;
 	private String email;
@@ -532,7 +532,7 @@ public class UserInfo extends XtomObject {
 		this.friendflag = friendflag;
 	}
 
-	public UserInfo(String id, String username, String email, String password,
+	public UserInfo1(String id, String username, String email, String password,
 			String paypassword, String nickname, String charindex, String sex,
 			String birthday, String mobile, String selfsign, String avatar,
 			String avatarbig, String backimg, String district_name,
@@ -608,7 +608,7 @@ public class UserInfo extends XtomObject {
 		this.friendflag = friendflag;
 	}
 
-	public UserInfo(JSONObject json)
+	public UserInfo1(JSONObject json)
 	{
 		try {
 			this.id = json.getString("id");

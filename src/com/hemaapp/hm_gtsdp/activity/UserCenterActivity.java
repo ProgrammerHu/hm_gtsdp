@@ -47,8 +47,8 @@ import com.hemaapp.hm_FrameWork.view.ShowLargeImageView;
 import com.hemaapp.hm_gtsdp.GtsdpActivity;
 import com.hemaapp.hm_gtsdp.GtsdpHttpInformation;
 import com.hemaapp.hm_gtsdp.R;
+import com.hemaapp.hm_gtsdp.db.UserDBHelper;
 import com.hemaapp.hm_gtsdp.model.User;
-import com.hemaapp.hm_gtsdp.model.UserInfo;
 import com.hemaapp.hm_gtsdp.view.SelectPopupWindow;
 
 public class UserCenterActivity extends GtsdpActivity implements
@@ -123,10 +123,12 @@ public class UserCenterActivity extends GtsdpActivity implements
 			cancelProgressDialog();
 			break;
 		case CLIENT_GET:
-			HemaArrayResult<UserInfo> successResult = (HemaArrayResult<UserInfo>) result;
+			HemaArrayResult<User> successResult = (HemaArrayResult<User>) result;
 			String Avatar = successResult.getObjects().get(0).getAvatar();
 			String AvatarBig = successResult.getObjects().get(0).getAvatarbig();
 			LoadImage(Avatar, AvatarBig);
+			User user = successResult.getObjects().get(0);
+			new UserDBHelper(mContext).update(user);//更新用户数据
 			break;
 		}
 

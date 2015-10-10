@@ -14,7 +14,10 @@ import android.graphics.Color;
  * 该项目配置信息
  */
 public class GtsdpConfig {
-
+	/**
+	 * 是否开发环境
+	 */
+	public static final boolean IS_DEVELOPMENT = true;
 	/**
 	 * 设备类型
 	 *  1:苹果；2:安卓； 
@@ -40,7 +43,7 @@ public class GtsdpConfig {
 	/**
 	 * 图片压缩的最大宽度
 	 */
-	public static final int IMAGE_WIDTH = 320;
+	public static final int IMAGE_WIDTH = 640;
 	/**
 	 * 图片压缩的最大高度
 	 */

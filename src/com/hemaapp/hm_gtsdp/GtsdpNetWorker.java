@@ -9,9 +9,11 @@ import com.hemaapp.GtsdpConfig;
 import com.hemaapp.hm_FrameWork.HemaNetWorker;
 import com.hemaapp.hm_gtsdp.nettask.AlipayTradeTask;
 import com.hemaapp.hm_gtsdp.nettask.ChangePwdTask;
+import com.hemaapp.hm_gtsdp.nettask.ClientAddTask;
 import com.hemaapp.hm_gtsdp.nettask.ClientGetTask;
 import com.hemaapp.hm_gtsdp.nettask.ClientLoginTask;
 import com.hemaapp.hm_gtsdp.nettask.ClientLoginoutTask;
+import com.hemaapp.hm_gtsdp.nettask.CodeVerifyTask;
 import com.hemaapp.hm_gtsdp.nettask.DeviceSaveTask;
 import com.hemaapp.hm_gtsdp.nettask.FileUploadTask;
 import com.hemaapp.hm_gtsdp.nettask.GetTemplateTask;
@@ -38,8 +40,51 @@ public class GtsdpNetWorker extends HemaNetWorker {
 	public void clientLogin() {
 		
 	}
-	
-
+	/**
+	 * 获取随机码
+	 * @param username
+	 * @param code 测试阶段固定向服务器提交“1234”
+	 */
+	public void getCodeVerify(String username, String code)
+	{
+		GtsdpHttpInformation information = GtsdpHttpInformation.CODE_VERIFY;
+		HashMap<String, String> params = new HashMap<String, String>();
+		params.put("username", username);// 用户登录名 手机号或邮箱
+		params.put("code", code);
+		GtsdpNetTask task = new CodeVerifyTask(information, params);
+		executeTask(task);
+	}
+	/**
+	 * 用户注册 
+	 * @param temp_token 临时令牌
+	 * @param username 用户注册名
+	 * @param password 登陆密码 测试环境一律填写“123456”
+	 * @param nickname 用户昵称
+	 * @param address 详细地址
+	 * @param sex 性别
+	 * @param lng 经度
+	 * @param lat 维度
+	 */
+	public void clientAdd(String temp_token, String username, String password, String nickname, String address, String sex,
+			String lng, String lat)
+	{
+		if(GtsdpConfig.IS_DEVELOPMENT)
+		{
+			password = "123456";
+		}
+		GtsdpHttpInformation information = GtsdpHttpInformation.CLIENT_ADD;
+		HashMap<String, String> params = new HashMap<String, String>();
+		params.put("temp_token", temp_token);
+		params.put("username", username);
+		params.put("password", password);
+		params.put("nickname", nickname);
+		params.put("address", address);
+		params.put("sex", sex);
+		params.put("lng", lng);
+		params.put("lat", lat);
+		GtsdpNetTask task = new ClientAddTask(information, params);
+		executeTask(task);
+	}
 	/**
 	 * 登录
 	 */
@@ -54,7 +99,6 @@ public class GtsdpNetWorker extends HemaNetWorker {
 		params.put("submit", "提交");
 
 		GtsdpNetTask task = new ClientLoginTask(information, params);
-
 		executeTask(task);
 	}
 	
@@ -100,7 +144,7 @@ public class GtsdpNetWorker extends HemaNetWorker {
 	/**
 	 * 修改密码
 	 * @param token 登录令牌
-	 * @param keytype 密码类型	1：登陆密码 2：支付密码
+	 * @param keytype 密码类型 1：登陆密码 2：支付密码
 	 * @param old_password 旧密码
 	 * @param new_password 新密码
 	 */ 
@@ -113,6 +157,23 @@ public class GtsdpNetWorker extends HemaNetWorker {
 		params.put("old_password", old_password);// 客户端硬件串号
 		params.put("new_password", new_password);// 客户端硬件串号
 		GtsdpNetTask task = new ChangePwdTask(information, params);
+		executeTask(task);
+	}
+	/**
+	 * 重设密码
+	 * @param temp_token 临时令牌 
+	 * @param keytype 密码类型 1：登陆密码 2：支付密码
+	 * @param new_password 新密码
+	 */
+	public void resetPwd(String temp_token, String keytype, String new_password)
+	{
+		GtsdpHttpInformation information = GtsdpHttpInformation.PASSWORD_RESET;
+		HashMap<String, String> params = new HashMap<String, String>();
+		params.put("temp_token", temp_token);
+		params.put("keytype", keytype);
+		params.put("new_password", new_password);
+		
+		GtsdpNetTask task = new CurrentTask(information, params);
 		executeTask(task);
 	}
 	/**
@@ -328,13 +389,65 @@ public class GtsdpNetWorker extends HemaNetWorker {
 	{
 		GtsdpHttpInformation information = GtsdpHttpInformation.PASSWORD_ASK_SAVE;
 		HashMap<String, String> params = new HashMap<String, String>();
-		params.put("token", token);// 登陆令牌
+		params.put("token", token);
 		params.put("ask1_id", ask1_id);
 		params.put("answer1", answer1);
 		params.put("ask2_id", ask2_id);
 		params.put("answer2", answer2);
 		params.put("ask3_id", ask3_id);
 		params.put("answer3", answer3);
+		GtsdpNetTask task = new CurrentTask(information, params);
+		executeTask(task);
+	}
+	/**
+	 * 申请配送员
+	 * @param token 登录令牌
+	 * @param realname 真实姓名
+	 * @param telphone 联系电话
+	 * @param address 家庭住址
+	 */
+	public void deliveryAdd(String token, String realname, String telphone, String address)
+	{
+		GtsdpHttpInformation information = GtsdpHttpInformation.DELIVERY_ADD;
+		HashMap<String, String> params = new HashMap<String, String>();
+		params.put("token", token);
+		params.put("realname", realname);
+		params.put("telphone", telphone);
+		params.put("address", address);
+		GtsdpNetTask task = new CurrentTask(information, params);
+		executeTask(task);
+	}
+	/**
+	 * 保存银行卡
+	 * @param token 登录令牌
+	 * @param bankuser 开户名
+	 * @param bankname 银行名称
+	 * @param bankcard 卡号
+	 * @param bankaddress 开户行地址
+	 */
+	public void bankSave(String token, String bankuser, String bankname, String bankcard, String bankaddress)
+	{
+		GtsdpHttpInformation information = GtsdpHttpInformation.BANK_SAVE;
+		HashMap<String, String> params = new HashMap<String, String>();
+		params.put("token", token);
+		params.put("bankuser", bankuser);
+		params.put("bankname", bankname);
+		params.put("bankcard", bankcard);
+		params.put("bankaddress", bankaddress);
+		GtsdpNetTask task = new CurrentTask(information, params);
+		executeTask(task);
+	}
+	/**
+	 * 支付宝信息保存
+	 * @param token 登录令牌
+	 * @param aliuser 支付宝账号
+	 */
+	public void aliSave(String token, String aliuser)
+	{
+		GtsdpHttpInformation information = GtsdpHttpInformation.ALI_SAVE;
+		HashMap<String, String> params = new HashMap<String, String>();
+		params.put("token", token);
+		params.put("aliuser", aliuser);	
 		GtsdpNetTask task = new CurrentTask(information, params);
 		executeTask(task);
 	}

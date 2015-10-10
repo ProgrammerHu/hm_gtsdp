@@ -14,9 +14,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.hemaapp.hm_FrameWork.HemaNetTask;
+import com.hemaapp.hm_FrameWork.result.HemaArrayResult;
 import com.hemaapp.hm_FrameWork.result.HemaBaseResult;
 import com.hemaapp.hm_gtsdp.GtsdpActivity;
 import com.hemaapp.hm_gtsdp.GtsdpCountDownTimer;
+import com.hemaapp.hm_gtsdp.GtsdpHttpInformation;
 import com.hemaapp.hm_gtsdp.GtsdpUtil;
 import com.hemaapp.hm_gtsdp.R;
 /**
@@ -54,15 +56,29 @@ public class FindPwdActivity extends GtsdpActivity implements OnClickListener {
 	}
 
 	@Override
-	protected void callBackForServerFailed(HemaNetTask arg0, HemaBaseResult arg1) {
-		// TODO Auto-generated method stub
+	protected void callBackForServerFailed(HemaNetTask netTask, HemaBaseResult baseResult) {
+		cancelProgressDialog();
+		showTextDialog(baseResult.getMsg());
 		
 	}
 
 	@Override
-	protected void callBackForServerSuccess(HemaNetTask arg0,
-			HemaBaseResult arg1) {
-		// TODO Auto-generated method stub
+	protected void callBackForServerSuccess(HemaNetTask netTask,
+			HemaBaseResult baseResult) {
+		GtsdpHttpInformation information = (GtsdpHttpInformation)netTask.getHttpInformation();
+		switch (information) {
+		case CODE_VERIFY:
+			cancelProgressDialog();
+			HemaArrayResult<String> result = (HemaArrayResult<String>)baseResult;
+			Intent intent = new Intent(FindPwdActivity.this, ChangePwdActivity2.class);
+			intent.putExtra("temp_token", result.getObjects().get(0));
+			startActivity(intent);
+			overridePendingTransition(R.anim.right_in, R.anim.none);
+			finish();
+			break;
+		}
+
+		
 		
 	}
 
@@ -149,7 +165,7 @@ public class FindPwdActivity extends GtsdpActivity implements OnClickListener {
 		String phoneNumber = editRegisterPhone.getEditableText().toString();
 		if(!GtsdpUtil.checkPhoneNumber(phoneNumber))
 		{
-			showTextDialog("手机号格式不正确！");
+			showTextDialog("请输入正确的手机号");
 			return;
 		}
 		phoneNumber = phoneNumber.substring(0, 3) + "****" + phoneNumber.substring(phoneNumber.length() - 4, phoneNumber.length());
@@ -167,9 +183,20 @@ public class FindPwdActivity extends GtsdpActivity implements OnClickListener {
 	 */
 	private void clickNext()
 	{
-		Intent intent = new Intent(FindPwdActivity.this, ChangePwdActivity2.class);
-		startActivity(intent);
-		overridePendingTransition(R.anim.right_in, R.anim.none);
+		String username = editRegisterPhone.getEditableText().toString().trim();
+		String code = editCode.getEditableText().toString().trim();
+		if(!GtsdpUtil.checkPhoneNumber(username))
+		{
+			showTextDialog("请输入正确的手机号");
+			return;
+		}
+		if("".equals(code))
+		{
+			showTextDialog("请输入验证码");
+			return;
+		}
+		showProgressDialog("验证中");
+		getNetWorker().getCodeVerify(username, code);
 	}
 	
 }

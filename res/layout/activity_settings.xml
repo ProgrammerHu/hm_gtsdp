@@ -196,6 +196,17 @@
                 android:textColor="@color/main_blue"
                 android:textSize="@dimen/textsize_8.5"
                 android:id="@+id/btnQuit" />
+            <View 
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:background="@color/grey_line"
+                android:layout_above="@id/btnQuit"/>
+            <View 
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:background="@color/grey_line"
+                android:layout_below="@id/btnQuit"
+                />
         </RelativeLayout>
 
         <LinearLayout

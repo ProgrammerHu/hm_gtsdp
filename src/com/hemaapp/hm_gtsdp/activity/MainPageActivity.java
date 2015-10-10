@@ -2,6 +2,7 @@ package com.hemaapp.hm_gtsdp.activity;
 
 import java.lang.reflect.Field;
 
+import xtom.frame.exception.DataParseException;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -35,6 +36,8 @@ import com.hemaapp.hm_gtsdp.model.User;
 import com.hemaapp.hm_gtsdp.push.PushUtils;
 
 public class MainPageActivity extends GtsdpFragmentActivity implements OnClickListener {
+	private int transflag;//配送员状态 0：不是配送员；1：是配送员
+	private int checkflag;//配送员审核状态 0：未审核；1：已审核
 	private TextView txtTitle, txtNext;
 	private ImageView imageQuitActivity, pointsImage, imageSend, imageGet, imageFind;
 	private ViewPager mainViewPager;
@@ -44,8 +47,17 @@ public class MainPageActivity extends GtsdpFragmentActivity implements OnClickLi
 	protected void onCreate(Bundle savedInstanceState) {
 		setContentView(R.layout.activity_mainpage);
 		super.onCreate(savedInstanceState);
-
 		startPush();
+		try
+		{
+			transflag = Integer.parseInt(getApplicationContext().getUser().getTransflag());
+			checkflag = Integer.parseInt(getApplicationContext().getUser().getCheckflag());
+		}
+		catch(NumberFormatException e)
+		{
+			showTextDialog("用户身份异常");
+		}
+		
 	}
 
 	@Override
@@ -169,15 +181,26 @@ public class MainPageActivity extends GtsdpFragmentActivity implements OnClickLi
 		case R.id.imageFind:
 			
 			intent = new Intent();
-			/* 找货界面*/
-//			intent.setClass(this, FindGoodsActivity.class);
-			/*不是配送员*/
-//			intent.setClass(this, NotCursorActivity.class);
-			/*审核中*/
-			intent.setClass(this, IdentifyingActivity.class);
-			startActivity(intent);
-			overridePendingTransition(R.anim.right_in, R.anim.none);
-			
+			if(transflag == 1)
+			{/* 是配送员->找货界面*/
+				intent.setClass(this, FindGoodsActivity.class);
+			}
+			else if(transflag == 0)
+			{
+				if(checkflag == 1)
+				{/*审核中*/
+					intent.setClass(this, IdentifyingActivity.class);
+				}
+				else if(checkflag == 0)
+				{/*不是配送员*/
+					intent.setClass(this, NotCursorActivity.class);
+				}
+			}
+			if(intent != null)
+			{
+				startActivity(intent);
+				overridePendingTransition(R.anim.right_in, R.anim.none);
+			}
 			break;
 		case R.id.UserCenter:
 			intent = new Intent(this,UserCenterActivity.class);
@@ -297,13 +320,6 @@ public class MainPageActivity extends GtsdpFragmentActivity implements OnClickLi
 		super.onDestroy();
 		unregisterPushReceiver();
 	}
-    
-    
-    
-    
-    
-    
-    
     
     
     /* 推送相关 */

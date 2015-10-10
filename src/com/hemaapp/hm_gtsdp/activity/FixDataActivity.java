@@ -23,9 +23,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.hemaapp.GtsdpConfig;
+import com.hemaapp.hm_gtsdp.GtsdpHttpInformation;
 import com.hemaapp.hm_gtsdp.R;
 import com.hemaapp.hm_FrameWork.HemaImageWay;
 import com.hemaapp.hm_FrameWork.HemaNetTask;
+import com.hemaapp.hm_FrameWork.result.HemaArrayResult;
 import com.hemaapp.hm_FrameWork.result.HemaBaseResult;
 import com.hemaapp.hm_FrameWork.view.RoundedImageView;
 import com.hemaapp.hm_gtsdp.GtsdpActivity;
@@ -51,12 +53,17 @@ public class FixDataActivity extends GtsdpActivity implements OnClickListener{
 	
 	private SelectPopupWindow selectPop;
 	
-
 	private String tempPath;//保存图片路径
+	
 	private String imagePathCamera;//相机拍照路径
 	private RoundedImageView image_avatar;
 	private HemaImageWay imageWay;
 	
+	private String username;//用户名（手机号）
+	private String temp_token;//临时令牌
+	private String password;//密码
+	
+	private String token;//正式令牌
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -91,7 +98,11 @@ public class FixDataActivity extends GtsdpActivity implements OnClickListener{
 	}
 
 	@Override
-	protected void getExras() {
+	protected void getExras() 
+	{
+		username = getIntent().getStringExtra("username");
+		temp_token = getIntent().getStringExtra("temp_token");
+		password = getIntent().getStringExtra("password");
 	}
 
 	@Override
@@ -142,6 +153,9 @@ public class FixDataActivity extends GtsdpActivity implements OnClickListener{
 			startActivityForResult(intent, INPUT_SICK_NAME);
 			overridePendingTransition(R.anim.right_in, R.anim.none);
 		}
+			break;
+		case R.id.txtNext:
+			clickConfirm();
 			break;
 		}
 
@@ -302,8 +316,16 @@ public class FixDataActivity extends GtsdpActivity implements OnClickListener{
 	}
 
 	@Override
-	protected void callBackForServerFailed(HemaNetTask arg0, HemaBaseResult arg1) {
-		// TODO Auto-generated method stub
+	protected void callBackForServerFailed(HemaNetTask netTask, HemaBaseResult baseResult) {
+		GtsdpHttpInformation information = (GtsdpHttpInformation)netTask.getHttpInformation();
+		switch (information) {
+		case CLIENT_ADD:
+			HemaArrayResult<String> result = (HemaArrayResult<String>)baseResult;
+			
+			showTextDialog(result.getObjects().get(0));
+			break;
+
+		}
 		
 	}
 
@@ -339,5 +361,25 @@ public class FixDataActivity extends GtsdpActivity implements OnClickListener{
 	protected boolean onKeyBack() {
 		finish(R.anim.none, R.anim.right_out);
 		return super.onKeyBack();
+	}
+	/**
+	 * 点击提交
+	 */
+	private void clickConfirm()
+	{
+		String sex = txtSex.getText().toString().trim();
+		String nickname = txtSickName.getText().toString().trim();
+		String address = txtAddress.getText().toString().trim();
+		if(tempPath == null || "".equals(tempPath))
+		{
+			showTextDialog("请选择头像");
+			return;
+		}
+		if("".equals(address))
+		{
+			showTextDialog("请选择详细地址");
+			return;
+		}
+		getNetWorker().clientAdd(address, sex, address, nickname, address, sex, "117.6", "36.3");
 	}
 }

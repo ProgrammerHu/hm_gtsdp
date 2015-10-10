@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -26,6 +27,8 @@ import com.hemaapp.hm_FrameWork.HemaNetTask;
 import com.hemaapp.hm_FrameWork.result.HemaBaseResult;
 import com.hemaapp.hm_FrameWork.view.ShowLargeImageView;
 import com.hemaapp.hm_gtsdp.GtsdpActivity;
+import com.hemaapp.hm_gtsdp.GtsdpHttpInformation;
+import com.hemaapp.hm_gtsdp.GtsdpUtil;
 import com.hemaapp.hm_gtsdp.R;
 import com.hemaapp.hm_gtsdp.view.SelectPopupWindow;
 
@@ -45,6 +48,8 @@ public class CourierIdentificationActivity extends GtsdpActivity implements OnCl
 	private TextView txtTitle, txtNext;
 	private ImageView imageQuitActivity, imageFace, imageBack, imagePerson;
 	private ImageButton deleteFace, deleteBack, deletePerson;
+	private EditText editRealName, editTelPhone, editRealAddress;
+	
 //	private RelativeLayout layoutFace, layoutBack, layoutPerson;
 	private int TempClickId;
 	private SelectPopupWindow popupWindow;
@@ -71,33 +76,49 @@ public class CourierIdentificationActivity extends GtsdpActivity implements OnCl
 	}
 
 	@Override
-	protected void callAfterDataBack(HemaNetTask arg0) {
+	protected void callAfterDataBack(HemaNetTask netTask) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	protected void callBackForGetDataFailed(HemaNetTask arg0, int arg1) {
+	protected void callBackForGetDataFailed(HemaNetTask netTask, int arg1) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	protected void callBackForServerFailed(HemaNetTask arg0, HemaBaseResult arg1) {
-		// TODO Auto-generated method stub
-		
+	protected void callBackForServerFailed(HemaNetTask netTask, HemaBaseResult baseResult) {
+		cancelProgressDialog();
+		showTextDialog(baseResult.getMsg());
 	}
 
 	@Override
-	protected void callBackForServerSuccess(HemaNetTask arg0,
-			HemaBaseResult arg1) {
-		// TODO Auto-generated method stub
-		
+	protected void callBackForServerSuccess(HemaNetTask netTask,
+			HemaBaseResult baseResult) {
+		//验证手机号是否注册->提交申请配送员->上传图片
+		GtsdpHttpInformation infomation = (GtsdpHttpInformation)netTask.getHttpInformation();
+		switch (infomation) {
+		case CLIENT_VERIFY:
+			getNetWorker().deliveryAdd(getApplicationContext().getUser().getToken(), 
+					editRealName.getEditableText().toString().trim(), 
+					editTelPhone.getEditableText().toString().trim(), 
+					editTelPhone.getEditableText().toString().trim());
+			break;
+		case DELIVERY_ADD:
+			//还到不了这里
+			break;
+
+		}
 	}
 
 	@Override
-	protected void callBeforeDataBack(HemaNetTask arg0) {
-		// TODO Auto-generated method stub
+	protected void callBeforeDataBack(HemaNetTask netTask) {
+		GtsdpHttpInformation infomation = (GtsdpHttpInformation)netTask.getHttpInformation();
+		if(infomation == GtsdpHttpInformation.CLIENT_VERIFY)
+		{
+			showProgressDialog("提交中，请稍后");
+		}
 		
 	}
 
@@ -114,6 +135,9 @@ public class CourierIdentificationActivity extends GtsdpActivity implements OnCl
 		deleteFace = (ImageButton)findViewById(R.id.deleteFace);
 		deleteBack = (ImageButton)findViewById(R.id.deleteBack);
 		deletePerson = (ImageButton)findViewById(R.id.deletePerson);
+		editRealAddress = (EditText)findViewById(R.id.editRealAddress);
+		editRealName = (EditText)findViewById(R.id.editRealName);
+		editTelPhone = (EditText)findViewById(R.id.editTelPhone);
 	}
 
 	@Override
@@ -139,6 +163,7 @@ public class CourierIdentificationActivity extends GtsdpActivity implements OnCl
 		switch(v.getId())
 		{
 		case R.id.txtNext:
+			clickConfirm();
 			break;
 		case R.id.imageQuitActivity:
 			finish();
@@ -256,14 +281,13 @@ public class CourierIdentificationActivity extends GtsdpActivity implements OnCl
 	 */
 	private class CompressPicTask extends AsyncTask<String, Void, Integer> {
 		String compressPath;
-
 		@Override
 		protected Integer doInBackground(String... params) {
 			try {
 				String path = params[0];
 				String savedir = XtomFileUtil.getTempFileDir(mContext);
 				compressPath = XtomImageUtil.compressPictureWithSaveDir(path,
-						GtsdpConfig.IMAGE_HEIGHT, GtsdpConfig.IMAGE_WIDTH,
+						GtsdpConfig.IMAGE_WIDTH, GtsdpConfig.IMAGE_WIDTH,
 						GtsdpConfig.IMAGE_QUALITY, savedir, mContext);
 				return 0;
 			} catch (IOException e) {
@@ -282,6 +306,7 @@ public class CourierIdentificationActivity extends GtsdpActivity implements OnCl
 			switch (result) {
 			case 0:
 				loadImage(compressPath);
+				
 				break;
 			case 1:
 				showTextDialog("图片压缩失败");
@@ -294,6 +319,7 @@ public class CourierIdentificationActivity extends GtsdpActivity implements OnCl
 	 */
 	private void loadImage(String compressPath)
 	{
+		int height = (findViewById(R.id.layout11)).getHeight();
 		XtomImageTask imageTask ;
 		switch (TempClickId) {
 		case R.id.imageFace:
@@ -306,6 +332,7 @@ public class CourierIdentificationActivity extends GtsdpActivity implements OnCl
 			setFace = true;
 			(findViewById(R.id.layout1)).setVisibility(View.GONE);
 			(findViewById(R.id.layout11)).getLayoutParams().width = MaxWidth;
+			(findViewById(R.id.layout11)).getLayoutParams().height = height;
 			break;
 		case R.id.imageBack:
 			MaxWidth = (findViewById(R.id.layout2)).getWidth() + (findViewById(R.id.layout22)).getWidth();
@@ -317,6 +344,7 @@ public class CourierIdentificationActivity extends GtsdpActivity implements OnCl
 			setBack = true;
 			(findViewById(R.id.layout2)).setVisibility(View.GONE);
 			(findViewById(R.id.layout22)).getLayoutParams().width = MaxWidth;
+			(findViewById(R.id.layout22)).getLayoutParams().height = height;
 			break;
 		case R.id.imagePerson:
 			MaxWidth = (findViewById(R.id.layout3)).getWidth() + (findViewById(R.id.layout33)).getWidth();
@@ -328,9 +356,54 @@ public class CourierIdentificationActivity extends GtsdpActivity implements OnCl
 			setPerson = true;
 			(findViewById(R.id.layout3)).setVisibility(View.GONE);
 			(findViewById(R.id.layout33)).getLayoutParams().width = MaxWidth;
-			(findViewById(R.id.layout33)).getLayoutParams().height = (findViewById(R.id.layout22)).getLayoutParams().height;
+			(findViewById(R.id.layout33)).getLayoutParams().height = height;
 			break;
 		}
+	}
+	/**
+	 * 点击提交
+	 */
+	private void clickConfirm()
+	{
+		if(!setFace)
+		{
+			showTextDialog("请选择身份证正面");
+			return;
+		}
+		if(!setBack)
+		{
+			showTextDialog("请选择身份证反面");
+			return;
+		}
+		if(!setPerson)
+		{
+			showTextDialog("请选择身份证正面半身照");
+			return;
+		}
+		String realname = editRealName.getEditableText().toString().trim();
+		String telphone = editTelPhone.getEditableText().toString().trim();
+		String address = editRealAddress.getEditableText().toString().trim();
+		if(realname == null || realname.equals(""))
+		{
+			showTextDialog("请填写真实姓名");
+			return;
+		}
+		if(telphone == null || telphone.equals(""))
+		{
+			showTextDialog("请填写联系电话");
+			return;
+		}
+		if(address == null || address.equals(""))
+		{
+			showTextDialog("请填写家庭住址");
+			return;
+		}
+		if(!GtsdpUtil.checkPhoneNumber(telphone))
+		{
+			showTextDialog("请填写正确的联系电话");
+			return;
+		}
+		getNetWorker().clientVerify(telphone);//先验证手机号是否是注册用户
 	}
 
 }

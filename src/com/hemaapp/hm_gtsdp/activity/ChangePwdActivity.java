@@ -23,7 +23,6 @@ public class ChangePwdActivity extends GtsdpActivity implements OnClickListener{
 	private View imageQuitActivity;
 	private EditText editOldPwd, editNewPwd, editRepeatPwd;
 	private TextView txtTitle, txtNext;
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		setContentView(R.layout.activity_change_pwd);
@@ -43,15 +42,16 @@ public class ChangePwdActivity extends GtsdpActivity implements OnClickListener{
 	}
 
 	@Override
-	protected void callBackForServerFailed(HemaNetTask arg0, HemaBaseResult arg1) {
-		// TODO Auto-generated method stub
-		
+	protected void callBackForServerFailed(HemaNetTask arg0, HemaBaseResult baseResult) {
+		cancelProgressDialog();
+		showTextDialog(baseResult.getMsg());
 	}
 
 	@Override
-	protected void callBackForServerSuccess(HemaNetTask arg0,
-			HemaBaseResult arg1) {
-		showTextDialog("成功");
+	protected void callBackForServerSuccess(HemaNetTask netTask,
+			HemaBaseResult baseResult) {
+		cancelProgressDialog();
+		showTextDialog(baseResult.getMsg());
 		
 	}
 
@@ -137,6 +137,16 @@ public class ChangePwdActivity extends GtsdpActivity implements OnClickListener{
 			return;
 		}
 		User user = GtsdpApplication.getInstance().getUser();
-		getNetWorker().changePwd(user.getToken(), "1", OldPwd, NewPwd);
+
+		if(ActivityType == GtsdpConfig.CHANGE_LOGIN_PWD)
+		{
+			showProgressDialog("保存中");
+			getNetWorker().changePwd(user.getToken(), "1", OldPwd, NewPwd);
+		}
+		else
+		{
+			showProgressDialog("保存中");
+			getNetWorker().changePwd(user.getToken(), "2", OldPwd, NewPwd);
+		}
 	}
 }

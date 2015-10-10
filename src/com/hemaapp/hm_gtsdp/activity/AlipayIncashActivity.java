@@ -11,11 +11,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.hemaapp.hm_FrameWork.HemaNetTask;
+import com.hemaapp.hm_FrameWork.result.HemaArrayResult;
 import com.hemaapp.hm_FrameWork.result.HemaBaseResult;
 import com.hemaapp.hm_gtsdp.GtsdpActivity;
+import com.hemaapp.hm_gtsdp.GtsdpHttpInformation;
 import com.hemaapp.hm_gtsdp.R;
+import com.hemaapp.hm_gtsdp.db.UserDBHelper;
 import com.hemaapp.hm_gtsdp.dialog.GtsdptOneButtonDialog;
 import com.hemaapp.hm_gtsdp.dialog.GtsdptOneButtonDialog.OnButtonListener;
+import com.hemaapp.hm_gtsdp.model.User;
 
 public class AlipayIncashActivity extends GtsdpActivity implements OnClickListener{
 	private final int INPUT_ALIPAY_ACCOUNT = 100;
@@ -55,14 +59,26 @@ public class AlipayIncashActivity extends GtsdpActivity implements OnClickListen
 
 	@Override
 	protected void callBackForServerFailed(HemaNetTask arg0, HemaBaseResult arg1) {
-		// TODO Auto-generated method stub
-		
+		cancelProgressDialog();
+		showTextDialog(arg1.getMsg());
 	}
 
 	@Override
-	protected void callBackForServerSuccess(HemaNetTask arg0,
-			HemaBaseResult arg1) {
-		// TODO Auto-generated method stub
+	protected void callBackForServerSuccess(HemaNetTask netTask,
+			HemaBaseResult baseResult) {
+		GtsdpHttpInformation information = (GtsdpHttpInformation)netTask.getHttpInformation();
+		switch (information) {
+		case ALI_SAVE:
+			getNetWorker().clientGet(getApplicationContext().getUser().getToken(), getApplicationContext().getUser().getId());
+			break;
+		case CLIENT_GET:
+			cancelProgressDialog();
+			User user = ((HemaArrayResult<User>)baseResult).getObjects().get(0);
+			new UserDBHelper(mContext).update(user);
+			txtAlipayAccount.setText(user.getAliuser());
+			break;
+		}
+		
 		
 	}
 
@@ -81,6 +97,7 @@ public class AlipayIncashActivity extends GtsdpActivity implements OnClickListen
 		layoutDirection = findViewById(R.id.layoutDirection);
 		txtBalance = (TextView)findViewById(R.id.txtBalance);
 		txtAlipayAccount = (TextView)findViewById(R.id.txtAlipayAccount);
+		txtAlipayAccount.setText(getApplicationContext().getUser().getAliuser());
 		editCount = (EditText)findViewById(R.id.editCount);
 		editPwd = (EditText)findViewById(R.id.editPwd);
 		btnConfirm = (Button)findViewById(R.id.btnConfirm);
@@ -115,6 +132,7 @@ public class AlipayIncashActivity extends GtsdpActivity implements OnClickListen
 			intent.putExtra("Next", "确定");
 			intent.putExtra("InputType", InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);//邮箱类型
 			intent.putExtra("InputHint", "输入支付宝账号");
+			intent.putExtra("Text", txtAlipayAccount.getText().toString().trim());
 			startActivityForResult(intent, INPUT_ALIPAY_ACCOUNT);
 			overridePendingTransition(R.anim.right_in, R.anim.none);
 		}
@@ -181,7 +199,8 @@ public class AlipayIncashActivity extends GtsdpActivity implements OnClickListen
 			String Account = data.getStringExtra("Result");
 			if(!"".equals(Account))
 			{
-				txtAlipayAccount.setText(Account);
+				showProgressDialog("加载中");
+				getNetWorker().aliSave(getApplicationContext().getUser().getToken(), Account);
 			}
 		}
 	}

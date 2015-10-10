@@ -48,7 +48,7 @@
                 android:padding="15dp"
                 android:scrollHorizontally="true"
                 android:singleLine="true"
-                android:text="选择银行"
+                android:hint="选择银行"
                 android:textSize="@dimen/textsize_8" />
         </RelativeLayout>
 
@@ -87,7 +87,7 @@
                 android:padding="15dp"
                 android:scrollHorizontally="true"
                 android:singleLine="true"
-                android:text="户主名称"
+                android:hint="户主名称"
                 android:textSize="@dimen/textsize_8" />
         </RelativeLayout>
 
@@ -125,7 +125,7 @@
                 android:padding="15dp"
                 android:scrollHorizontally="true"
                 android:singleLine="true"
-                android:text="银行卡号"
+                android:hint="银行卡号"
                 android:textSize="@dimen/textsize_8" />
         </RelativeLayout>
 
@@ -163,7 +163,7 @@
                 android:padding="15dp"
                 android:scrollHorizontally="true"
                 android:singleLine="true"
-                android:text="开户行名称"
+                android:hint="开户行名称"
                 android:textSize="@dimen/textsize_8" />
         </RelativeLayout>
 

@@ -32,11 +32,11 @@ public class GtsdpDBHelper extends SQLiteOpenHelper {
 		// 创建系统初始化信息缓存表
 		db.execSQL(sysSQL);
 		// 创建当前登录用户信息缓存表
-		String user = "token text,id text,username text,email text,nickname text,worker text,password text,charindex text,sex text,mobile text,avatar text,"
-				+ "avatarbig text,backimg text,district_name text,onlineflag text,validflag text,devicetype text,deviceid text,"
-				+ "lastlogintime text,lastloginversion text,regdate text,team_id text,team_name text,workscore text,hardscore text,"
-				+ "cardavatar text,cardname text,cardbusiness text,cardbusinessid text,cardworker text,cardcompany text,cardmobile text,"
-				+ "cardemail text,cardweburl text";
+		String user = "id text,username text,email text,password text,nickname text,charindex text,sex text,mobile text,age text,selfsign text,"
+				+ "avatar text,birthday text,avatarbig text,backimg text,district_name text,onlineflag text,validflag text,vestflag text,score text,feeaccount text,"
+				+ "lng text,lat text,deviceid text,devicetype text,channelid text,lastloginversion text,lastlogintime text,content text,delflag text,regdate text,"
+				+ "ask1_id text,answer1 text,ask2_id text,answer2 text,ask3_id text,answer3 text,aliuser text,bankuser text,bankname text,bankcard text,"
+				+ "bankaddress text,transflag text,checkflag text,token text,android_must_update text,android_last_version text,android_update_url text";
 		String userSQL = "create table " + USER + " (" + user + ")";
 		db.execSQL(userSQL);
 	}

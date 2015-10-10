@@ -27,7 +27,7 @@
                 android:paddingBottom="15dp"
                 android:paddingLeft="5dp"
                 android:paddingTop="15dp"
-                android:text="提现银行"
+                android:hint="提现银行"
                 android:textColor="@color/black"
                 android:textSize="@dimen/textsize_10" />
 

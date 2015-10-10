@@ -17,6 +17,9 @@ public class ChangePwdActivity2 extends GtsdpActivity {
 	private EditText editNewPwd, editRepeatPwd;
 	private TextView txtTitle, txtNext;
 	private Button btnConfirm;
+	
+	private String temp_token;//临时令牌
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		setContentView(R.layout.activity_change_pwd2);
@@ -35,16 +38,17 @@ public class ChangePwdActivity2 extends GtsdpActivity {
 	}
 
 	@Override
-	protected void callBackForServerFailed(HemaNetTask arg0, HemaBaseResult arg1) {
-		// TODO Auto-generated method stub
+	protected void callBackForServerFailed(HemaNetTask netTask, HemaBaseResult baseResult) {
+		cancelProgressDialog();
+		showTextDialog(baseResult.getMsg());
 		
 	}
 
 	@Override
-	protected void callBackForServerSuccess(HemaNetTask arg0,
-			HemaBaseResult arg1) {
-		// TODO Auto-generated method stub
-		
+	protected void callBackForServerSuccess(HemaNetTask netTask,
+			HemaBaseResult baseResult) {
+		cancelProgressDialog();
+		showTextDialog("密码重置成功");
 	}
 
 	@Override
@@ -67,8 +71,7 @@ public class ChangePwdActivity2 extends GtsdpActivity {
 
 	@Override
 	protected void getExras() {
-		// TODO Auto-generated method stub
-		
+		temp_token = getIntent().getStringExtra("temp_token");
 	}
 
 	@Override
@@ -117,7 +120,13 @@ public class ChangePwdActivity2 extends GtsdpActivity {
 			showTextDialog("密码输入不一致！请重新输入");
 			return;
 		}
-		showTextDialog("OK");
+		if(temp_token.equals(""))
+		{
+			showTextDialog("临时令牌不能为空，get out");
+			return;
+		}
+		showProgressDialog("保存中");
+		getNetWorker().resetPwd(temp_token, "2", NewPwd);
 	}
 
 }

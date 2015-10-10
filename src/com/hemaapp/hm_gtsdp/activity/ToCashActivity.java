@@ -10,11 +10,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.hemaapp.hm_FrameWork.HemaNetTask;
+import com.hemaapp.hm_FrameWork.result.HemaArrayResult;
 import com.hemaapp.hm_FrameWork.result.HemaBaseResult;
 import com.hemaapp.hm_gtsdp.GtsdpActivity;
+import com.hemaapp.hm_gtsdp.GtsdpHttpInformation;
 import com.hemaapp.hm_gtsdp.R;
+import com.hemaapp.hm_gtsdp.db.UserDBHelper;
 import com.hemaapp.hm_gtsdp.dialog.GtsdptOneButtonDialog;
 import com.hemaapp.hm_gtsdp.dialog.GtsdptOneButtonDialog.OnButtonListener;
+import com.hemaapp.hm_gtsdp.model.User;
 
 public class ToCashActivity extends GtsdpActivity implements OnClickListener{
 	private final int SELECT_BANK = 100;
@@ -40,7 +44,6 @@ public class ToCashActivity extends GtsdpActivity implements OnClickListener{
 		});
 		dialog.cancel();
 	}
-
 	@Override
 	protected void callAfterDataBack(HemaNetTask arg0) {
 		// TODO Auto-generated method stub
@@ -60,10 +63,18 @@ public class ToCashActivity extends GtsdpActivity implements OnClickListener{
 	}
 
 	@Override
-	protected void callBackForServerSuccess(HemaNetTask arg0,
-			HemaBaseResult arg1) {
-		// TODO Auto-generated method stub
-		
+	protected void callBackForServerSuccess(HemaNetTask netTask,
+			HemaBaseResult baseResult) {
+		cancelProgressDialog();
+		GtsdpHttpInformation infomation = (GtsdpHttpInformation)netTask.getHttpInformation();
+		switch (infomation) {
+		case CLIENT_GET:
+			User user = ((HemaArrayResult<User>)baseResult).getObjects().get(0);
+			new UserDBHelper(mContext).update(user);
+			txtBank.setText(user.getBankname());
+			break;
+
+		}
 	}
 
 	@Override
@@ -84,6 +95,7 @@ public class ToCashActivity extends GtsdpActivity implements OnClickListener{
 		editPwd = (EditText)findViewById(R.id.editPwd);
 		btnConfirm = (Button)findViewById(R.id.btnConfirm);
 		txtBank = (TextView)findViewById(R.id.txtBank);
+		txtBank.setText(getApplicationContext().getUser().getBankname());
 	}
 
 	@Override
@@ -131,9 +143,9 @@ public class ToCashActivity extends GtsdpActivity implements OnClickListener{
 	 */
 	private void clickConfirm()
 	{
-		if("提现银行".equals(txtBank.getText()))
+		if("".equals(txtBank.getText()))
 		{
-			dialog.setText("请选择提现银行");
+			dialog.setText("绑定银行卡");
 			dialog.show();
 			return;
 		}
@@ -170,6 +182,9 @@ public class ToCashActivity extends GtsdpActivity implements OnClickListener{
 		super.onActivityResult(requestCode, resultCode, data);
 		if(requestCode == SELECT_BANK && resultCode == RESULT_OK)
 		{
+			showProgressDialog("加载中");
+			getNetWorker().clientGet(getApplicationContext().getUser().getToken(), 
+					getApplicationContext().getUser().getId());//保存成功之后需要更新用户数据
 			
 		}
 	}
