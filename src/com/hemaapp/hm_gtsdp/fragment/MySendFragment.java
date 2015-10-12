@@ -19,6 +19,8 @@ import android.widget.TextView;
 import com.hemaapp.hm_FrameWork.HemaNetTask;
 import com.hemaapp.hm_FrameWork.result.HemaBaseResult;
 import com.hemaapp.hm_gtsdp.GtsdpFragment;
+import com.hemaapp.hm_gtsdp.GtsdpFragmentActivity;
+import com.hemaapp.hm_gtsdp.GtsdpHttpInformation;
 import com.hemaapp.hm_gtsdp.R;
 import com.hemaapp.hm_gtsdp.activity.OrderDetailActivity;
 import com.hemaapp.hm_gtsdp.adapter.OrdersListAdapter;
@@ -28,7 +30,11 @@ import com.hemaapp.hm_gtsdp.view.GtsdpRefreshLoadmoreLayout;
 
 public class MySendFragment extends GtsdpFragment implements OnCheckedChangeListener,
 OnItemClickListener{
-	private int pageNumber;//记录当前fragment的页码
+	private GtsdpFragmentActivity Activity;
+	private int keytype;//业务类型 1:发货订单; 2:收货订单; 
+	private int keyid;/*主键id	
+	当keytype=1时，keyid=1:运输中,keyid=2:已送达; 
+	当keytype=2时，keyid=1:待接收,keyid=2:已收货; */
 	
 	private int pages = 0;//记录listview的页数
 	private GtsdpRefreshLoadmoreLayout refreshLoadmoreLayout;
@@ -38,16 +44,19 @@ OnItemClickListener{
 	private List<OrderModel> listDataOnPassage;//在途
 	private List<OrderModel> listDataServed;//已送达
 	private OrdersListAdapter listViewAdapter;
-	public MySendFragment(int pageNumber)
+	public MySendFragment(int pageNumber, GtsdpFragmentActivity activity)
 	{
 		super();
-		this.pageNumber = pageNumber;
+		this.keytype = pageNumber;
+		this.Activity = activity;
 	}
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		setContentView(R.layout.fragment_send);
 		super.onCreate(savedInstanceState);
+		keyid = 1;
+		doRequset();
 	}
 
 	@Override
@@ -63,15 +72,36 @@ OnItemClickListener{
 	}
 
 	@Override
-	protected void callBackForServerFailed(HemaNetTask arg0, HemaBaseResult arg1) {
-		// TODO Auto-generated method stub
-		
+	protected void callBackForServerFailed(HemaNetTask netTask, HemaBaseResult baseResult) {
+		GtsdpHttpInformation information = (GtsdpHttpInformation)netTask.getHttpInformation();
+		switch(information)
+		{
+		case TRANS_LIST:
+			cancelProgressDialog();
+			if(pages == 0)
+				refreshLoadmoreLayout.refreshFailed();
+			else
+				refreshLoadmoreLayout.loadmoreFailed();
+			showTextDialog(baseResult.getMsg());
+			break;
+		}
 	}
 
 	@Override
-	protected void callBackForServerSuccess(HemaNetTask arg0,
-			HemaBaseResult arg1) {
-		// TODO Auto-generated method stub
+	protected void callBackForServerSuccess(HemaNetTask netTask, 
+			HemaBaseResult baseResult) {
+		GtsdpHttpInformation information = (GtsdpHttpInformation)netTask.getHttpInformation();
+		switch(information)
+		{
+		case TRANS_LIST:
+			cancelProgressDialog();
+			if(pages == 0)
+				refreshLoadmoreLayout.refreshSuccess();
+			else
+				refreshLoadmoreLayout.loadmoreSuccess();
+			//到不了啊到不了
+			break;
+		}
 		
 	}
 
@@ -93,15 +123,26 @@ OnItemClickListener{
 	@Override
 	protected void setListener() {
 		listDataOnPassage = new ArrayList<OrderModel>();
-		listDataOnPassage.add(new OrderModel("E156456115645641756", "山东济南营业网点", "2015-8-21 10:13"));
-		listDataOnPassage.add(new OrderModel("E123542353453423426", "运输中", "2015-9-20 10:13"));
-		listDataOnPassage.add(new OrderModel("E855625851111111116", "运输中", "2015-9-21 10:13"));
+		listDataOnPassage.add(new OrderModel("E156456115645641756","", "", 11, "1", "收件人的姓名", "收件人的地址", "收件人的电话", "发件人姓名",
+				"发件人地址", "发件人电话", "二维码信息", "二维码信息", "订单号"));
+		listDataOnPassage.add(new OrderModel("E156456115645641756","", "", 12, "1", "收件人的姓名", "收件人的地址", "收件人的电话", "发件人姓名",
+				"发件人地址", "发件人电话", "二维码信息", "二维码信息", "订单号"));
+		listDataOnPassage.add(new OrderModel("E156456115645641756","", "", 13, "1", "收件人的姓名", "收件人的地址", "收件人的电话", "发件人姓名",
+				"发件人地址", "发件人电话", "二维码信息", "二维码信息", "订单号"));
 		
 		listDataServed = new ArrayList<OrderModel>();
-		listDataServed.add(new OrderModel("E156456115645641756", "已接收", "2015-8-21 10:13"));
-		listDataServed.add(new OrderModel("E123542353453423426", "已接收", "2015-9-20 10:13"));
-		listDataServed.add(new OrderModel("E855625851111111116", "已接收", "2015-9-21 10:13"));
-		listDataServed.add(new OrderModel("E855625851111111116", "已接收", "2015-9-21 10:13"));
+		listDataServed.add(new OrderModel("E156456115645641756","", "", 10, "1", "收件人的姓名", "收件人的地址", "收件人的电话", "发件人姓名",
+				"发件人地址", "发件人电话", "二维码信息", "二维码信息", "订单号"));
+		listDataServed.add(new OrderModel("E156456115645641756","", "", 10, "1", "收件人的姓名", "收件人的地址", "收件人的电话", "发件人姓名",
+				"发件人地址", "发件人电话", "二维码信息", "二维码信息", "订单号"));
+		listDataServed.add(new OrderModel("E156456115645641756","", "", 10, "1", "收件人的姓名", "收件人的地址", "收件人的电话", "发件人姓名",
+				"发件人地址", "发件人电话", "二维码信息", "二维码信息", "订单号"));
+		listDataServed.add(new OrderModel("E156456115645641756","", "", 10, "1", "收件人的姓名", "收件人的地址", "收件人的电话", "发件人姓名",
+				"发件人地址", "发件人电话", "二维码信息", "二维码信息", "订单号"));
+		listDataServed.add(new OrderModel("E156456115645641756","", "", 10, "1", "收件人的姓名", "收件人的地址", "收件人的电话", "发件人姓名",
+				"发件人地址", "发件人电话", "二维码信息", "二维码信息", "订单号"));
+		listDataServed.add(new OrderModel("E156456115645641756","", "", 10, "1", "收件人的姓名", "收件人的地址", "收件人的电话", "发件人姓名",
+				"发件人地址", "发件人电话", "二维码信息", "二维码信息", "订单号"));
 		listViewAdapter = new OrdersListAdapter(getActivity(), listDataOnPassage);
 		showListView.setAdapter(listViewAdapter);
 		radioGroup.setOnCheckedChangeListener(this);
@@ -114,10 +155,14 @@ OnItemClickListener{
 		switch(checkedId)
 		{
 		case R.id.rbtnLeft:
+			keyid = 1;
+			doRequset();
 			listViewAdapter.changeListData(listDataOnPassage);
 			listViewAdapter.notifyDataSetChanged();
 			break;
 		case R.id.rbtnRight:
+			keyid = 2;
+			doRequset();
 			listViewAdapter.changeListData(listDataServed);
 			listViewAdapter.notifyDataSetChanged();
 			break;
@@ -136,12 +181,13 @@ OnItemClickListener{
 		@Override
 		public void onStartRefresh(XtomRefreshLoadmoreLayout v) {// 刷新
 			pages = 0;
-			showTextDialog("上拉");
+			doRequset();
 		}
 
 		@Override
 		public void onStartLoadmore(XtomRefreshLoadmoreLayout v) {// 加载更多
-			showTextDialog("下拉");
+			pages++;
+			doRequset();
 		}
 	}
 
@@ -150,13 +196,23 @@ OnItemClickListener{
 			long id) {
 		Intent intent = new Intent(getActivity(), OrderDetailActivity.class);
 		if (rbtnLeft.isSelected()) {
-			intent.putExtra("Id", listDataOnPassage.get(position).getOrderId());
+			intent.putExtra("keyid", listDataOnPassage.get(position).getTrade_no());
 		} else {
-			intent.putExtra("Id", listDataServed.get(position).getOrderId());
+			intent.putExtra("keyid", listDataServed.get(position).getTrade_no());
 		}
+		intent.putExtra("keytype", "1");
 		startActivity(intent);
 		getActivity().overridePendingTransition(R.anim.right_in, R.anim.none);
 
+	}
+	/**
+	 * 发起请求，在onResume时发起
+	 */
+	private void doRequset()
+	{
+		showProgressDialog("数据获取中");
+		getNetWorker().getTransList(Activity.getApplicationContext().getUser().getToken(), 
+				String.valueOf(keytype), String.valueOf(keyid), String.valueOf(pages));
 	}
 
 }

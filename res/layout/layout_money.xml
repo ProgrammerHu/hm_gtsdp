@@ -28,7 +28,7 @@
             android:layout_centerVertical="true"
             android:layout_marginRight="5dp"
             android:padding="5dp"
-            android:text="99元"
+            android:text="元"
             android:textColor="@color/orange"
             android:textSize="@dimen/textsize_9" />
     </RelativeLayout>
@@ -57,7 +57,7 @@
             android:layout_centerVertical="true"
             android:layout_marginRight="5dp"
             android:padding="5dp"
-            android:text="120元"
+            android:text="元"
             android:textColor="@color/orange"
             android:textSize="@dimen/textsize_9" />
     </RelativeLayout>
@@ -89,7 +89,7 @@
             android:paddingTop="5dp"
             android:paddingBottom="5dp"
             android:paddingLeft="5dp"
-            android:text="99"
+            android:text="元"
             android:textColor="@color/orange"
             android:textSize="@dimen/textsize_9" />
 

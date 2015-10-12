@@ -45,6 +45,7 @@ import com.hemaapp.hm_FrameWork.HemaNetTask;
 import com.hemaapp.hm_FrameWork.result.HemaBaseResult;
 import com.hemaapp.hm_gtsdp.GtsdpActivity;
 import com.hemaapp.hm_gtsdp.GtsdpApplication;
+import com.hemaapp.hm_gtsdp.GtsdpHttpInformation;
 import com.hemaapp.hm_gtsdp.dialog.GtsdpTwoButtonDialog;
 import com.hemaapp.hm_gtsdp.dialog.GtsdpTwoButtonDialog.OnButtonListener;
 import com.hemaapp.hm_gtsdp.model.User;
@@ -68,6 +69,7 @@ public class CodeCaptureActivity extends GtsdpActivity implements Callback, OnCl
 	
 	private Intent beforeIntent;
 	private int ActivityType;//界面类型，参考GtsdpConfig
+	private boolean IsRepeat;//标记是否无效之后扫描 true：是；false或者不传否
 	private ImageView imageQuitActivity, imageOpenLight;
 	
 	private TextView left, title, txtTop, txtBottom, txtTitle; 
@@ -90,6 +92,8 @@ public class CodeCaptureActivity extends GtsdpActivity implements Callback, OnCl
 	private User user;
 
 	private GtsdpTwoButtonDialog dialog;
+	
+	private String SQCode;//二维码数据
 	/** Called when the activity is first created. */
 	@SuppressLint("CutPasteId") @Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -287,6 +291,7 @@ public class CodeCaptureActivity extends GtsdpActivity implements Callback, OnCl
 //			bundle.putParcelable("bitmap", barcode);
 //			resultIntent.putExtras(bundle);
 //			startActivity(resultIntent);
+			SQCode = resultString;
 			dialog.show();
 		}
 	}
@@ -341,33 +346,45 @@ public class CodeCaptureActivity extends GtsdpActivity implements Callback, OnCl
 
 	@Override
 	protected void callAfterDataBack(HemaNetTask arg0) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	protected void callBackForGetDataFailed(HemaNetTask arg0, int arg1) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	protected void callBackForServerFailed(HemaNetTask arg0, HemaBaseResult arg1) {
+	protected void callBackForServerFailed(HemaNetTask netTask, HemaBaseResult baseResult) {
 		// TODO Auto-generated method stub
-		
+		cancelProgressDialog();
+		GtsdpHttpInformation information = (GtsdpHttpInformation)netTask.getHttpInformation();
+		switch (information) {
+		case TRANS_GET:
+			showTextDialog(baseResult.getMsg());
+			break;
+		}
 	}
 
 	@Override
-	protected void callBackForServerSuccess(HemaNetTask arg0,
-			HemaBaseResult arg1) {
-		// TODO Auto-generated method stub
+	protected void callBackForServerSuccess(HemaNetTask netTask,
+			HemaBaseResult baseResult) {
+		//TODO
+		GtsdpHttpInformation information = (GtsdpHttpInformation)netTask.getHttpInformation();
+		switch (information) {
+		case TRANS_GET:
+			cancelProgressDialog();
+			showTextDialog("确认收货");
+			break;
+
+		default:
+			break;
+		}
 		
 	}
 
 	@Override
 	protected void callBeforeDataBack(HemaNetTask arg0) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
@@ -409,6 +426,7 @@ public class CodeCaptureActivity extends GtsdpActivity implements Callback, OnCl
 	protected void getExras() {
 		beforeIntent = getIntent();
 		ActivityType = beforeIntent.getIntExtra("ActivityType", -1);
+		IsRepeat = beforeIntent.getBooleanExtra("IsRepeat", false);
 	}
 
 	@Override
@@ -476,21 +494,38 @@ public class CodeCaptureActivity extends GtsdpActivity implements Callback, OnCl
 		switch(ActivityType)
 		{
 		case GtsdpConfig.CODE_SEND:
-			intent = new Intent(this, SendDetailActivty.class);
-			startActivity(intent);
-			overridePendingTransition(R.anim.right_in, R.anim.none);
-			finish();
+			if(IsRepeat)
+			{
+				intent = new Intent();
+				intent.putExtra("SQCode", SQCode);
+				setResult(RESULT_OK, intent);
+				finish(R.anim.none, R.anim.right_out);
+			}
+			else
+			{
+				intent = new Intent(this, SendDetailActivty.class);
+				intent.putExtra("SQCode", SQCode);
+				startActivity(intent);
+				overridePendingTransition(R.anim.right_in, R.anim.none);
+				finish();
+			}
 			break;
 		case GtsdpConfig.CODE_SITE:
 			intent = new Intent(this, GoodsDetailActivity.class);
 			intent.putExtra("ActivityType", GtsdpConfig.CODE_SITE);
+			intent.putExtra("keytype", "2");
+			intent.putExtra("keyid", SQCode);
 			startActivity(intent);
 			overridePendingTransition(R.anim.right_in, R.anim.none);
-			finish();
+//			finish();
 			break;
 			
 		case GtsdpConfig.CODE_CURSOR:
 			showTextDialog("接货成功");
+			break;
+		case GtsdpConfig.CODE_GET:
+			getNetWorker().getTransDetail(getApplicationContext().getUser().getToken(), "3", SQCode);
+			showProgressDialog("加载中");
 			break;
 		}
 	}

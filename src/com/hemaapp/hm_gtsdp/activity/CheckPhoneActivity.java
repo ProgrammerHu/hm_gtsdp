@@ -15,16 +15,17 @@ import com.hemaapp.hm_FrameWork.HemaNetTask;
 import com.hemaapp.hm_FrameWork.result.HemaBaseResult;
 import com.hemaapp.hm_gtsdp.GtsdpActivity;
 import com.hemaapp.hm_gtsdp.GtsdpCountDownTimer;
+import com.hemaapp.hm_gtsdp.GtsdpHttpInformation;
 import com.hemaapp.hm_gtsdp.GtsdpUtil;
 import com.hemaapp.hm_gtsdp.R;
 
 public class CheckPhoneActivity extends GtsdpActivity implements OnClickListener{
 	
 	private ImageView imageQuitActivity;
-	private TextView txtTel, txtRemainingTime;
+	private TextView txtTel, txtRemainingTime, editPhone;
 	private Button btnSendIdentifyCode, btnConfirm;
 	private LinearLayout linearRemainingTime;
-	private EditText editPhone, editCode;
+	private EditText editCode;
 	
 	private GtsdpCountDownTimer myCount;
 	
@@ -47,15 +48,30 @@ public class CheckPhoneActivity extends GtsdpActivity implements OnClickListener
 	}
 
 	@Override
-	protected void callBackForServerFailed(HemaNetTask arg0, HemaBaseResult arg1) {
-		// TODO Auto-generated method stub
-		
+	protected void callBackForServerFailed(HemaNetTask netTask, HemaBaseResult baseResult) {
+		cancelProgressDialog();
+		showTextDialog(baseResult.getMsg());
 	}
 
 	@Override
-	protected void callBackForServerSuccess(HemaNetTask arg0,
-			HemaBaseResult arg1) {
-		// TODO Auto-generated method stub
+	protected void callBackForServerSuccess(HemaNetTask netTask,
+			HemaBaseResult baseResult) {
+		cancelProgressDialog();
+		GtsdpHttpInformation information = (GtsdpHttpInformation)netTask.getHttpInformation();
+		switch (information) {
+		case CODE_GET:
+			myCount = new GtsdpCountDownTimer(61000, 1000, txtRemainingTime, btnSendIdentifyCode, linearRemainingTime);
+			myCount.start();
+			break;
+		case CODE_VERIFY:
+			Intent intent = new Intent(this, SetQuestionActivty.class);
+			startActivity(intent);
+			overridePendingTransition(R.anim.right_in, R.anim.none);
+			this.finish();
+			break;
+		default:
+			break;
+		}
 		
 	}
 
@@ -73,7 +89,12 @@ public class CheckPhoneActivity extends GtsdpActivity implements OnClickListener
 		btnSendIdentifyCode = (Button)findViewById(R.id.btnSendIdentifyCode);
 		btnConfirm = (Button)findViewById(R.id.btnConfirm);
 		linearRemainingTime = (LinearLayout)findViewById(R.id.linearRemainingTime);
-		editPhone = (EditText)findViewById(R.id.editPhone);
+		editPhone = (TextView)findViewById(R.id.editPhone);
+		String username = getApplicationContext().getUser().getUsername();
+		int length = username.length();
+		username = username.substring(0, 3)+"****"+username.substring(7, length);
+		
+		editPhone.setText(username);
 		editCode = (EditText)findViewById(R.id.editCode);
 	}
 
@@ -115,10 +136,14 @@ public class CheckPhoneActivity extends GtsdpActivity implements OnClickListener
 			break;
 		case R.id.btnConfirm:
 		{
-			Intent intent = new Intent(this, SetQuestionActivty.class);
-			startActivity(intent);
-			overridePendingTransition(R.anim.right_in, R.anim.none);
-			this.finish();
+			String code = editCode.getEditableText().toString().trim();
+			if(code.equals(""))
+			{
+				showTextDialog("请输入验证码");
+				return;
+			}
+			getNetWorker().CodeVerify(getApplicationContext().getUser().getUsername(), code);
+			showProgressDialog("验证中");
 		}
 			break;
 		}
@@ -130,18 +155,10 @@ public class CheckPhoneActivity extends GtsdpActivity implements OnClickListener
 	 */
 	private void SendIdentifyCode()
 	{//发送验证码时的链接应该要根据不同的界面而不同
-		String phoneNumber = editPhone.getEditableText().toString();
-		if(!GtsdpUtil.checkPhoneNumber(phoneNumber))
-		{
-			showTextDialog("手机号格式不正确！");
-			return;
-		}
 		linearRemainingTime.setVisibility(View.VISIBLE);
 		btnSendIdentifyCode.setVisibility(View.GONE);
-		//修改提示信息，应该修改到收到服务器结果时
-//		txtActionStr.setText("验证码已发送到" + phoneNumber.substring(0,3)+ "****" + phoneNumber.substring(phoneNumber.length() - 4, phoneNumber.length()));
-		myCount = new GtsdpCountDownTimer(61000, 1000, txtRemainingTime, btnSendIdentifyCode, linearRemainingTime);
-		myCount.start();
+		getNetWorker().codeGet(getApplicationContext().getUser().getUsername());
+		showProgressDialog("验证码发送中");
 	}
 	
 

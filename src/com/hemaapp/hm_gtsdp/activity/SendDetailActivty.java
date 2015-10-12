@@ -25,10 +25,15 @@ import android.widget.TextView;
 import com.hemaapp.GtsdpConfig;
 import com.hemaapp.hm_FrameWork.HemaImageWay;
 import com.hemaapp.hm_FrameWork.HemaNetTask;
+import com.hemaapp.hm_FrameWork.result.HemaArrayResult;
 import com.hemaapp.hm_FrameWork.result.HemaBaseResult;
 import com.hemaapp.hm_gtsdp.GtsdpActivity;
+import com.hemaapp.hm_gtsdp.GtsdpHttpInformation;
+import com.hemaapp.hm_gtsdp.GtsdpUtil;
 import com.hemaapp.hm_gtsdp.R;
 import com.hemaapp.hm_gtsdp.adapter.SendImageAdapter;
+import com.hemaapp.hm_gtsdp.dialog.GtsdpTwoButtonDialog;
+import com.hemaapp.hm_gtsdp.dialog.GtsdpTwoButtonDialog.OnButtonListener;
 import com.hemaapp.hm_gtsdp.view.SelectDistrictPicker;
 import com.hemaapp.hm_gtsdp.view.SelectPopupWindow;
 import com.hemaapp.hm_gtsdp.zxing.camera.CameraManager;
@@ -43,6 +48,7 @@ import com.hemaapp.hm_gtsdp.zxing.camera.CameraManager;
 public class SendDetailActivty extends GtsdpActivity implements OnClickListener {
 	private final int REQUEST_CODE_PICK_IMAGE = 1;// 相册获取
 	private final int REQUEST_CODE_CAPTURE_CAMEIA = 2;// 相机获取
+	private final int SCAN_SQCODE = 3;//重新扫描二维码
 	private final int SENDER = 100;//发件人
 	private final int RECIVER = 200;//收件人
 
@@ -66,6 +72,9 @@ public class SendDetailActivty extends GtsdpActivity implements OnClickListener 
 	private SelectPopupWindow popupWindow;
 	private HemaImageWay imageWay;
 
+	private String SQCode;//二维码信息
+	private String token, receiver_name, receiver_address, receiver_telphone, sender_name, sender_address, sender_telphone;
+	private boolean CouldCommit = false;//true:可以提交数据，false:需要验证手机号
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		setContentView(R.layout.activity_send_detail);
@@ -105,27 +114,89 @@ public class SendDetailActivty extends GtsdpActivity implements OnClickListener 
 	}
 
 	@Override
-	protected void callBackForServerFailed(HemaNetTask arg0, HemaBaseResult arg1) {
+	protected void callBackForServerFailed(HemaNetTask netTask, HemaBaseResult baseResult) {
 		// TODO Auto-generated method stub
-
+		cancelProgressDialog();
+		GtsdpHttpInformation information = (GtsdpHttpInformation)netTask.getHttpInformation();
+		switch (information) {
+		case CLIENT_VERIFY:
+			if(CouldCommit)
+			{
+				showTextDialog("发件人手机号没有注册");
+			}
+			else
+			{
+				showTextDialog("收件人手机号没有注册");
+			}
+			break;
+		case TRANS_ADD:
+			int errorCode = baseResult.getError_code();
+			if(errorCode == 703)
+			{//无效二维码
+				GtsdpTwoButtonDialog dialog = new GtsdpTwoButtonDialog(mContext);
+				dialog.setCancelable(true);
+				dialog.setText("无效二维码，请重新扫描");
+				dialog.setLeftButtonText("取消");
+				dialog.setRightButtonText("确定");
+				dialog.setRightButtonTextColor(GtsdpConfig.Main_Blue);
+				dialog.setButtonListener(new OnButtonListener() {
+					@Override
+					public void onRightButtonClick(GtsdpTwoButtonDialog dialog) {
+						dialog.cancel();
+						Intent intent = new Intent(SendDetailActivty.this, CodeCaptureActivity.class);
+						intent.putExtra("ActivityType", GtsdpConfig.CODE_SEND);
+						intent.putExtra("IsRepeat", true);
+						startActivityForResult(intent, SCAN_SQCODE);
+						overridePendingTransition(R.anim.right_in, R.anim.none);
+					}
+					
+					@Override
+					public void onLeftButtonClick(GtsdpTwoButtonDialog dialog) {
+						dialog.cancel();
+					}
+				});
+				dialog.show();
+			}
+			else
+			{
+				showTextDialog(baseResult.getMsg());
+			}
+			break;
+		}
 	}
 
 	@Override
-	protected void callBackForServerSuccess(HemaNetTask arg0,
-			HemaBaseResult arg1) {
-		// TODO Auto-generated method stub
-
+	protected void callBackForServerSuccess(HemaNetTask netTask,
+			HemaBaseResult baseResult) {
+		//TODO 验证收件人电话->验证发件人电话->提交订单数据->上传物品物品 
+		GtsdpHttpInformation information = (GtsdpHttpInformation)netTask.getHttpInformation();
+		switch (information) {
+		case CLIENT_VERIFY:
+			if(CouldCommit)
+			{
+				getNetWorker().transAdd(token, receiver_name, receiver_address, receiver_telphone, sender_name, sender_address, sender_telphone, SQCode);
+			}
+			else
+			{//继续验证发件人手机号
+				getNetWorker().clientVerify(sender_telphone);
+				CouldCommit = true;//否则会死循环的
+			}
+			break;
+		case TRANS_ADD:
+			//订单提交成功，上传图片
+			HemaArrayResult<String> result = (HemaArrayResult<String>)baseResult;
+			showTextDialog(result.getObjects().get(0));
+			break;
+		}
 	}
 
 	@Override
 	protected void callBeforeDataBack(HemaNetTask arg0) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	protected void getExras() {
-		// TODO Auto-generated method stub
+		SQCode = getIntent().getStringExtra("SQCode");
 
 	}
 
@@ -157,6 +228,10 @@ public class SendDetailActivty extends GtsdpActivity implements OnClickListener 
 				txtReciverAddress.setText(Address);
 				editReciverPhone.setText(Phone);
 			}
+				break;
+			case SCAN_SQCODE:
+				SQCode = data.getStringExtra("SQCode");
+				clickConfirm();//重新提交申请
 				break;
 			}
 		}
@@ -261,6 +336,9 @@ public class SendDetailActivty extends GtsdpActivity implements OnClickListener 
 			intent.putExtra("Title", "发货协议");
 			startActivity(intent);
 			overridePendingTransition(R.anim.right_in, R.anim.none);
+			break;
+		case R.id.btnSend:
+			clickConfirm();
 			break;
 		}
 	}
@@ -372,4 +450,67 @@ public class SendDetailActivty extends GtsdpActivity implements OnClickListener 
 			}
 		}
 	}
+	/**
+	 * 点击确定
+	 */
+	private void clickConfirm()
+	{
+		token = getApplicationContext().getUser().getToken();
+		receiver_name = editReciverName.getEditableText().toString().trim();
+		receiver_address = txtReciverAddress.getText().toString().trim();
+		receiver_telphone = editReciverPhone.getEditableText().toString().trim();
+		sender_name = editSenderName.getEditableText().toString().trim();
+		sender_address = txtSenderAddress.getText().toString().trim();
+		sender_telphone = editSenderPhone.getEditableText().toString().trim();
+		CouldCommit = false;//一定要
+		if("".equals(receiver_name))
+		{
+			showTextDialog("请填写收件人姓名");
+			return;
+		}
+		if("".equals(receiver_address))
+		{
+			showTextDialog("请填写收件人地址");
+			return;
+		}
+		if("".equals(receiver_telphone))
+		{
+			showTextDialog("请填写收件人电话");
+			return;
+		}
+		else if(!GtsdpUtil.checkPhoneNumber(receiver_telphone))
+		{
+			showTextDialog("收件人电话格式不正确");
+			return;
+		}
+		if("".equals(sender_name))
+		{
+			showTextDialog("请填写发件人姓名");
+			return;
+		}
+		if("".equals(sender_address))
+		{
+			showTextDialog("请填写发件人地址");
+			return;
+		}
+		if("".equals(sender_telphone))
+		{
+			showTextDialog("请填写发件人电话");
+			return;
+		}
+		else if(!GtsdpUtil.checkPhoneNumber(sender_telphone))
+		{
+			showTextDialog("发件人电话格式不正确");
+			return;
+		}
+		if(!isAgree.isChecked())
+		{
+			showTextDialog("请阅读并同意《发货协议》");
+			return;
+		}
+		// TODO
+		getNetWorker().clientVerify(receiver_telphone);
+		showProgressDialog("提交中");
+	}
+	
 }

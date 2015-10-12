@@ -166,21 +166,27 @@ public class MainPageActivity extends GtsdpFragmentActivity implements OnClickLi
 		Intent intent;
 		switch(v.getId())
 		{
-		case R.id.imageSend:
+		case R.id.imageSend://发货
 			intent = new Intent(this, CodeCaptureActivity.class);
 			intent.putExtra("ActivityType", GtsdpConfig.CODE_SEND);
 			startActivity(intent);
 			overridePendingTransition(R.anim.right_in, R.anim.none);
 			break;
-		case R.id.imageGet:
+		case R.id.imageGet://收货
 			intent = new Intent(this, CodeCaptureActivity.class);
-			intent.putExtra("ActivityType", GtsdpConfig.CODE_SITE);
+			intent.putExtra("ActivityType", GtsdpConfig.CODE_GET);
 			startActivity(intent);
-//			overridePendingTransition(R.anim.right_in, R.anim.none);
+			overridePendingTransition(R.anim.right_in, R.anim.none);
 			break;
-		case R.id.imageFind:
-			
+		case R.id.imageFind://找货
 			intent = new Intent();
+			if(GtsdpConfig.IS_DEVELOPMENT)
+			{
+				intent.setClass(this, FindGoodsActivity.class);
+				startActivity(intent);
+				overridePendingTransition(R.anim.right_in, R.anim.none);
+				return;
+			}
 			if(transflag == 1)
 			{/* 是配送员->找货界面*/
 				intent.setClass(this, FindGoodsActivity.class);
@@ -288,6 +294,7 @@ public class MainPageActivity extends GtsdpFragmentActivity implements OnClickLi
 		GtsdpTwoButtonDialog dialog = new GtsdpTwoButtonDialog(mContext);
 		dialog.setText("确定要退出吗？");
 		dialog.setRightButtonTextColor(GtsdpConfig.Main_Blue);
+		dialog.setCancelable(true);
 		dialog.setButtonListener(new OnButtonListener() {
 			@Override
 			public void onRightButtonClick(GtsdpTwoButtonDialog dialog) {
@@ -300,6 +307,7 @@ public class MainPageActivity extends GtsdpFragmentActivity implements OnClickLi
 				dialog.cancel();
 			}
 		});
+		dialog.show();
 		return false;
     }
     @Override

@@ -182,6 +182,7 @@ public class FixDataActivity extends GtsdpActivity implements OnClickListener{
 	private OnClickListener clickPhotoItem = new OnClickListener() {
 		@Override
 		public void onClick(View v) {
+			selectPop.dismiss();
 			if(v.getId() == R.id.btnTop)
 			{
 				imageWay.camera();
@@ -380,6 +381,6 @@ public class FixDataActivity extends GtsdpActivity implements OnClickListener{
 			showTextDialog("«Î—°‘ÒœÍœ∏µÿ÷∑");
 			return;
 		}
-		getNetWorker().clientAdd(address, sex, address, nickname, address, sex, "117.6", "36.3");
+		getNetWorker().clientAdd(address, sex, address, nickname, address, sex);
 	}
 }

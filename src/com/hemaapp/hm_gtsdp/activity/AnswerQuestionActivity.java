@@ -27,6 +27,7 @@ import com.hemaapp.hm_gtsdp.GtsdpActivity;
 import com.hemaapp.hm_gtsdp.GtsdpHttpInformation;
 import com.hemaapp.hm_gtsdp.GtsdpUtil;
 import com.hemaapp.hm_gtsdp.R;
+import com.hemaapp.hm_gtsdp.model.QuestionModel;
 import com.hemaapp.hm_gtsdp.model.User;
 
 /**
@@ -37,16 +38,14 @@ import com.hemaapp.hm_gtsdp.model.User;
  */
 public class AnswerQuestionActivity extends GtsdpActivity implements OnClickListener, OnItemSelectedListener {
 
-    private static final String[] question={"请选择", "你最喜欢的菜是什么？","你最喜欢的颜色？",
-    	"你爸爸叫什么名字？","你妈妈叫什么名字？","你的家乡在哪里？", "你的大学叫什么？"};
 	private TextView txtTitle, txtNext;
 	private ImageView imageQuitActivity;
 	private Spinner spinner1, spinner2, spinner3;
     private ArrayAdapter<QuestionModel> adapter1, adapter2, adapter3;
     private QuestionModel tempModel1, tempModel2, tempModel3;
+    private List<QuestionModel> list1, list2, list3, listTemp;
     private Button btnConfirm;
     private EditText editPhone, editText1, editText2, editText3;
-    private List<QuestionModel> list1, list2, list3, listTemp;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		setContentView(R.layout.activity_question);
@@ -137,7 +136,7 @@ public class AnswerQuestionActivity extends GtsdpActivity implements OnClickList
         adapter1 = new ArrayAdapter<QuestionModel>(this,android.R.layout.simple_spinner_item);
         adapter2 = new ArrayAdapter<QuestionModel>(this,android.R.layout.simple_spinner_item);
         adapter3 = new ArrayAdapter<QuestionModel>(this,android.R.layout.simple_spinner_item);
-        list1 = new ArrayList<AnswerQuestionActivity.QuestionModel>();
+        list1 = new ArrayList<QuestionModel>();
         list1.add(new QuestionModel("0", "请选择"));
         list1.add(new QuestionModel("1", "你最喜欢的菜是什么？"));
         list1.add(new QuestionModel("2", "你最喜欢的颜色？"));
@@ -145,9 +144,9 @@ public class AnswerQuestionActivity extends GtsdpActivity implements OnClickList
         list1.add(new QuestionModel("4", "你妈妈叫什么名字？"));
         list1.add(new QuestionModel("5", "你的家乡在哪里？"));
         list1.add(new QuestionModel("6", "你的大学叫什么？"));
-        list2 = new ArrayList<AnswerQuestionActivity.QuestionModel>();
-        list3 = new ArrayList<AnswerQuestionActivity.QuestionModel>();
-        listTemp = new ArrayList<AnswerQuestionActivity.QuestionModel>();
+        list2 = new ArrayList<QuestionModel>();
+        list3 = new ArrayList<QuestionModel>();
+        listTemp = new ArrayList<QuestionModel>();
         for(QuestionModel model : list1)
         {
         	adapter1.add(model);
@@ -197,10 +196,6 @@ public class AnswerQuestionActivity extends GtsdpActivity implements OnClickList
 			break;
 		case R.id.btnConfirm:
 			clickConfirm();
-//			Intent intent = new Intent(this, SetPwdActivity.class);
-//			intent.putExtra("ActivityType", 1);
-//			startActivity(intent);
-//			overridePendingTransition(R.anim.right_in, R.anim.none);
 			break;
 		}
 	}
@@ -245,6 +240,8 @@ public class AnswerQuestionActivity extends GtsdpActivity implements OnClickList
 			switch (parent.getId()) {
 			case R.id.spinner1:
 				tempModel1 = adapter1.getItem(position);
+				ResetAdapter(adapter2, list2, tempModel3);
+				ResetAdapter(adapter3, list3, tempModel2);
 				list2.remove(tempModel1);
 				list3.remove(tempModel1);
 				setAdapter(adapter2, list2);
@@ -252,6 +249,8 @@ public class AnswerQuestionActivity extends GtsdpActivity implements OnClickList
 				break;
 			case R.id.spinner2:
 				tempModel2 = adapter2.getItem(position);
+				ResetAdapter(adapter1, list1, tempModel3);
+				ResetAdapter(adapter3, list3, tempModel1);
 				list1.remove(tempModel2);
 				list3.remove(tempModel2);
 				setAdapter(adapter1, list1);
@@ -259,6 +258,8 @@ public class AnswerQuestionActivity extends GtsdpActivity implements OnClickList
 				break;
 			case R.id.spinner3:
 				tempModel3 = adapter3.getItem(position);
+				ResetAdapter(adapter1, list1, tempModel2);
+				ResetAdapter(adapter2, list2, tempModel1);
 				list1.remove(tempModel3);
 				list2.remove(tempModel3);
 				setAdapter(adapter1, list1);
@@ -301,24 +302,6 @@ public class AnswerQuestionActivity extends GtsdpActivity implements OnClickList
 		for(QuestionModel model : list)
 		{
 			adapter.add(model);
-		}
-	}
-	private class QuestionModel
-	{
-		public QuestionModel(String id, String name)
-		{
-			this.id = id;
-			this.name = name;
-		}
-		public String id;
-		public String name;
-		@Override
-		public String toString() {
-			return  name;
-		}
-		public int getId()
-		{
-			return Integer.parseInt(id);
 		}
 	}
 }

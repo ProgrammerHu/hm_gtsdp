@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" 
-    android:id="@+id/father">
+    android:id="@+id/father"
+    android:background="@color/background">
 
     <include layout="@layout/header_quit_text_text" />
 
@@ -187,26 +188,32 @@
             android:layout_height="match_parent"
             android:layout_weight="3" >
 
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_alignParentBottom="true"
-                android:background="@drawable/bg_click_layout"
-                android:text="退出登录"
-                android:textColor="@color/main_blue"
-                android:textSize="@dimen/textsize_8.5"
-                android:id="@+id/btnQuit" />
-            <View 
-                android:layout_width="match_parent"
-                android:layout_height="1px"
-                android:background="@color/grey_line"
-                android:layout_above="@id/btnQuit"/>
-            <View 
-                android:layout_width="match_parent"
-                android:layout_height="1px"
-                android:background="@color/grey_line"
-                android:layout_below="@id/btnQuit"
-                />
+			<LinearLayout
+			    android:layout_width="match_parent"
+			    android:layout_height="wrap_content"
+			    android:layout_alignParentBottom="true"
+			    android:orientation="vertical" >
+
+			    <View
+			        android:layout_width="match_parent"
+			        android:layout_height="1px"
+			        android:background="@color/grey_line" />
+
+			    <Button
+			        android:id="@+id/btnQuit"
+			        android:layout_width="match_parent"
+			        android:layout_height="50dp"
+			        android:background="@drawable/bg_click_layout"
+			        android:text="退出登录"
+			        android:textColor="@color/main_blue"
+			        android:textSize="@dimen/textsize_8.5" />
+
+			    <View
+			        android:layout_width="match_parent"
+			        android:layout_height="1px"
+			        android:background="@color/grey_line" />
+			</LinearLayout>
+            
         </RelativeLayout>
 
         <LinearLayout

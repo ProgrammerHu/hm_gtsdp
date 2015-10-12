@@ -111,6 +111,27 @@ public enum GtsdpHttpInformation implements HemaHttpInfomation {
 	 * 保存支付宝账户
 	 */
 	ALI_SAVE(23, "ali_save", "保存支付宝账户", false),
+	/**
+	 * 新增发货
+	 */
+	TRANS_ADD(24, "trans_add", "新增发货", false),
+	/**
+	 * 捎带(订单)列表
+	 */
+	TRANS_LIST(25, "trans_list", "新增发货", false),
+	/**
+	 * 捎带(订单)详细
+	 */
+	TRANS_GET(26, "trans_get", "新增发货", false),
+	/**
+	 * 网点接单
+	 */
+	NETWORK_RECEIVE(27, "network_receive", "网点接单", false),
+	/**
+	 * 起始网点保存价格
+	 */
+	TRANS_PRICE_SAVE(28, "trans_price_save", "起始网点保存价格", false),
+	
 	
 	
 	;

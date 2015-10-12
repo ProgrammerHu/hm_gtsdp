@@ -47,9 +47,15 @@ public class GtsdpTwoButtonDialog extends XtomObject {
 		});
 		mDialog.setCancelable(false);
 		mDialog.setContentView(view);
-		mDialog.show();
 	}
-
+	/**
+	 * 设置是否可以取消
+	 * @param cancelable
+	 */
+	public void setCancelable(boolean cancelable)
+	{
+		mDialog.setCancelable(cancelable);
+	}
 	/**
 	 * 给弹框添加自定义View
 	 * 

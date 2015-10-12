@@ -20,6 +20,8 @@ import com.hemaapp.hm_gtsdp.nettask.GetTemplateTask;
 import com.hemaapp.hm_gtsdp.nettask.InitTask;
 import com.hemaapp.hm_gtsdp.nettask.NoticeListTask;
 import com.hemaapp.hm_gtsdp.nettask.CurrentTask;
+import com.hemaapp.hm_gtsdp.nettask.TransAddTask;
+import com.hemaapp.hm_gtsdp.nettask.TransListTask;
 import com.hemaapp.hm_gtsdp.nettask.UnionTradeTask;
 
 /**
@@ -45,7 +47,7 @@ public class GtsdpNetWorker extends HemaNetWorker {
 	 * @param username
 	 * @param code 测试阶段固定向服务器提交“1234”
 	 */
-	public void getCodeVerify(String username, String code)
+	public void CodeVerify(String username, String code)
 	{
 		GtsdpHttpInformation information = GtsdpHttpInformation.CODE_VERIFY;
 		HashMap<String, String> params = new HashMap<String, String>();
@@ -65,8 +67,7 @@ public class GtsdpNetWorker extends HemaNetWorker {
 	 * @param lng 经度
 	 * @param lat 维度
 	 */
-	public void clientAdd(String temp_token, String username, String password, String nickname, String address, String sex,
-			String lng, String lat)
+	public void clientAdd(String temp_token, String username, String password, String nickname, String address, String sex)
 	{
 		if(GtsdpConfig.IS_DEVELOPMENT)
 		{
@@ -80,8 +81,6 @@ public class GtsdpNetWorker extends HemaNetWorker {
 		params.put("nickname", nickname);
 		params.put("address", address);
 		params.put("sex", sex);
-		params.put("lng", lng);
-		params.put("lat", lat);
 		GtsdpNetTask task = new ClientAddTask(information, params);
 		executeTask(task);
 	}
@@ -117,7 +116,6 @@ public class GtsdpNetWorker extends HemaNetWorker {
 
 	@Override
 	public boolean thirdSave() {
-		// TODO Auto-generated method stub
 		return false;
 	}
 	/**
@@ -132,6 +130,10 @@ public class GtsdpNetWorker extends HemaNetWorker {
 		GtsdpNetTask task = new InitTask(information, params);
 		executeTask(task);
 	}
+	/**
+	 * 验证用户名是否合法
+	 * @param username
+	 */
 	public void clientVerify(String username)
 	{
 		GtsdpHttpInformation information = GtsdpHttpInformation.CLIENT_VERIFY;
@@ -140,7 +142,18 @@ public class GtsdpNetWorker extends HemaNetWorker {
 		GtsdpNetTask task = new CurrentTask(information, params);
 		executeTask(task);
 	}
-	
+	/**
+	 * 申请随机验证码
+	 * @param username
+	 */
+	public void codeGet(String username)
+	{
+		GtsdpHttpInformation information = GtsdpHttpInformation.CODE_GET;
+		HashMap<String, String> params = new HashMap<String, String>();
+		params.put("username", username);
+		GtsdpNetTask task = new CurrentTask(information, params);
+		executeTask(task);
+	}
 	/**
 	 * 修改密码
 	 * @param token 登录令牌
@@ -448,6 +461,104 @@ public class GtsdpNetWorker extends HemaNetWorker {
 		HashMap<String, String> params = new HashMap<String, String>();
 		params.put("token", token);
 		params.put("aliuser", aliuser);	
+		GtsdpNetTask task = new CurrentTask(information, params);
+		executeTask(task);
+	}
+	/**
+	 * 新增发货
+	 * @param token 登录令牌
+	 * @param receiver_name 收件人的姓名
+	 * @param receiver_address 收件人的地址
+	 * @param receiver_telphone 收件人的电话
+	 * @param sender_name 发件人姓名
+	 * @param sender_address 发件人地址
+	 * @param sender_telphone 发件人电话
+	 * @param code 二维码信息
+	 */
+	public void transAdd(String token, String receiver_name, String receiver_address, String receiver_telphone, 
+			String sender_name, String sender_address, String sender_telphone, String code)
+	{
+		GtsdpHttpInformation information = GtsdpHttpInformation.TRANS_ADD;
+		HashMap<String, String> params = new HashMap<String, String>();
+		params.put("token", token);
+		params.put("receiver_name", receiver_name);
+		params.put("receiver_address", receiver_address);
+		params.put("receiver_telphone", receiver_telphone);
+		params.put("sender_name", sender_name);
+		params.put("sender_address", sender_address);
+		params.put("sender_telphone", sender_telphone);
+		params.put("code", code);
+		GtsdpNetTask task = new TransAddTask(information, params);
+		executeTask(task);
+	}
+	/**
+	 * 获取捎带(订单)列表
+	 * @param token 登录令牌
+	 * @param keytype 业务类型 1:发货订单; 2:收货订单; 
+	 * @param keyid 主键id
+	 * 当keytype=1时，keyid=1:运输中,keyid=2:已送达; 
+	 * 当keytype=2时，keyid=1:待接收,keyid=2:已收货; 
+	 * @param page 第几页 从0开始
+	 */
+	public void getTransList(String token, String keytype, String keyid, String page)
+	{
+		GtsdpHttpInformation information = GtsdpHttpInformation.TRANS_LIST;
+		HashMap<String, String> params = new HashMap<String, String>();
+		params.put("token", token);
+		params.put("keytype", keytype);
+		params.put("keyid", keyid);
+		params.put("page", page);
+		GtsdpNetTask task = new TransListTask(information, params);
+		executeTask(task);
+	}
+	/**
+	 * 捎带(订单)详情
+	 * @param token 登录令牌
+	 * @param keytype 业务类型
+	 * 1:从订单列表中进入详情; 
+	 * 2:网点用户扫描后进入详情; 
+	 * 3:收货人扫描后进入详情; 
+	 * @param keyid 主键id	
+	 * 当keytype=1时，keyid=捎带id; 
+	 * 当keytype=2、3时，keyid=二维码信息; 
+	 */
+	public void getTransDetail(String token, String keytype, String keyid)
+	{
+		GtsdpHttpInformation information = GtsdpHttpInformation.TRANS_GET;
+		HashMap<String, String> params = new HashMap<String, String>();
+		params.put("token", token);
+		params.put("keytype", keytype);
+		params.put("keyid", keyid);
+		GtsdpNetTask task = new TransListTask(information, params);
+		executeTask(task);
+	}
+	/**
+	 * 网点接单
+	 * @param token 登录令牌
+	 * @param trans_id 捎带id
+	 */
+	public void NetworkReceive(String token, String trans_id)
+	{
+		GtsdpHttpInformation information = GtsdpHttpInformation.NETWORK_RECEIVE;
+		HashMap<String, String> params = new HashMap<String, String>();
+		params.put("token", token);
+		params.put("trans_id", trans_id);
+		GtsdpNetTask task = new CurrentTask(information, params);
+		executeTask(task);
+	}
+	/**
+	 * 起始网点保存价格
+	 * @param token 登录令牌
+	 * @param trans_id 捎带id
+	 * @param total_fee 价格
+	 */
+	public void transPriceSave(String token, String trans_id, String total_fee)
+	{
+		GtsdpHttpInformation information = GtsdpHttpInformation.TRANS_PRICE_SAVE;
+		HashMap<String, String> params = new HashMap<String, String>();
+		params.put("token", token);
+		params.put("trans_id", trans_id);
+		params.put("total_fee", total_fee);
 		GtsdpNetTask task = new CurrentTask(information, params);
 		executeTask(task);
 	}

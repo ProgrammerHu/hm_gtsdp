@@ -36,7 +36,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
-                        android:text="订单号：1234567890"
+                        android:text=" "
                         android:textColor="@color/main_blue" />
 
                     <TextView
@@ -294,7 +294,7 @@
                     android:src="@drawable/star" />
 
                 <TextView
-                    android:id="@+id/editSenderPhone"
+                    android:id="@+id/txtSenderPhone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp" />

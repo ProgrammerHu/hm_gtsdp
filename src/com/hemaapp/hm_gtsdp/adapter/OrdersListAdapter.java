@@ -68,9 +68,10 @@ public class OrdersListAdapter extends GtsdpAdapter {
 	}
 	private void SetData(int position, ViewHolder holder)
 	{
-		holder.txtId.setText("订单号："+listData.get(position).getOrderId());
-		holder.txtPosition.setText("当前位置："+listData.get(position).getOrderPosition());
-		holder.txtDatetime.setText(listData.get(position).getOrderDatetime());
+		holder.txtId.setText("订单号："+listData.get(position).getTrade_no());
+//		holder.txtPosition.setText("当前位置："+listData.get(position).getOrderPosition());
+		holder.txtPosition.setText("当前位置：未知");
+		holder.txtDatetime.setText(listData.get(position).getRegdate());
 		
 	}
 }

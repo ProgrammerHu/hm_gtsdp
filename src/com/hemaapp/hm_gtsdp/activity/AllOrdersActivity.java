@@ -33,7 +33,7 @@ public class AllOrdersActivity extends GtsdpFragmentActivity{
 	protected void onCreate(Bundle savedInstanceState) {
 		setContentView(R.layout.activity_all_orders);
 		super.onCreate(savedInstanceState);
-		myViewPager.setAdapter(new SendFragmentAdapter(getSupportFragmentManager()));
+		myViewPager.setAdapter(new SendFragmentAdapter(getSupportFragmentManager(), this));
 		myViewPager.setPageTransformer(true, new ZoomOutPageTransformer());//设置滑动效果
 		
 	}

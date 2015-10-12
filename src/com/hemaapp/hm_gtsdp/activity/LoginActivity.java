@@ -214,6 +214,7 @@ public class LoginActivity extends GtsdpActivity implements OnClickListener
 		GtsdpTwoButtonDialog dialog = new GtsdpTwoButtonDialog(mContext);
 		dialog.setText("确定要退出吗？");
 		dialog.setRightButtonTextColor(GtsdpConfig.Main_Blue);
+		dialog.setCancelable(true);
 		dialog.setButtonListener(new OnButtonListener() {
 			@Override
 			public void onRightButtonClick(GtsdpTwoButtonDialog dialog) {
@@ -226,6 +227,7 @@ public class LoginActivity extends GtsdpActivity implements OnClickListener
 				dialog.cancel();
 			}
 		});
+		dialog.show();
 		return false;
     }
     

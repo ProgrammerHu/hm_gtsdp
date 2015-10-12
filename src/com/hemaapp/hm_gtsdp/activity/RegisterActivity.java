@@ -215,7 +215,7 @@ public class RegisterActivity extends GtsdpActivity implements OnClickListener{
 				int error_code = baseResult.getError_code();
 				if(error_code == 106)
 				{//用户账号不存在！
-					getNetWorker().getCodeVerify(username, code);
+					getNetWorker().CodeVerify(username, code);
 				}
 				break;
 			default:
@@ -250,7 +250,7 @@ public class RegisterActivity extends GtsdpActivity implements OnClickListener{
 		{//找回密码
 			switch (information) {
 			case CLIENT_VERIFY:
-				getNetWorker().getCodeVerify(username, code);
+				getNetWorker().CodeVerify(username, code);
 				break;
 			case CODE_VERIFY:
 				gotoNext(baseResult);

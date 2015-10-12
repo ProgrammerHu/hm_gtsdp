@@ -61,11 +61,11 @@ public class DispatchingListAdapter extends GtsdpAdapter{
 		holder.txtDatetime = (TextView)convertView.findViewById(R.id.txtDatetime);
 		holder.txtPrice = (TextView)convertView.findViewById(R.id.txtPrice);
 		OrderModel order = listDatas.get(position);
-		holder.txtOrderNumber.setText("订单号：" + order.getOrderId());
-		holder.txtStart.setText("出发城市："+order.getOrderStart());
-		holder.txtEnd.setText("到达城市："+order.getOrderEnd());
-		holder.txtDatetime.setText(order.getOrderDatetime());
-		holder.txtPrice.setText("￥"+order.getPrice());
+		holder.txtOrderNumber.setText("订单号：" + order.getTrade_no());
+		holder.txtStart.setText("出发城市："+order.getSender_address());
+		holder.txtEnd.setText("到达城市："+order.getReceiver_address());
+		holder.txtDatetime.setText(order.getRegdate());
+		holder.txtPrice.setText("￥"+order.getTotal_fee());
 		return convertView;
 	}
 	

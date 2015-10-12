@@ -47,18 +47,28 @@ public class DispatchingActivity extends GtsdpActivity implements OnCheckedChang
 		setContentView(R.layout.activity_dispatching);
 		super.onCreate(savedInstanceState);
 		listDatasLeft = new ArrayList<OrderModel>();
-		listDatasLeft.add(new OrderModel("E28924131313543", "none", "2015.5.3 15:23", "济南市历下区", "北京市朝阳区", 500000));
-		listDatasLeft.add(new OrderModel("E28924131313545", "none", "2015.5.3 15:23", "呼和浩特市玉泉区", "北京市朝阳区", 500000));
-		listDatasLeft.add(new OrderModel("E28924131313546", "none", "2015.5.6 15:23", "济南市历下区", "北京市朝阳区", 50000));
-		listDatasLeft.add(new OrderModel("E28924131313549", "none", "2015.5.30 15:23", "济南市历下区", "北京市朝阳区", 5000));
-		listDatasLeft.add(new OrderModel("E28924131313553", "none", "2015.5.30 15:23", "济南市历下区", "北京市朝阳区", 5000));
+		listDatasLeft.add(new OrderModel("E156456115645641756","", "", 10, "1", "收件人的姓名", "收件人的地址", "收件人的电话", "发件人姓名",
+				"发件人地址", "发件人电话", "二维码信息", "二维码信息", "订单号"));
+		listDatasLeft.add(new OrderModel("E156456115645641756","", "", 100, "1", "收件人的姓名", "收件人的地址", "收件人的电话", "发件人姓名",
+				"发件人地址", "发件人电话", "二维码信息", "二维码信息", "订单号"));
+		listDatasLeft.add(new OrderModel("E156456115645641756","", "", 1000, "1", "收件人的姓名", "收件人的地址", "收件人的电话", "发件人姓名",
+				"发件人地址", "发件人电话", "二维码信息", "二维码信息", "订单号"));
 		adapter = new DispatchingListAdapter(mContext, listDatasLeft);
 		showListView.setAdapter(adapter);
 		
 		listDatasRight = new ArrayList<OrderModel>();
-		listDatasRight.add(new OrderModel("E28924131313543", "none", "2015.5.3 15:23", "济南市历下区", "北京市朝阳区", 500000));
-		listDatasRight.add(new OrderModel("E28924131313545", "none", "2015.5.3 15:23", "呼和浩特市玉泉区", "北京市朝阳区", 500000));
-		listDatasRight.add(new OrderModel("E28924131313546", "none", "2015.5.6 15:23", "济南市历下区", "北京市朝阳区", 50000));
+		listDatasRight.add(new OrderModel("E156456115645641756","", "", 10, "1", "收件人的姓名", "收件人的地址", "收件人的电话", "发件人姓名",
+				"发件人地址", "发件人电话", "二维码信息", "二维码信息", "订单号"));
+		listDatasRight.add(new OrderModel("E156456115645641756","", "", 100, "1", "收件人的姓名", "收件人的地址", "收件人的电话", "发件人姓名",
+				"发件人地址", "发件人电话", "二维码信息", "二维码信息", "订单号"));
+		listDatasRight.add(new OrderModel("E156456115645641756","", "", 1000, "1", "收件人的姓名", "收件人的地址", "收件人的电话", "发件人姓名",
+				"发件人地址", "发件人电话", "二维码信息", "二维码信息", "订单号"));
+		listDatasRight.add(new OrderModel("E156456115645641756","", "", 20, "1", "收件人的姓名", "收件人的地址", "收件人的电话", "发件人姓名",
+				"发件人地址", "发件人电话", "二维码信息", "二维码信息", "订单号"));
+		listDatasRight.add(new OrderModel("E156456115645641756","", "", 200, "1", "收件人的姓名", "收件人的地址", "收件人的电话", "发件人姓名",
+				"发件人地址", "发件人电话", "二维码信息", "二维码信息", "订单号"));
+		listDatasRight.add(new OrderModel("E156456115645641756","", "", 2000, "1", "收件人的姓名", "收件人的地址", "收件人的电话", "发件人姓名",
+				"发件人地址", "发件人电话", "二维码信息", "二维码信息", "订单号"));
 	}
 
 	@Override

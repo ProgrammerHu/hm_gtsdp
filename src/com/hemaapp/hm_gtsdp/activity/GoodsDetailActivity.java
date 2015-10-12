@@ -17,10 +17,13 @@ import com.hemaapp.GtsdpConfig;
 import com.hemaapp.hm_FrameWork.HemaNetTask;
 import com.hemaapp.hm_FrameWork.result.HemaBaseResult;
 import com.hemaapp.hm_gtsdp.GtsdpActivity;
+import com.hemaapp.hm_gtsdp.GtsdpArrayResult;
+import com.hemaapp.hm_gtsdp.GtsdpHttpInformation;
 import com.hemaapp.hm_gtsdp.R;
 import com.hemaapp.hm_gtsdp.adapter.FindGoodsImageAdapter;
 import com.hemaapp.hm_gtsdp.dialog.GtsdpTwoButtonDialog;
 import com.hemaapp.hm_gtsdp.dialog.GtsdpTwoButtonDialog.OnButtonListener;
+import com.hemaapp.hm_gtsdp.model.OrderModel;
 import com.hemaapp.hm_gtsdp.view.MyGridView;
 /**
  * 货物详情
@@ -32,8 +35,11 @@ public class GoodsDetailActivity extends GtsdpActivity implements OnClickListene
 	private final int CHANGE_COUNT = 100;
 	private Intent beforeIntent;
 	private int ActivityType;
+	private String keytype;/* 业务类型 1:从订单列表中进入详情; 2:网点用户扫描后进入详情; 3:收货人扫描后进入详情;  */
+	private String keyid;//主键id 当keytype=1时，keyid=捎带id; 当keytype=2、3时，keyid=二维码信息; 
  
-	private TextView txtTitle, txtNext, txtSiteCount;
+	private TextView txtTitle, txtNext, txtSiteCount, txtReciverCount, txtCursorCount, txtOrderNumber, txtStart, txtEnd, 
+	txtDatetime, txtReciverName, txtReciverAddress, txtReciverPhone, txtSenderName, txtSenderAddress, txtSenderPhone;
 	private ImageView imageQuitActivity;
 	private Button btnConfirmReceive, btnSiteAgree, btnSiteBAgree, btnCursorAgree, btnCursorChange, TempClickButton;
 	private LinearLayout layoutMoney;
@@ -43,6 +49,7 @@ public class GoodsDetailActivity extends GtsdpActivity implements OnClickListene
 	private GtsdpTwoButtonDialog checkAgree;
 	
 	private ArrayList<String> images;
+	private OrderModel ORDER;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		setContentView(R.layout.activity_goods_detail);
@@ -57,13 +64,70 @@ public class GoodsDetailActivity extends GtsdpActivity implements OnClickListene
 		images.add("http://7tszkm.com1.z0.glb.clouddn.com/keep-calm-and-carry-on_1423461.jpg");
 		images.add("http://d.hiphotos.baidu.com/baike/c0%3Dbaike150%2C5%2C5%2C150%2C50/sign=78fb3c9ffbdcd100d991f07313e22c75/0eb30f2442a7d9338ba972e1ae4bd11373f0011a.jpg");
 		gridview.setAdapter(new FindGoodsImageAdapter(mContext, findViewById(R.id.father), images, gridview));
-		
+
+		if(ActivityType == -1 || keyid == null || "".equals(keyid))
+			showTextDialog("页面调用参数错误");
+		else
+		{
+			getNetWorker().getTransDetail(getApplicationContext().getUser().getToken(), keytype, keyid);
+			showProgressDialog("加载中");
+		}
 	}
 	@Override
 	protected void onResume() {
 		super.onResume();
 		scrollview.smoothScrollTo(0, 0);//scrollView移动到顶部
 	}
+	/**
+	 * 调整界面数据
+	 * @param receiver_address 收货人地址
+	 * @param sender_address 发货人地址
+	 * @param total_fee 支付金额
+	 * @param receiver_name  收件人的姓名
+	 * @param sender_name 发件人姓名
+	 * @param receiver_telphone 收件人的电话
+	 * @param sender_telphone 发件人电话
+	 * @param regdate 提交时间
+	 */
+	private void setData(String id, String receiver_address, String sender_address, int total_fee, 
+			String receiver_name, String sender_name, String receiver_telphone, String sender_telphone,
+			String regdate)
+	{
+		txtOrderNumber.setText("订单号："+id);
+		txtStart.setText(receiver_address);
+		txtEnd.setText(sender_address);
+		txtDatetime.setText(regdate);
+		txtReciverName.setText(receiver_name);
+		txtReciverAddress.setText(receiver_address);
+		txtReciverPhone.setText(receiver_telphone);
+		txtSenderName.setText(sender_name);
+		txtSenderAddress.setText(sender_address);
+		txtSenderPhone.setText(sender_telphone);
+		switch(ActivityType)
+		{
+		case GtsdpConfig.USER_IDENTIFY_CURSOR://捎带者
+			btnCursorAgree.setVisibility(View.VISIBLE);
+			btnCursorChange.setVisibility(View.VISIBLE);
+			layoutCursor.setVisibility(View.VISIBLE);
+			txtCursorCount.setText(String.valueOf(total_fee));
+			break;
+		case GtsdpConfig.USER_IDENTIFY_RECIVIER://收货人
+			btnConfirmReceive.setVisibility(View.VISIBLE);
+			layoutReciver.setVisibility(View.VISIBLE);
+			txtReciverCount.setText(String.valueOf(total_fee));
+			break;
+		case GtsdpConfig.USER_IDENTIFY_SITE://网点
+			btnSiteAgree.setVisibility(View.VISIBLE);
+			layoutSite.setVisibility(View.VISIBLE);
+			txtSiteCount.setText(String.valueOf(total_fee));
+			break;
+		case GtsdpConfig.USER_IDENTIFY_SITE_B://网点B
+			btnSiteBAgree.setVisibility(View.VISIBLE);
+			layoutMoney.setVisibility(View.GONE);
+			break;
+		}
+	}
+	
 	@Override
 	protected void callAfterDataBack(HemaNetTask arg0) {
 		// TODO Auto-generated method stub
@@ -72,21 +136,53 @@ public class GoodsDetailActivity extends GtsdpActivity implements OnClickListene
 
 	@Override
 	protected void callBackForGetDataFailed(HemaNetTask arg0, int arg1) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	protected void callBackForServerFailed(HemaNetTask arg0, HemaBaseResult arg1) {
+	protected void callBackForServerFailed(HemaNetTask netTask, HemaBaseResult baseResult) {
 		// TODO Auto-generated method stub
+		cancelProgressDialog();
+		GtsdpHttpInformation information = (GtsdpHttpInformation)netTask.getHttpInformation();
+		switch (information) {
+		case TRANS_GET:
+			ORDER = new OrderModel("8254545613", "18800000000", "18800000001", 50, 
+					"2", "收件人的姓名", "收件人的地址", "收件人的电话", 
+					"发件人姓名", "发件人地址", "发件人电话", "二维码信息", "2015-10-12 16:20", "528532213389");
+			setData(ORDER.getId(), ORDER.getReceiver_address(), ORDER.getSender_address(), 
+					ORDER.getTotal_fee(), ORDER.getReceiver_name(), ORDER.getSender_name(), 
+					ORDER.getReceiver_telphone(), ORDER.getSender_telphone(), ORDER.getRegdate());
+			break;
+		case TRANS_PRICE_SAVE:
+		case NETWORK_RECEIVE:
+			showTextDialog(baseResult.getMsg());
+			break;
+		}
 		
 	}
 
 	@Override
-	protected void callBackForServerSuccess(HemaNetTask arg0,
-			HemaBaseResult arg1) {
+	protected void callBackForServerSuccess(HemaNetTask netTask,
+			HemaBaseResult baseResult) {
 		// TODO Auto-generated method stub
-		
+		cancelProgressDialog();
+		GtsdpHttpInformation information = (GtsdpHttpInformation)netTask.getHttpInformation();
+		switch (information) {
+		case TRANS_GET:
+			GtsdpArrayResult<OrderModel> result = (GtsdpArrayResult<OrderModel>)baseResult;
+			ORDER = result.getObjects().get(0);
+			setData(ORDER.getId(), ORDER.getReceiver_address(), ORDER.getSender_address(), 
+					ORDER.getTotal_fee(), ORDER.getReceiver_name(), ORDER.getSender_name(), 
+					ORDER.getReceiver_telphone(), ORDER.getSender_telphone(), ORDER.getRegdate());
+			break;
+		case TRANS_PRICE_SAVE:
+			showTextDialog("金额保存成功");
+			break;
+		case NETWORK_RECEIVE:
+			showTextDialog("接单成功");
+			break;
+			
+		}
 	}
 
 	@Override
@@ -111,29 +207,23 @@ public class GoodsDetailActivity extends GtsdpActivity implements OnClickListene
 		layoutReciver = (RelativeLayout)findViewById(R.id.layoutReciver);
 		layoutCursor = (RelativeLayout)findViewById(R.id.layoutCursor);
 		layoutSite = (RelativeLayout)findViewById(R.id.layoutSite);
-		switch(ActivityType)
-		{
-		case GtsdpConfig.USER_IDENTIFY_CURSOR://捎带者
-			btnCursorAgree.setVisibility(View.VISIBLE);
-			btnCursorChange.setVisibility(View.VISIBLE);
-			layoutCursor.setVisibility(View.VISIBLE);
-			break;
-		case GtsdpConfig.USER_IDENTIFY_RECIVIER://收货人
-			btnConfirmReceive.setVisibility(View.VISIBLE);
-			layoutReciver.setVisibility(View.VISIBLE);
-			break;
-		case GtsdpConfig.USER_IDENTIFY_SITE://网点
-			btnSiteAgree.setVisibility(View.VISIBLE);
-			layoutSite.setVisibility(View.VISIBLE);
-			break;
-		case GtsdpConfig.USER_IDENTIFY_SITE_B://网点B
-			btnSiteBAgree.setVisibility(View.VISIBLE);
-			layoutMoney.setVisibility(View.GONE);
-			break;
-		}
+		
 		gridview = (MyGridView)findViewById(R.id.gridview);
 		scrollview = (ScrollView)findViewById(R.id.scrollview);
 		txtSiteCount = (TextView)findViewById(R.id.txtSiteCount);
+		txtReciverCount = (TextView)findViewById(R.id.txtReciverCount);
+		txtCursorCount = (TextView)findViewById(R.id.txtCursorCount);
+		txtOrderNumber= (TextView)findViewById(R.id.txtOrderNumber);
+		txtStart = (TextView) findViewById(R.id.txtStart);
+		txtEnd = (TextView) findViewById(R.id.txtEnd);
+		txtDatetime = (TextView) findViewById(R.id.txtDatetime);
+		txtReciverName = (TextView) findViewById(R.id.txtReciverName);
+		txtReciverAddress = (TextView) findViewById(R.id.txtReciverAddress);
+		txtReciverPhone = (TextView) findViewById(R.id.txtReciverPhone);
+		txtSenderName = (TextView) findViewById(R.id.txtSenderName);
+		txtSenderAddress = (TextView) findViewById(R.id.txtSenderAddress);
+		txtSenderPhone = (TextView) findViewById(R.id.txtSenderPhone);
+
 		btnConfirmReceive = (Button)findViewById(R.id.btnConfirmReceive);
 		btnSiteAgree = (Button)findViewById(R.id.btnSiteAgree);
 		btnSiteBAgree = (Button)findViewById(R.id.btnSiteBAgree);
@@ -145,8 +235,8 @@ public class GoodsDetailActivity extends GtsdpActivity implements OnClickListene
 	protected void getExras() {
 		beforeIntent = getIntent();
 		ActivityType = beforeIntent.getIntExtra("ActivityType", -1);
-		if(ActivityType == -1)
-			showTextDialog("页面调用参数错误");
+		keyid = getIntent().getStringExtra("keyid");
+		keytype = getIntent().getStringExtra("keytype");
 	}
 
 	@Override
@@ -204,7 +294,10 @@ public class GoodsDetailActivity extends GtsdpActivity implements OnClickListene
 			case CHANGE_COUNT:
 				double Count = data.getDoubleExtra("Count", 0);
 				txtSiteCount.setText(String.valueOf(Count));
-
+				showProgressDialog("金额保存中");
+				String id = ORDER.getId();
+				String count =  txtSiteCount.getText().toString().trim();
+				getNetWorker().transPriceSave(getApplicationContext().getUser().getToken(), id, count);
 				break;
 			}
 		}
@@ -223,7 +316,7 @@ public class GoodsDetailActivity extends GtsdpActivity implements OnClickListene
 			switch(ActivityType)
 			{
 			case GtsdpConfig.USER_IDENTIFY_SITE:
-				showTextDialog("接单成功");
+				getNetWorker().NetworkReceive(getApplicationContext().getUser().getToken(), ORDER.getId());
 				break;
 			}
 			

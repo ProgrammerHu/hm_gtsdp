@@ -36,21 +36,11 @@
 	            android:textColor="@color/white"
 		        android:id="@+id/txtQuestion1"
 	            />
-	        <ImageView 
-	            android:layout_width="wrap_content"
-	            android:layout_height="wrap_content"
-	            android:src="@drawable/triangle_grey"
-	            android:id="@+id/image1"
-	            android:layout_alignParentRight="true"
-	            android:layout_centerVertical="true"
-	            android:layout_marginRight="10dp"
-	            />
 		    <Spinner
 		        android:id="@+id/spinner1"
 		        android:layout_width="match_parent"
 		        android:layout_height="wrap_content" 
 		        android:layout_centerVertical="true"
-		        android:layout_toLeftOf="@id/image1"
 		        android:layout_toRightOf="@id/txtQuestion1"
 		        android:textSize="@dimen/textsize_8"
 		        android:paddingTop="5dp"
@@ -89,6 +79,7 @@
 		        android:layout_gravity="center_vertical"
 		        android:textSize="@dimen/textsize_8"
 		        android:paddingLeft="5dp"
+		        android:singleLine="true"
 		        />
 	    </LinearLayout>
 		<LinearLayout 
@@ -128,21 +119,11 @@
 	            android:textColor="@color/white"
 		        android:id="@+id/txtQuestion2"
 	            />
-	        <ImageView 
-	            android:layout_width="wrap_content"
-	            android:layout_height="wrap_content"
-	            android:src="@drawable/triangle_grey"
-	            android:id="@+id/image2"
-	            android:layout_alignParentRight="true"
-	            android:layout_centerVertical="true"
-	            android:layout_marginRight="10dp"
-	            />
 		    <Spinner
 		        android:id="@+id/spinner2"
 		        android:layout_width="match_parent"
 		        android:layout_height="wrap_content" 
 		        android:layout_centerVertical="true"
-		        android:layout_toLeftOf="@id/image2"
 		        android:layout_toRightOf="@id/txtQuestion2"
 		        android:textSize="@dimen/textsize_8"
 		        android:paddingTop="5dp"
@@ -180,6 +161,7 @@
 		        android:background="@null"
 		        android:layout_gravity="center_vertical"
 		        android:paddingLeft="5dp"
+		        android:singleLine="true"
 		        />
 	    </LinearLayout>
 		<LinearLayout 
@@ -219,21 +201,11 @@
 	            android:textColor="@color/white"
 		        android:id="@+id/txtQuestion3"
 	            />
-	        <ImageView 
-	            android:layout_width="wrap_content"
-	            android:layout_height="wrap_content"
-	            android:src="@drawable/triangle_grey"
-	            android:id="@+id/image3"
-	            android:layout_alignParentRight="true"
-	            android:layout_centerVertical="true"
-	            android:layout_marginRight="10dp"
-	            />
 		    <Spinner
 		        android:id="@+id/spinner3"
 		        android:layout_width="match_parent"
 		        android:layout_height="wrap_content" 
 		        android:layout_centerVertical="true"
-		        android:layout_toLeftOf="@id/image3"
 		        android:layout_toRightOf="@id/txtQuestion3"
 		        android:textSize="@dimen/textsize_8"
 		        android:paddingTop="5dp"
@@ -271,6 +243,7 @@
 		        android:background="@null"
 		        android:layout_gravity="center_vertical"
 		        android:paddingLeft="5dp"
+		        android:singleLine="true"
 		        />
 	    </LinearLayout>
 		<LinearLayout 

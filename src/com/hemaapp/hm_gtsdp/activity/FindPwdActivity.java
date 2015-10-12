@@ -196,7 +196,7 @@ public class FindPwdActivity extends GtsdpActivity implements OnClickListener {
 			return;
 		}
 		showProgressDialog("—È÷§÷–");
-		getNetWorker().getCodeVerify(username, code);
+		getNetWorker().CodeVerify(username, code);
 	}
 	
 }
