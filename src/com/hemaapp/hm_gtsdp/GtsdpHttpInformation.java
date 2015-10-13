@@ -131,6 +131,30 @@ public enum GtsdpHttpInformation implements HemaHttpInfomation {
 	 * 起始网点保存价格
 	 */
 	TRANS_PRICE_SAVE(28, "trans_price_save", "起始网点保存价格", false),
+	/**
+	 * 通知操作
+	 */
+	NOTICE_SAVEOPERATE(29, "notice_saveoperate", "通知操作", false),
+	/**
+	 * 申请提现
+	 */
+	CASH_ADD(30, "cash_add", "申请提现", false),
+	/**
+	 * 广告列表
+	 */
+	AD_LIST(31, "ad_list", "广告列表", false),
+	/**
+	 * 通用删除
+	 */
+	REMOVE(32, "remove", "通用删除", false),
+	/**
+	 * 账户明细
+	 */
+	FEEACCOUNT_LIST(33, "feeaccount_list", "通用删除", false),
+	/**
+	 * 意见反馈
+	 */
+	ADVICE_ADD(34, "advice_add", "意见反馈", false),
 	
 	
 	

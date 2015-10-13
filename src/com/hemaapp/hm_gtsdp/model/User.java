@@ -29,7 +29,7 @@ public class User extends HemaUser {
 	private String birthday;
 	private String avatarbig;
 	private String backimg;
-	private String district_name;
+	private String address;
 	private String onlineflag;
 	private String validflag;
 	private String vestflag;
@@ -81,7 +81,7 @@ public class User extends HemaUser {
 				birthday = get(jsonObject, "birthday");
 				avatarbig = get(jsonObject, "avatarbig");
 				backimg = get(jsonObject, "backimg");
-				district_name = get(jsonObject, "district_name");
+				address = get(jsonObject, "address");
 				onlineflag = get(jsonObject, "onlineflag");
 				validflag = get(jsonObject, "validflag");
 				vestflag = get(jsonObject, "vestflag");
@@ -125,7 +125,7 @@ public class User extends HemaUser {
 			String email, String password, String nickname, String charindex,
 			String sex, String mobile, String age, String selfsign,
 			String avatar, String birthday, String avatarbig, String backimg,
-			String district_name, String onlineflag, String validflag,
+			String address, String onlineflag, String validflag,
 			String vestflag, String score, String feeaccount, String lng,
 			String lat, String deviceid, String devicetype, String channelid,
 			String lastloginversion, String lastlogintime, String content,
@@ -151,7 +151,7 @@ public class User extends HemaUser {
 		this.birthday = birthday;
 		this.avatarbig = avatarbig;
 		this.backimg = backimg;
-		this.district_name = district_name;
+		this.address = address;
 		this.onlineflag = onlineflag;
 		this.validflag = validflag;
 		this.vestflag = vestflag;
@@ -256,8 +256,8 @@ public class User extends HemaUser {
 	}
 
 
-	public String getDistrict_name() {
-		return district_name;
+	public String getAddress() {
+		return address;
 	}
 
 
@@ -424,7 +424,7 @@ public class User extends HemaUser {
 				+ mobile + ", age=" + age + ", selfsign=" + selfsign
 				+ ", avatar=" + avatar + ", birthday=" + birthday
 				+ ", avatarbig=" + avatarbig + ", backimg=" + backimg
-				+ ", district_name=" + district_name + ", onlineflag="
+				+ ", address=" + address + ", onlineflag="
 				+ onlineflag + ", validflag=" + validflag + ", vestflag="
 				+ vestflag + ", score=" + score + ", feeaccount=" + feeaccount
 				+ ", lng=" + lng + ", lat=" + lat + ", deviceid=" + deviceid

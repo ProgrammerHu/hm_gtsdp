@@ -102,8 +102,11 @@ public class MessageListAdapter extends GtsdpAdapter  {
 		holder.layoutHolder.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				listData.remove(position);
-				notifyDataSetChanged();
+				mContext.showProgressDialog("É¾³ýÖÐ");
+				mContext.getNetWorker().noticeSaveOperate(mContext.getApplicationContext().getUser().getToken(), 
+						listData.get(position).getId(), 
+						listData.get(position).getKeytype(), 
+						listData.get(position).getKeyid(), "3");
 				holder.slideView.scrollTo(0, 0);
 			}
 		});

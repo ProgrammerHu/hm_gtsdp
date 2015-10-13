@@ -24,7 +24,12 @@ import com.hemaapp.hm_gtsdp.model.UnionTrade;
 import com.hemaapp.hm_gtsdp.model.User;
 import com.unionpay.UPPayAssistEx;
 import com.unionpay.uppay.PayActivity;
-
+/**
+ * 充值
+ * @author Wen
+ * @author HuFanglin
+ *
+ */
 public class RechargeActivity extends GtsdpActivity implements OnClickListener{
 	private final int Change_Count = 100;
 	private TextView txtTitle, txtNext, txtPayCount;
@@ -166,20 +171,47 @@ public class RechargeActivity extends GtsdpActivity implements OnClickListener{
 	{
 		User user = getApplicationContext().getUser();
 		String token = user.getToken();
-		switch(selectId)
+		double total_fee = Integer.parseInt(txtPayCount.getText().toString().trim(), 0);
+		if(total_fee == 0)
 		{
-		case R.id.layoutUnionpay:
-			getNetWorker().unionpay(token, "2", "1", "1", "0.01");
-			showProgressDialog("跳转中，请稍后");
-			break;
-		case R.id.layoutAlipay:
-			getNetWorker().alipay(token, "1", "1", "0.01");
-			showProgressDialog("跳转中，请稍后");
-			break;
-		case R.id.layoutWechat:
-			showTextDialog("微信");
-			break;
+			showTextDialog("请输入充值金额");
+			return;
 		}
+		if(GtsdpConfig.IS_DEVELOPMENT)
+		{
+			switch(selectId)
+			{
+			case R.id.layoutUnionpay:
+				getNetWorker().unionpay(token, "2", "1", "1", "0.01");
+				showProgressDialog("跳转中，请稍后");
+				break;
+			case R.id.layoutAlipay:
+				getNetWorker().alipay(token, "1", "1", "0.01");
+				showProgressDialog("跳转中，请稍后");
+				break;
+			case R.id.layoutWechat:
+				showTextDialog("微信");
+				break;
+			}
+		}
+		else
+		{
+			switch(selectId)
+			{
+			case R.id.layoutUnionpay:
+				getNetWorker().unionpay(token, "2", "1", "1", String.valueOf(total_fee));
+				showProgressDialog("跳转中，请稍后");
+				break;
+			case R.id.layoutAlipay:
+				getNetWorker().alipay(token, "1", "1", String.valueOf(total_fee));
+				showProgressDialog("跳转中，请稍后");
+				break;
+			case R.id.layoutWechat:
+				showTextDialog("微信");
+				break;
+			}
+		}
+		
 	}
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -187,7 +219,7 @@ public class RechargeActivity extends GtsdpActivity implements OnClickListener{
 		if(requestCode == Change_Count && resultCode == RESULT_OK)
 		{
 			double strCount = data.getDoubleExtra("Count", 0);
-			txtPayCount.setText("￥" + strCount);
+			txtPayCount.setText(String.valueOf(strCount));
 		}
 	}
 	

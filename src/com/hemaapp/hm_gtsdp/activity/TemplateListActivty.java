@@ -8,10 +8,13 @@ import xtom.frame.view.XtomRefreshLoadmoreLayout;
 import xtom.frame.view.XtomRefreshLoadmoreLayout.OnStartListener;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -26,6 +29,8 @@ import com.hemaapp.hm_gtsdp.GtsdpArrayResult;
 import com.hemaapp.hm_gtsdp.GtsdpHttpInformation;
 import com.hemaapp.hm_gtsdp.R;
 import com.hemaapp.hm_gtsdp.adapter.TemplateAddressAdpater;
+import com.hemaapp.hm_gtsdp.dialog.GtsdpTwoButtonDialog;
+import com.hemaapp.hm_gtsdp.dialog.GtsdpTwoButtonDialog.OnButtonListener;
 import com.hemaapp.hm_gtsdp.model.TemplateItemModel;
 import com.hemaapp.hm_gtsdp.view.GtsdpRefreshLoadmoreLayout;
 
@@ -58,22 +63,22 @@ public class TemplateListActivty extends GtsdpActivity implements OnClickListene
 		page = 0;
 		token = getApplicationContext().getUser().getToken();
 		getNetWorker().getTemplateList(token, keytype, page);
+		showProgressDialog("加载中");
 	}
 
 	@Override
 	protected void callAfterDataBack(HemaNetTask arg0) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	protected void callBackForGetDataFailed(HemaNetTask arg0, int arg1) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	protected void callBackForServerFailed(HemaNetTask netTask, HemaBaseResult arg1) {
+		cancelProgressDialog();
 		GtsdpHttpInformation infomation = (GtsdpHttpInformation)netTask.getHttpInformation();
 		switch (infomation) {
 		case TEMPLATE_LIST:
@@ -98,16 +103,13 @@ public class TemplateListActivty extends GtsdpActivity implements OnClickListene
 				refreshLoadmoreLayout.refreshSuccess();
 			else
 				refreshLoadmoreLayout.loadmoreSuccess();
-				
 			break;
-
 		}
 		
 	}
 
 	@Override
 	protected void callBeforeDataBack(HemaNetTask netTask) {
-	
 		
 	}
 
@@ -119,7 +121,7 @@ public class TemplateListActivty extends GtsdpActivity implements OnClickListene
 		txtTitle = (TextView)findViewById(R.id.txtTitle);
 		txtTitle.setText("模板");
 		txtNext = (TextView)findViewById(R.id.txtNext);
-		txtNext.setVisibility(View.INVISIBLE);
+		txtNext.setText("确定");
 		imageQuitActivity = (ImageView)findViewById(R.id.imageQuitActivity);
 		txtAdd = (TextView)findViewById(R.id.txtAdd);
 		if(ActivityType == SENDER)
@@ -144,6 +146,8 @@ public class TemplateListActivty extends GtsdpActivity implements OnClickListene
 	protected void setListener() {
 		layoutAddTemplate.setOnClickListener(this);
 		imageQuitActivity.setOnClickListener(this);
+		txtNext.setOnClickListener(this);
+		templateList.setOnItemLongClickListener(longClick);
 		templateList.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
@@ -176,6 +180,15 @@ public class TemplateListActivty extends GtsdpActivity implements OnClickListene
 		switch(v.getId())
 		{
 		case R.id.imageQuitActivity:
+			finish(R.anim.none, R.anim.right_out);
+			break;
+		case R.id.layoutAddTemplate:
+			Intent intent = new Intent(TemplateListActivty.this, TemplateEditActivty.class);
+			intent.putExtra("ActivityType", ActivityType);
+			startActivityForResult(intent, 0);
+			overridePendingTransition(R.anim.right_in, R.anim.none);
+			break;
+		case R.id.txtNext:
 			if(SelectPosition != -1)
 			{//已经选择
 				Intent result = new Intent();
@@ -185,12 +198,6 @@ public class TemplateListActivty extends GtsdpActivity implements OnClickListene
 				setResult(RESULT_OK, result);
 			}
 			finish(R.anim.none, R.anim.right_out);
-			break;
-		case R.id.layoutAddTemplate:
-			Intent intent = new Intent(TemplateListActivty.this, TemplateEditActivty.class);
-			intent.putExtra("ActivityType", ActivityType);
-			startActivityForResult(intent, 0);
-			overridePendingTransition(R.anim.right_in, R.anim.none);
 			break;
 		}
 		
@@ -239,4 +246,34 @@ public class TemplateListActivty extends GtsdpActivity implements OnClickListene
 		finish(R.anim.none, R.anim.right_out);
 		return super.onKeyBack();
 	}
+	
+	private OnItemLongClickListener longClick = new OnItemLongClickListener() {
+
+		@Override
+		public boolean onItemLongClick(AdapterView<?> parent, View view,
+				int positio, long id) {
+			final int position = positio;
+			GtsdpTwoButtonDialog dialog = new GtsdpTwoButtonDialog(mContext);
+			dialog.setText("确定要删除吗");
+			dialog.setButtonListener(new OnButtonListener() {
+				@Override
+				public void onRightButtonClick(GtsdpTwoButtonDialog dialog) {
+					dialog.cancel();
+					String keytype = dataList.get(position).getKeytype();
+					String id = dataList.get(position).getId();
+					getNetWorker().Remove(keytype, id);
+					showProgressDialog("删除中");
+					dataList.remove(position);
+					addressAdapter.notifyDataSetChanged();
+				}
+				
+				@Override
+				public void onLeftButtonClick(GtsdpTwoButtonDialog dialog) {
+					dialog.cancel();
+				}
+			});
+			dialog.show();
+			return false;
+		}
+	};
 }

@@ -17,6 +17,7 @@ import com.hemaapp.hm_FrameWork.HemaNetTask;
 import com.hemaapp.hm_FrameWork.result.HemaBaseResult;
 import com.hemaapp.hm_gtsdp.GtsdpActivity;
 import com.hemaapp.hm_gtsdp.GtsdpHttpInformation;
+import com.hemaapp.hm_gtsdp.GtsdpUtil;
 import com.hemaapp.hm_gtsdp.R;
 import com.hemaapp.hm_gtsdp.dialog.GtsdptOneButtonDialog;
 import com.hemaapp.hm_gtsdp.dialog.GtsdptOneButtonDialog.OnButtonListener;
@@ -67,9 +68,13 @@ public class TemplateEditActivty extends GtsdpActivity implements OnClickListene
 	}
 
 	@Override
-	protected void callBackForServerFailed(HemaNetTask arg0, HemaBaseResult arg1) {
-		// TODO Auto-generated method stub
-		
+	protected void callBackForServerFailed(HemaNetTask netTask,
+			HemaBaseResult baseResult) {
+		cancelProgressDialog();
+		showTextDialog(baseResult.getMsg());
+		GtsdpHttpInformation information = (GtsdpHttpInformation)netTask.getHttpInformation();
+		switch (information) {
+		}
 	}
 
 	@Override
@@ -82,6 +87,16 @@ public class TemplateEditActivty extends GtsdpActivity implements OnClickListene
 			cancelProgressDialog();
 			setResult(RESULT_OK);
 			finish(R.anim.none, R.anim.right_out);
+			break;
+		case CLIENT_VERIFY:
+			if(ActivityType == SendDetailActivty.EDIT_RECIVER || ActivityType == SendDetailActivty.EDIT_SENDER)
+			{//直接返回
+				returnEditForm();
+			}
+			else
+			{
+				clickSubmit();
+			}
 			break;
 		}
 	}
@@ -147,7 +162,31 @@ public class TemplateEditActivty extends GtsdpActivity implements OnClickListene
 			finish(R.anim.none, R.anim.right_out);
 			break;
 		case R.id.txtNext:
-			clickSubmit();
+			name = editName.getEditableText().toString();
+			address = txtAddress.getText().toString();
+			telphone = editPhone.getEditableText().toString();
+			if("".equals(name))
+			{
+				showTextDialog("请输入姓名");
+				return;
+			}
+			if("".equals(address))
+			{
+				showTextDialog("请输入地址");
+				return;
+			}
+			if("".equals(telphone))
+			{
+				showTextDialog("请输入电话");
+				return;
+			}
+			if(!GtsdpUtil.checkPhoneNumber(telphone))
+			{
+				showTextDialog("手机号格式不正确");
+				return;
+			}
+			getNetWorker().clientVerify(telphone);
+			
 			break;
 		case R.id.layoutSelectAddress:
 //			Intent intent = new Intent(TemplateEditActivty.this, SelectAddressActivity.class);
@@ -164,9 +203,6 @@ public class TemplateEditActivty extends GtsdpActivity implements OnClickListene
 	 */
 	private void clickSubmit()
 	{
-		name = editName.getEditableText().toString();
-		address = txtAddress.getText().toString();
-		telphone = editPhone.getEditableText().toString();
 		if(beforePhone == null || beforePhone.equals(""))
 		{//没有传入数据，表示是新增
 			getNetWorker().addTemplate(token, keytype, name, address, telphone);
@@ -175,8 +211,6 @@ public class TemplateEditActivty extends GtsdpActivity implements OnClickListene
 		{
 			getNetWorker().saveTemplate(token, templateId, keytype, name, address, telphone);
 		}
-		
-		
 		GtsdptOneButtonDialog dialog = new GtsdptOneButtonDialog(this);
 		dialog.setText("对不起，手机号尚未注册！");
 		dialog.setRightButtonTextColor(Color.rgb(0, 161, 216));
@@ -189,7 +223,18 @@ public class TemplateEditActivty extends GtsdpActivity implements OnClickListene
 		});
 		dialog.cancel();
 	}
-	
+	/**
+	 * 返回编辑界面
+	 */
+	private void returnEditForm()
+	{
+		Intent intent = new Intent();
+		intent.putExtra("name", name);
+		intent.putExtra("address", address);
+		intent.putExtra("telphone", telphone);
+		setResult(RESULT_OK, intent);
+		finish(R.anim.none, R.anim.right_out);
+	}
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);

@@ -1,6 +1,7 @@
 package com.hemaapp.hm_gtsdp.activity;
 
 import java.lang.reflect.Field;
+import java.util.List;
 
 import xtom.frame.exception.DataParseException;
 import android.content.BroadcastReceiver;
@@ -18,6 +19,7 @@ import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.LinearLayout.LayoutParams;
 import android.widget.RelativeLayout;
 import android.widget.Scroller;
 import android.widget.TextView;
@@ -27,11 +29,14 @@ import com.baidu.android.pushservice.PushManager;
 import com.hemaapp.GtsdpConfig;
 import com.hemaapp.hm_FrameWork.HemaNetTask;
 import com.hemaapp.hm_FrameWork.result.HemaBaseResult;
+import com.hemaapp.hm_gtsdp.GtsdpArrayResult;
 import com.hemaapp.hm_gtsdp.GtsdpFragmentActivity;
+import com.hemaapp.hm_gtsdp.GtsdpHttpInformation;
 import com.hemaapp.hm_gtsdp.R;
 import com.hemaapp.hm_gtsdp.adapter.ImageViewPagerAdapter;
 import com.hemaapp.hm_gtsdp.dialog.GtsdpTwoButtonDialog;
 import com.hemaapp.hm_gtsdp.dialog.GtsdpTwoButtonDialog.OnButtonListener;
+import com.hemaapp.hm_gtsdp.model.AdvertiseModel;
 import com.hemaapp.hm_gtsdp.model.User;
 import com.hemaapp.hm_gtsdp.push.PushUtils;
 
@@ -41,8 +46,9 @@ public class MainPageActivity extends GtsdpFragmentActivity implements OnClickLi
 	private TextView txtTitle, txtNext;
 	private ImageView imageQuitActivity, pointsImage, imageSend, imageGet, imageFind;
 	private ViewPager mainViewPager;
-	private int PageId = 8;
-	private LinearLayout UserCenter, SystemMessage;
+	private int PageId;
+	private LinearLayout UserCenter, SystemMessage, layoutPoint;
+	private List<AdvertiseModel> listData;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		setContentView(R.layout.activity_mainpage);
@@ -57,7 +63,7 @@ public class MainPageActivity extends GtsdpFragmentActivity implements OnClickLi
 		{
 			showTextDialog("用户身份异常");
 		}
-		
+		getNetWorker().getAdList();
 	}
 
 	@Override
@@ -79,9 +85,21 @@ public class MainPageActivity extends GtsdpFragmentActivity implements OnClickLi
 	}
 
 	@Override
-	protected void callBackForServerSuccess(HemaNetTask arg0,
-			HemaBaseResult arg1) {
-		// TODO Auto-generated method stub
+	protected void callBackForServerSuccess(HemaNetTask netTask,
+			HemaBaseResult baseResult) {
+		GtsdpHttpInformation information = (GtsdpHttpInformation)netTask.getHttpInformation();
+		switch (information) {
+		case AD_LIST:
+			GtsdpArrayResult<AdvertiseModel> result = (GtsdpArrayResult<AdvertiseModel>)baseResult;
+			listData= result.getObjects();
+			mainViewPager.setAdapter(new ImageViewPagerAdapter(getSupportFragmentManager(), 
+					MainPageActivity.this, listData));
+			addImageView(listData);
+			PageId = listData.size() * 10;
+	    	switchTask.run();
+			break;
+
+		}
 		
 	}
 
@@ -103,7 +121,6 @@ public class MainPageActivity extends GtsdpFragmentActivity implements OnClickLi
 		imageQuitActivity = (ImageView)findViewById(R.id.imageQuitActivity);
 		imageQuitActivity.setVisibility(View.INVISIBLE);
 		mainViewPager = (ViewPager)findViewById(R.id.mainViewPager);
-		mainViewPager.setAdapter(new ImageViewPagerAdapter(getSupportFragmentManager(), MainPageActivity.this));
 		RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)mainViewPager.getLayoutParams();
 		params.height = mScreenWidth * 4 / 7;
 		mainViewPager.setLayoutParams(params);
@@ -114,6 +131,7 @@ public class MainPageActivity extends GtsdpFragmentActivity implements OnClickLi
 		imageFind = (ImageView)findViewById(R.id.imageFind);
 		UserCenter = (LinearLayout)findViewById(R.id.UserCenter);
 		SystemMessage = (LinearLayout)findViewById(R.id.SystemMessage);
+		layoutPoint = (LinearLayout)findViewById(R.id.layoutPoint);
 	}
 
 	@Override
@@ -133,26 +151,16 @@ public class MainPageActivity extends GtsdpFragmentActivity implements OnClickLi
 			@Override
 			public void onPageSelected(int arg0) {
 				PageId = arg0;
-				int imageResource = 0;
-				switch(arg0 % 4)
+				if(listData == null || listData.size() <= 0)
 				{
-				case 0:
-					imageResource = R.drawable.point0;
-					break;
-				case 1:
-					imageResource = R.drawable.point1;
-					break;
-				case 2:
-					imageResource = R.drawable.point2;
-					break;
-				case 3:
-					imageResource = R.drawable.point3;
-					break;
+					return;
 				}
-				if(imageResource != 0)
+				int pageSize = listData.size();
+				for(int i = 0; i < pageSize; i++)
 				{
-					pointsImage.setImageResource(imageResource);
+					((ImageView)findViewById(i)).setImageResource(R.drawable.point_none);
 				}
+				((ImageView)findViewById(PageId % pageSize)).setImageResource(R.drawable.point);
 			}
 			@Override
 			public void onPageScrolled(int arg0, float arg1, int arg2) {}
@@ -160,7 +168,24 @@ public class MainPageActivity extends GtsdpFragmentActivity implements OnClickLi
 			public void onPageScrollStateChanged(int arg0) {}
 		});
 	}
-	
+	private void addImageView(List<AdvertiseModel> list)
+	{
+		if(list == null || list.size() <= 0)
+			return;
+		int Size = list.size();
+		for(int i = 0; i < Size; i++)
+		{
+			ImageView imageView = new ImageView(mContext);
+			LinearLayout.LayoutParams params = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+			imageView.setLayoutParams(params);
+			imageView.setId(i);
+			if(i == 0)
+				imageView.setImageResource(R.drawable.point);
+			else
+				imageView.setImageResource(R.drawable.point_none);
+			layoutPoint.addView(imageView);
+		}
+	}
 	@Override
 	public void onClick(View v) {
 		Intent intent;
@@ -316,11 +341,9 @@ public class MainPageActivity extends GtsdpFragmentActivity implements OnClickLi
     	mHandler.removeCallbacks(switchTask);
     }
     @Override
-    protected void onResume() {
-    	// TODO Auto-generated method stub
-    	super.onResume();
-
-        switchTask.run();
+    protected void onRestart() {
+    	switchTask.run();
+    	super.onRestart();
     }
 
 	@Override

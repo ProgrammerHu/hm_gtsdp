@@ -1,5 +1,7 @@
 package com.hemaapp.hm_gtsdp.model;
 
+import java.util.Date;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -24,6 +26,7 @@ public class NoticeModel extends XtomObject {
 	private String regdate;
 	private String avatar;
 	private String nickname;
+	private String timeDiff;
 	public String getId() {
 		return id;
 	}
@@ -56,6 +59,10 @@ public class NoticeModel extends XtomObject {
 	}
 	public String getNickname() {
 		return nickname;
+	}
+	public String getTimeDiff()
+	{
+		return timeDiff;
 	}
 	public NoticeModel(String id, String keytype, String keyid, String content,
 			String client_id, String from_id, String looktype, String regdate,

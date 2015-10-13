@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -17,6 +18,8 @@ import com.hemaapp.hm_gtsdp.GtsdpAdapter;
 import com.hemaapp.hm_gtsdp.R;
 import com.hemaapp.hm_gtsdp.activity.StartActivity;
 import com.hemaapp.hm_gtsdp.activity.TemplateEditActivty;
+import com.hemaapp.hm_gtsdp.dialog.GtsdpTwoButtonDialog;
+import com.hemaapp.hm_gtsdp.dialog.GtsdpTwoButtonDialog.OnButtonListener;
 import com.hemaapp.hm_gtsdp.model.TemplateItemModel;
 
 public class TemplateAddressAdpater extends GtsdpAdapter{
@@ -111,6 +114,30 @@ public class TemplateAddressAdpater extends GtsdpAdapter{
 				intent.putExtra("telphone", dataList.get(position).getTelphone());
 				Activity.startActivityForResult(intent, 0);
 				Activity.overridePendingTransition(R.anim.right_in, R.anim.none);
+			}
+		});
+		holder.layoutBody.setOnLongClickListener(new OnLongClickListener() {
+			@Override
+			public boolean onLongClick(View v) {
+				GtsdpTwoButtonDialog dialog = new GtsdpTwoButtonDialog(mContext);
+				dialog.setText("确定要删除吗");
+				dialog.setButtonListener(new OnButtonListener() {
+					@Override
+					public void onRightButtonClick(GtsdpTwoButtonDialog dialog) {
+						String keytype = dataList.get(position).getKeytype();
+						String id = dataList.get(position).getId();
+						Activity.getNetWorker().Remove(keytype, id);
+						Activity.showProgressDialog("删除中");
+						dataList.remove(position);
+						dialog.cancel();
+					}
+					
+					@Override
+					public void onLeftButtonClick(GtsdpTwoButtonDialog dialog) {
+						dialog.cancel();
+					}
+				});
+				return false;
 			}
 		});
 	}

@@ -19,12 +19,14 @@ import android.widget.Toast;
 import com.hemaapp.GtsdpConfig;
 import com.hemaapp.hm_gtsdp.R;
 import com.hemaapp.hm_FrameWork.HemaNetTask;
+import com.hemaapp.hm_FrameWork.result.HemaArrayResult;
 import com.hemaapp.hm_FrameWork.result.HemaBaseResult;
 import com.hemaapp.hm_gtsdp.GtsdpActivity;
 import com.hemaapp.hm_gtsdp.GtsdpHttpInformation;
 import com.hemaapp.hm_gtsdp.GtsdpUtil;
 import com.hemaapp.hm_gtsdp.dialog.GtsdpTwoButtonDialog;
 import com.hemaapp.hm_gtsdp.dialog.GtsdpTwoButtonDialog.OnButtonListener;
+import com.hemaapp.hm_gtsdp.model.User;
 import com.hemaapp.hm_gtsdp.view.SelectPopupWindow;
 
 /**
@@ -178,17 +180,19 @@ public class LoginActivity extends GtsdpActivity implements OnClickListener
 
 	@Override
 	protected void callBackForServerSuccess(HemaNetTask netTask,
-			HemaBaseResult result) {
+			HemaBaseResult baseResult) {
 		GtsdpHttpInformation information = (GtsdpHttpInformation)netTask.getHttpInformation();
 		switch(information)
 		{
 		case CLIENT_LOGIN:
+			HemaArrayResult<User> sUser = (HemaArrayResult<User>)baseResult;
+			getApplicationContext().setUser(sUser.getObjects().get(0));
 			cancelProgressDialog();
 			String username = netTask.getParams().get("username");
 			String password = netTask.getParams().get("password");
 			XtomSharedPreferencesUtil.save(mContext, "username", username);
 			XtomSharedPreferencesUtil.save(mContext, "password", password);
-			Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+			Intent intent = new Intent(LoginActivity.this, MainPageActivity.class);
 			startActivity(intent);
 			overridePendingTransition(R.anim.right_in, R.anim.none);
 			this.finish();

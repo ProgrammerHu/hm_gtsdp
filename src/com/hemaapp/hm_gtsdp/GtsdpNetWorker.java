@@ -7,6 +7,7 @@ import android.content.Context;
 
 import com.hemaapp.GtsdpConfig;
 import com.hemaapp.hm_FrameWork.HemaNetWorker;
+import com.hemaapp.hm_gtsdp.nettask.AdListTask;
 import com.hemaapp.hm_gtsdp.nettask.AlipayTradeTask;
 import com.hemaapp.hm_gtsdp.nettask.ChangePwdTask;
 import com.hemaapp.hm_gtsdp.nettask.ClientAddTask;
@@ -15,11 +16,13 @@ import com.hemaapp.hm_gtsdp.nettask.ClientLoginTask;
 import com.hemaapp.hm_gtsdp.nettask.ClientLoginoutTask;
 import com.hemaapp.hm_gtsdp.nettask.CodeVerifyTask;
 import com.hemaapp.hm_gtsdp.nettask.DeviceSaveTask;
+import com.hemaapp.hm_gtsdp.nettask.FeeAccountList;
 import com.hemaapp.hm_gtsdp.nettask.FileUploadTask;
 import com.hemaapp.hm_gtsdp.nettask.GetTemplateTask;
 import com.hemaapp.hm_gtsdp.nettask.InitTask;
 import com.hemaapp.hm_gtsdp.nettask.NoticeListTask;
 import com.hemaapp.hm_gtsdp.nettask.CurrentTask;
+import com.hemaapp.hm_gtsdp.nettask.RemoveTask;
 import com.hemaapp.hm_gtsdp.nettask.TransAddTask;
 import com.hemaapp.hm_gtsdp.nettask.TransListTask;
 import com.hemaapp.hm_gtsdp.nettask.UnionTradeTask;
@@ -291,12 +294,13 @@ public class GtsdpNetWorker extends HemaNetWorker {
 	 * @param keytype 业务类型 1：评论回复 2：好友申请 3：系统通知 
 	 * @param page 页数
 	 */
-	public void getNoticeList(String token, String keytype, String page)
+	public void getNoticeList(String token, String noticetype, String page)
 	{
+		noticetype = "1";
 		GtsdpHttpInformation information = GtsdpHttpInformation.NOTICE_LIST;
 		HashMap<String, String> params = new HashMap<String, String>();
 		params.put("token", token);
-		params.put("keytype", keytype); 
+		params.put("noticetype", noticetype); 
 		params.put("page", page); 
 		
 		GtsdpNetTask task = new NoticeListTask(information, params);
@@ -562,4 +566,104 @@ public class GtsdpNetWorker extends HemaNetWorker {
 		GtsdpNetTask task = new CurrentTask(information, params);
 		executeTask(task);
 	}
+	/**
+	 * 通知操作
+	 * @param token 登录令牌
+	 * @param id 通知主键id 从 通知列表 获取
+	 * @param keytype 业务类型 从 通知列表 获取(除了keytype=2，3外 其余keytype类型全部归类为系统通知类型)
+	 * @param keyid 主键id
+	 * @param operatetype 操作类型	
+	 * 1：置为已读 
+	 * 2：全部置为已读 
+	 * 3：删除单条 
+	 * 4：删除全部 (此处服务器会根据keytype智能判断并处理)
+	 */
+	public void noticeSaveOperate(String token, String id, String keytype, String keyid, String operatetype)
+	{
+		GtsdpHttpInformation information = GtsdpHttpInformation.NOTICE_SAVEOPERATE;
+		HashMap<String, String> params = new HashMap<String, String>();
+		params.put("token", token);
+		params.put("id", id);
+		params.put("keytype", keytype);
+		params.put("keyid", keyid);
+		params.put("operatetype", operatetype);
+		GtsdpNetTask task = new CurrentTask(information, params);
+		executeTask(task);
+	}
+	/**
+	 * 申请提现
+	 * @param token 登录令牌
+	 * @param keytype 提现方式
+	 * 1:支付宝,
+	 * 2:银行卡
+	 * @param applyfee 申请金额
+	 * @param paypassword 支付密码
+	 */
+	public void cashAdd(String token, String keytype, String applyfee, String paypassword)
+	{
+		GtsdpHttpInformation information = GtsdpHttpInformation.CASH_ADD;
+		HashMap<String, String> params = new HashMap<String, String>();
+		params.put("token", token);
+		params.put("keytype", keytype);
+		params.put("applyfee", applyfee);
+		params.put("paypassword", paypassword);
+		GtsdpNetTask task = new CurrentTask(information, params);
+		executeTask(task);
+	}
+	/**
+	 * 获取广告列表
+	 */
+	public void getAdList()
+	{
+		GtsdpHttpInformation information = GtsdpHttpInformation.AD_LIST;
+		HashMap<String, String> params = new HashMap<String, String>();
+		params.put("keytype", "2");
+		params.put("keyid", "1");
+		GtsdpNetTask task = new AdListTask(information, params);
+		executeTask(task);
+	}
+	/**
+	 * 通用删除
+	 * @param keytype 业务类型 
+	 * @param keyid 主键id 当keytype=1时，keyid=模板id串（可批量删除，形如：1,2,3）
+	 */
+	public void Remove(String keytype, String keyid)
+	{
+		keytype= "1";
+		GtsdpHttpInformation information = GtsdpHttpInformation.REMOVE;
+		HashMap<String, String> params = new HashMap<String, String>();
+		params.put("keytype", keytype);
+		params.put("keyid", keyid);
+		GtsdpNetTask task = new RemoveTask(information, params);
+		executeTask(task);
+	}
+	/**
+	 * 账户明细接口
+	 * @param token
+	 * @param page
+	 */
+	public void getFeeAccountList(String token, String page)
+	{
+		GtsdpHttpInformation information = GtsdpHttpInformation.FEEACCOUNT_LIST;
+		HashMap<String, String> params = new HashMap<String, String>();
+		params.put("token", token);
+		params.put("page", page);
+		GtsdpNetTask task = new FeeAccountList(information, params);
+		executeTask(task);
+	}
+	/**
+	 * 意见反馈接口
+	 * @param token 登录令牌
+	 * @param content 意见内容
+	 */
+	public void AddAdvice(String token, String content)
+	{
+		GtsdpHttpInformation information = GtsdpHttpInformation.ADVICE_ADD;
+		HashMap<String, String> params = new HashMap<String, String>();
+		params.put("token", token);
+		params.put("content", content);
+		GtsdpNetTask task = new CurrentTask(information, params);
+		executeTask(task);
+	}
 }
+

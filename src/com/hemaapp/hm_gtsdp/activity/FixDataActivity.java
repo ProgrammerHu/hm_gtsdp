@@ -21,6 +21,7 @@ import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.hemaapp.GtsdpConfig;
 import com.hemaapp.hm_gtsdp.GtsdpHttpInformation;
@@ -318,23 +319,28 @@ public class FixDataActivity extends GtsdpActivity implements OnClickListener{
 
 	@Override
 	protected void callBackForServerFailed(HemaNetTask netTask, HemaBaseResult baseResult) {
-		GtsdpHttpInformation information = (GtsdpHttpInformation)netTask.getHttpInformation();
-		switch (information) {
-		case CLIENT_ADD:
-			HemaArrayResult<String> result = (HemaArrayResult<String>)baseResult;
-			
-			showTextDialog(result.getObjects().get(0));
-			break;
 
-		}
+		cancelProgressDialog();
+		showTextDialog(baseResult.getMsg());
 		
 	}
 
 	@Override
-	protected void callBackForServerSuccess(HemaNetTask arg0,
-			HemaBaseResult arg1) {
-		// TODO Auto-generated method stub
-		
+	protected void callBackForServerSuccess(HemaNetTask netTask, HemaBaseResult baseResult) {
+		GtsdpHttpInformation information = (GtsdpHttpInformation)netTask.getHttpInformation();
+		switch (information) {
+		case CLIENT_ADD:
+			HemaArrayResult<String> result = (HemaArrayResult<String>)baseResult;
+			token = result.getObjects().get(0);
+			getNetWorker().fileUpload(token, "1", "0", "0", "0", "无", tempPath);
+			break;
+		case FILE_UPLOAD:
+			cancelProgressDialog();
+			Toast.makeText(mContext, "注册成功", Toast.LENGTH_SHORT).show();
+			finish(R.anim.none, R.anim.right_out);
+			break;
+
+		}
 	}
 
 	@Override
@@ -381,6 +387,7 @@ public class FixDataActivity extends GtsdpActivity implements OnClickListener{
 			showTextDialog("请选择详细地址");
 			return;
 		}
-		getNetWorker().clientAdd(address, sex, address, nickname, address, sex);
+		showProgressDialog("提交中");
+		getNetWorker().clientAdd(temp_token, username, password, nickname, address, sex);
 	}
 }

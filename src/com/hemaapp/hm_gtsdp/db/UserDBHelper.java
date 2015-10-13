@@ -13,12 +13,12 @@ import android.database.sqlite.SQLiteDatabase;
 public class UserDBHelper extends GtsdpDBHelper {
 	String tableName = USER;
 
-	String columns = "id,username,email,password,nickname,charindex,sex,mobile,age,selfsign,avatar,birthday,avatarbig,backimg,district_name,"
+	String columns = "id,username,email,password,nickname,charindex,sex,mobile,age,selfsign,avatar,birthday,avatarbig,backimg,address,"
 			+ "onlineflag,validflag,vestflag,score,feeaccount,lng,lat,deviceid,devicetype,channelid,lastloginversion,lastlogintime,content,delflag,"
 			+ "regdate,ask1_id,answer1,ask2_id,answer2,ask3_id,answer3,aliuser,bankuser,bankname,bankcard,bankaddress,transflag,checkflag,"
 			+ "token,android_must_update,android_last_version,android_update_url";
 
-	String updateColumns = "id=?,username=?,email=?,password=?,nickname=?,charindex=?,sex=?,mobile=?,age=?,selfsign=?,avatar=?,birthday=?,avatarbig=?,backimg=?,district_name=?,"
+	String updateColumns = "id=?,username=?,email=?,password=?,nickname=?,charindex=?,sex=?,mobile=?,age=?,selfsign=?,avatar=?,birthday=?,avatarbig=?,backimg=?,address=?,"
 			+ "onlineflag=?,validflag=?,vestflag=?,score=?,feeaccount=?,lng=?,lat=?,deviceid=?,devicetype=?,channelid=?,lastloginversion=?,lastlogintime=?,content=?,delflag=?,"
 			+ "regdate=?,ask1_id=?,answer1=?,ask2_id=?,answer2=?,ask3_id=?,answer3=?,aliuser=?,bankuser=?,bankname=?,bankcard=?,bankaddress=?,transflag=?,checkflag=?,"
 			+ "token=?,android_must_update=?,android_last_version=?,android_update_url=?";
@@ -57,7 +57,7 @@ public class UserDBHelper extends GtsdpDBHelper {
 				user.getCharindex(), user.getSex(), user.getMobile(),
 				user.getAge(), user.getSelfsign(), user.getAvatar(),
 				user.getBirthday(), user.getAvatarbig(), user.getBackimg(),
-				user.getDistrict_name(), user.getOnlineflag(),
+				user.getAddress(), user.getOnlineflag(),
 				user.getValidflag(), user.getVestflag(), user.getScore(),
 				user.getFeeaccount(), user.getLng(), user.getLat(),
 				user.getDeviceid(), user.getDevicetype(), user.getChannelid(),
@@ -96,7 +96,7 @@ public class UserDBHelper extends GtsdpDBHelper {
 				user.getCharindex(), user.getSex(), user.getMobile(),
 				user.getAge(), user.getSelfsign(), user.getAvatar(),
 				user.getBirthday(), user.getAvatarbig(), user.getBackimg(),
-				user.getDistrict_name(), user.getOnlineflag(),
+				user.getAddress(), user.getOnlineflag(),
 				user.getValidflag(), user.getVestflag(), user.getScore(),
 				user.getFeeaccount(), user.getLng(), user.getLat(),
 				user.getDeviceid(), user.getDevicetype(), user.getChannelid(),

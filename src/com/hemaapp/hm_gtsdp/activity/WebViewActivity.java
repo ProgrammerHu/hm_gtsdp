@@ -29,6 +29,7 @@ public class WebViewActivity extends GtsdpActivity{
 	
 	private String AboutUsUrl;//关于我们
 	private String ProtocalUrl;//注册协议
+	private String BeforeUrl;//传来的
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -91,6 +92,10 @@ public class WebViewActivity extends GtsdpActivity{
 		{
 			webview.loadUrl(ProtocalUrl);
 		}
+		else if("推广".equals(Title))
+		{
+			webview.loadUrl(BeforeUrl);
+		}
 		else
 		{
 			webview.loadUrl(Baidu);
@@ -101,7 +106,7 @@ public class WebViewActivity extends GtsdpActivity{
 	protected void getExras() {
 		beforeIntent = getIntent();
 		Title = beforeIntent.getStringExtra("Title");
-		
+		BeforeUrl = beforeIntent.getStringExtra("BeforeUrl");
 		GtsdpApplication application = GtsdpApplication.getInstance();
 		SysInitInfo info = application.getSysInitInfo();
 		AboutUsUrl = info.getSys_web_service() + MIDDLE + "aboutus";

@@ -1,353 +1,387 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/detialMainLinear"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" 
-    android:id="@+id/detialMainLinear">
-    <include layout="@layout/header_quit_text_text"/>
-    <ScrollView 
+    android:orientation="vertical" >
+
+    <include layout="@layout/header_quit_text_text" />
+
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        >
-        <LinearLayout 
+        android:layout_height="match_parent" >
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            >
-            <LinearLayout 
+            android:orientation="vertical" >
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
                 android:background="@color/white"
-                >
-                <LinearLayout 
-			        android:layout_width="match_parent"
-			        android:layout_height="wrap_content"
-			        android:background="@color/main_title_grey"
-			        android:orientation="horizontal"
-			        >
-			        <LinearLayout 
-			            android:layout_width="3dp"
-			            android:layout_height="match_parent"
-			            android:background="@color/main_blue"
-			            android:layout_marginTop="5dp"
-			            android:layout_marginBottom="5dp"
-			            ></LinearLayout>
-			        <TextView 
-			            android:layout_width="wrap_content"
-			            android:layout_height="wrap_content"
-			            android:text="收件人"
-			            android:layout_margin="10dp"
-			            />
-			        <TextView 
-			            android:layout_width="match_parent"
-			            android:layout_height="match_parent"
-			            android:textColor="@color/main_blue"
-			            android:gravity="right|center_vertical"
-			            android:paddingRight="10dp"
-			            android:id="@+id/txtReciverTemplet"
-			            android:text="模板>"
-			            />
-			    </LinearLayout>
-			    <LinearLayout 
-			        android:layout_width="match_parent"
-			        android:layout_height="wrap_content"
-			        android:orientation="horizontal"
-			        >
-			        <TextView 
-			            android:layout_width="wrap_content"
-			            android:layout_height="wrap_content"
-			            android:text="①姓名"
-			            android:layout_gravity="center_vertical"
-			            android:layout_marginLeft="15dp"
-			            />
-			        <ImageView 
-			            android:layout_width="wrap_content"
-			            android:layout_height="wrap_content"
-			            android:src="@drawable/star"
-			            android:layout_gravity="center_vertical"
-			            />
-			        <EditText 
-			            android:layout_width="match_parent"
-			            android:layout_height="wrap_content"
-			            android:id="@+id/editReciverName"
-			            android:background="@null"
-			            android:layout_margin="10dp"
-			            android:textSize="@dimen/textsize_8"
-			            />
-			    </LinearLayout>
-			    <LinearLayout 
-			        android:layout_width="match_parent"
-			        android:layout_height="1px"
-			        android:background="@color/grey_line"
-			        android:layout_marginLeft="15dp"
-			        ></LinearLayout>
-			    <LinearLayout 
-			        android:layout_width="match_parent"
-			        android:layout_height="wrap_content"
-			        android:orientation="horizontal"
-			        android:id="@+id/layoutReciverAddress"
-			        >
-			        <TextView 
-			            android:layout_width="wrap_content"
-			            android:layout_height="wrap_content"
-			            android:text="②地址"
-			            android:layout_gravity="center_vertical"
-			            android:layout_marginLeft="15dp"
-			            />
-			        <ImageView 
-			            android:layout_width="wrap_content"
-			            android:layout_height="wrap_content"
-			            android:src="@drawable/star"
-			            android:layout_gravity="center_vertical"
-			            />
-			        <TextView 
-			            android:layout_width="match_parent"
-			            android:layout_height="wrap_content"
-			            android:id="@+id/txtReciverAddress"
-			            android:layout_margin="10dp"
-			            android:textSize="@dimen/textsize_8"
-			            />
-			    </LinearLayout>
-			    <LinearLayout 
-			        android:layout_width="match_parent"
-			        android:layout_height="1px"
-			        android:background="@color/grey_line"
-			        android:layout_marginLeft="15dp"
-			        ></LinearLayout>
-			    <LinearLayout 
-			        android:layout_width="match_parent"
-			        android:layout_height="wrap_content"
-			        android:orientation="horizontal"
-			        >
-			        <TextView 
-			            android:layout_width="wrap_content"
-			            android:layout_height="wrap_content"
-			            android:text="③电话"
-			            android:layout_gravity="center_vertical"
-			            android:layout_marginLeft="15dp"
-			            />
-			        <ImageView 
-			            android:layout_width="wrap_content"
-			            android:layout_height="wrap_content"
-			            android:src="@drawable/star"
-			            android:layout_gravity="center_vertical"
-			            />
-			        <EditText 
-			            android:layout_width="match_parent"
-			            android:layout_height="wrap_content"
-			            android:id="@+id/editReciverPhone"
-			            android:background="@null"
-			            android:layout_margin="10dp"
-			            android:inputType="phone"
-			            android:textSize="@dimen/textsize_8"
-			            />
-			    </LinearLayout>
-			    
-			    <LinearLayout 
-			        android:layout_width="match_parent"
-			        android:layout_height="wrap_content"
-			        android:background="@color/main_title_grey"
-			        android:orientation="horizontal"
-			        >
-			        <LinearLayout 
-			            android:layout_width="3dp"
-			            android:layout_height="match_parent"
-			            android:background="@color/main_blue"
-			            android:layout_marginTop="5dp"
-			            android:layout_marginBottom="5dp"
-			            ></LinearLayout>
-			        <TextView 
-			            android:layout_width="wrap_content"
-			            android:layout_height="wrap_content"
-			            android:text="发件人"
-			            android:layout_margin="10dp"
-			            />
-			        <TextView 
-			            android:layout_width="match_parent"
-			            android:layout_height="match_parent"
-			            android:textColor="@color/main_blue"
-			            android:gravity="right|center_vertical"
-			            android:paddingRight="10dp"
-			            android:id="@+id/txtSenderTemplet"
-			            android:text="模板>"
-			            />
-			    </LinearLayout>
-			    <LinearLayout 
-			        android:layout_width="match_parent"
-			        android:layout_height="wrap_content"
-			        android:orientation="horizontal"
-			        >
-			        <TextView 
-			            android:layout_width="wrap_content"
-			            android:layout_height="wrap_content"
-			            android:text="①姓名"
-			            android:layout_gravity="center_vertical"
-			            android:layout_marginLeft="15dp"
-			            />
-			        <ImageView 
-			            android:layout_width="wrap_content"
-			            android:layout_height="wrap_content"
-			            android:src="@drawable/star"
-			            android:layout_gravity="center_vertical"
-			            />
-			        <EditText 
-			            android:layout_width="match_parent"
-			            android:layout_height="wrap_content"
-			            android:id="@+id/editSenderName"
-			            android:background="@null"
-			            android:layout_margin="10dp"
-			            android:textSize="@dimen/textsize_8"
-			            />
-			    </LinearLayout>
-			    <LinearLayout 
-			        android:layout_width="match_parent"
-			        android:layout_height="1px"
-			        android:background="@color/grey_line"
-			        android:layout_marginLeft="15dp"
-			        ></LinearLayout>
-			    <LinearLayout 
-			        android:layout_width="match_parent"
-			        android:layout_height="wrap_content"
-			        android:orientation="horizontal"
-			        android:id="@+id/layoutSenderAddress"
-			        >
-			        <TextView 
-			            android:layout_width="wrap_content"
-			            android:layout_height="wrap_content"
-			            android:text="②地址"
-			            android:layout_gravity="center_vertical"
-			            android:layout_marginLeft="15dp"
-			            />
-			        <ImageView 
-			            android:layout_width="wrap_content"
-			            android:layout_height="wrap_content"
-			            android:src="@drawable/star"
-			            android:layout_gravity="center_vertical"
-			            />
-			        <TextView
-			            android:layout_width="match_parent"
-			            android:layout_height="wrap_content"
-			            android:id="@+id/txtSenderAddress"
-			            android:layout_margin="10dp"
-			            android:textSize="@dimen/textsize_8"
-			            />
-			    </LinearLayout>
-			    <LinearLayout 
-			        android:layout_width="match_parent"
-			        android:layout_height="1px"
-			        android:background="@color/grey_line"
-			        android:layout_marginLeft="15dp"
-			        ></LinearLayout>
-			    <LinearLayout 
-			        android:layout_width="match_parent"
-			        android:layout_height="wrap_content"
-			        android:orientation="horizontal"
-			        >
-			        <TextView 
-			            android:layout_width="wrap_content"
-			            android:layout_height="wrap_content"
-			            android:text="③电话"
-			            android:layout_gravity="center_vertical"
-			            android:layout_marginLeft="15dp"
-			            />
-			        <ImageView 
-			            android:layout_width="wrap_content"
-			            android:layout_height="wrap_content"
-			            android:src="@drawable/star"
-			            android:layout_gravity="center_vertical"
-			            />
-			        <EditText 
-			            android:layout_width="match_parent"
-			            android:layout_height="wrap_content"
-			            android:id="@+id/editSenderPhone"
-			            android:background="@null"
-			            android:layout_margin="10dp"
-			            android:inputType="phone"
-			            android:textSize="@dimen/textsize_8"
-			            />
-			    </LinearLayout>
-			    <LinearLayout 
-			        android:layout_width="match_parent"
-			        android:layout_height="wrap_content"
-			        android:background="@color/main_title_grey"
-			        android:orientation="horizontal"
-			        >
-			        <LinearLayout 
-			            android:layout_width="3dp"
-			            android:layout_height="match_parent"
-			            android:background="@color/main_blue"
-			            android:layout_marginTop="5dp"
-			            android:layout_marginBottom="5dp"
-			            ></LinearLayout>
-			        <TextView 
-			            android:layout_width="wrap_content"
-			            android:layout_height="wrap_content"
-			            android:text="上传物品照片"
-			            android:layout_marginLeft="10dp"
-			            android:layout_marginBottom="10dp"
-			            android:layout_marginTop="10dp"
-			            />
-			        <TextView 
-			            android:layout_width="wrap_content"
-			            android:layout_height="match_parent"
-			            android:textColor="@color/main_blue"
-			            android:gravity="center_vertical"
-			            android:paddingRight="10dp"
-			            android:text="（最多8张）"
-			            />
-			    </LinearLayout>
-				<com.hemaapp.hm_gtsdp.view.MyGridView
-			        android:id="@+id/gridview"
-			        android:layout_width="match_parent"
-			        android:layout_height="match_parent"
-			        android:cacheColorHint="@color/transparent"
-			        android:listSelector="@color/transparent"
-			        android:numColumns="4"
-			        android:padding="5dp"
-			        android:scrollbars="none"
-			        android:verticalSpacing="5dp" >
-		    </com.hemaapp.hm_gtsdp.view.MyGridView>
+                android:orientation="vertical" >
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/main_title_grey"
+                    android:orientation="horizontal" >
+
+                    <LinearLayout
+                        android:layout_width="3dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginBottom="5dp"
+                        android:layout_marginTop="5dp"
+                        android:background="@color/main_blue" >
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:text="收件人" />
+
+                    <TextView
+                        android:id="@+id/txtReciverTemplet"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="right|center_vertical"
+                        android:paddingRight="10dp"
+                        android:text="模板>"
+                        android:textColor="@color/main_blue" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/layoutReciver"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" >
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal" >
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginLeft="15dp"
+                            android:text="①姓名" 
+                            android:textColor="@color/TextColorGray"/>
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:src="@drawable/star" />
+
+                        <EditText
+                            android:id="@+id/editReciverName"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="10dp"
+                            android:background="@null"
+                            android:textSize="@dimen/textsize_8" 
+                            android:textColor="@color/TextColorGray"/>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="1px"
+                        android:layout_marginLeft="15dp"
+                        android:background="@color/grey_line" >
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/layoutReciverAddress"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal" >
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginLeft="15dp"
+                            android:text="②地址" 
+                            android:textColor="@color/TextColorGray"/>
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:src="@drawable/star" />
+
+                        <TextView
+                            android:id="@+id/txtReciverAddress"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="10dp"
+                            android:textSize="@dimen/textsize_8" 
+                            android:textColor="@color/TextColorGray"/>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="1px"
+                        android:layout_marginLeft="15dp"
+                        android:background="@color/grey_line" >
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal" >
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginLeft="15dp"
+                            android:text="③电话"
+                            android:textColor="@color/TextColorGray" />
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:src="@drawable/star" />
+
+                        <EditText
+                            android:id="@+id/editReciverPhone"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="10dp"
+                            android:background="@null"
+                            android:inputType="phone"
+                            android:textSize="@dimen/textsize_8"
+                            android:textColor="@color/TextColorGray"/>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/main_title_grey"
+                    android:orientation="horizontal" >
+
+                    <LinearLayout
+                        android:layout_width="3dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginBottom="5dp"
+                        android:layout_marginTop="5dp"
+                        android:background="@color/main_blue" >
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:text="发件人" />
+
+                    <TextView
+                        android:id="@+id/txtSenderTemplet"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="right|center_vertical"
+                        android:paddingRight="10dp"
+                        android:text="模板>"
+                        android:textColor="@color/main_blue" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/layoutSender"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" >
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal" >
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginLeft="15dp"
+                            android:text="①姓名" 
+                            android:textColor="@color/TextColorGray"/>
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:src="@drawable/star" />
+
+                        <EditText
+                            android:id="@+id/editSenderName"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="10dp"
+                            android:background="@null"
+                            android:textSize="@dimen/textsize_8" 
+                            android:textColor="@color/TextColorGray"/>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="1px"
+                        android:layout_marginLeft="15dp"
+                        android:background="@color/grey_line" >
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/layoutSenderAddress"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal" >
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginLeft="15dp"
+                            android:text="②地址"
+                            android:textColor="@color/TextColorGray"/>
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:src="@drawable/star" />
+
+                        <TextView
+                            android:id="@+id/txtSenderAddress"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="10dp"
+                            android:textSize="@dimen/textsize_8"
+                            android:textColor="@color/TextColorGray" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="1px"
+                        android:layout_marginLeft="15dp"
+                        android:background="@color/grey_line" >
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal" >
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginLeft="15dp"
+                            android:text="③电话" 
+                            android:textColor="@color/TextColorGray"/>
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:src="@drawable/star" />
+
+                        <EditText
+                            android:id="@+id/editSenderPhone"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="10dp"
+                            android:background="@null"
+                            android:inputType="phone"
+                            android:textSize="@dimen/textsize_8" 
+                            android:textColor="@color/TextColorGray"/>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/main_title_grey"
+                    android:orientation="horizontal" >
+
+                    <LinearLayout
+                        android:layout_width="3dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginBottom="5dp"
+                        android:layout_marginTop="5dp"
+                        android:background="@color/main_blue" >
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="10dp"
+                        android:text="上传物品照片" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:gravity="center_vertical"
+                        android:paddingRight="10dp"
+                        android:text="（最多8张）"
+                        android:textColor="@color/main_blue" />
+                </LinearLayout>
+
+                <com.hemaapp.hm_gtsdp.view.MyGridView
+                    android:id="@+id/gridview"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:cacheColorHint="@color/transparent"
+                    android:listSelector="@color/transparent"
+                    android:numColumns="4"
+                    android:padding="5dp"
+                    android:scrollbars="none"
+                    android:verticalSpacing="5dp" >
+                </com.hemaapp.hm_gtsdp.view.MyGridView>
             </LinearLayout>
-            <LinearLayout 
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                >
-				<CheckBox 
-				    android:layout_width="wrap_content"
-				    android:layout_height="wrap_content"
-				    android:text="同意并仔细阅读"
-				    android:id="@+id/isAgree"
-				    android:textSize="@dimen/textsize_7"
-				    android:textColor="@color/grey_line"
-				    />
-                <TextView 
+                android:orientation="horizontal" >
+
+                <CheckBox
+                    android:id="@+id/isAgree"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="同意并仔细阅读"
+                    android:textColor="@color/grey_line"
+                    android:textSize="@dimen/textsize_7" />
+
+                <TextView
+                    android:id="@+id/txtSendProtocol"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="《发货协议》"
-				    android:textSize="@dimen/textsize_7"
-				    android:textColor="@color/black"
-				    android:id="@+id/txtSendProtocol"
-                    />
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/textsize_7" />
             </LinearLayout>
-            <LinearLayout 
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:gravity="center_vertical"
-                >
-            <Button 
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:text="发货"
-                android:textColor="@color/white"
-                android:layout_marginLeft="15dp"
-                android:layout_marginRight="15dp"
-                android:layout_marginTop="30dp"
-                android:layout_marginBottom="30dp"
-                android:id="@+id/btnSend"
-                android:background="@drawable/bg_button_submit_blue"
-                />
+                android:gravity="center_vertical" >
+
+                <Button
+                    android:id="@+id/btnSend"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginBottom="30dp"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginTop="30dp"
+                    android:background="@drawable/bg_button_submit_blue"
+                    android:text="发货"
+                    android:textColor="@color/white" />
             </LinearLayout>
         </LinearLayout>
     </ScrollView>

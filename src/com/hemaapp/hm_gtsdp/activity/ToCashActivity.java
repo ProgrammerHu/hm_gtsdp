@@ -19,7 +19,12 @@ import com.hemaapp.hm_gtsdp.db.UserDBHelper;
 import com.hemaapp.hm_gtsdp.dialog.GtsdptOneButtonDialog;
 import com.hemaapp.hm_gtsdp.dialog.GtsdptOneButtonDialog.OnButtonListener;
 import com.hemaapp.hm_gtsdp.model.User;
-
+/**
+ * 银行卡提现
+ * @author Wen
+ * @author HuFanglin
+ *
+ */
 public class ToCashActivity extends GtsdpActivity implements OnClickListener{
 	private final int SELECT_BANK = 100;
 	
@@ -57,8 +62,9 @@ public class ToCashActivity extends GtsdpActivity implements OnClickListener{
 	}
 
 	@Override
-	protected void callBackForServerFailed(HemaNetTask arg0, HemaBaseResult arg1) {
-		// TODO Auto-generated method stub
+	protected void callBackForServerFailed(HemaNetTask netTask, HemaBaseResult baseResult) {
+		cancelProgressDialog();
+		showTextDialog(baseResult.getMsg());
 		
 	}
 
@@ -72,6 +78,9 @@ public class ToCashActivity extends GtsdpActivity implements OnClickListener{
 			User user = ((HemaArrayResult<User>)baseResult).getObjects().get(0);
 			new UserDBHelper(mContext).update(user);
 			txtBank.setText(user.getBankname());
+			break;
+		case CASH_ADD:
+			
 			break;
 
 		}
@@ -143,6 +152,7 @@ public class ToCashActivity extends GtsdpActivity implements OnClickListener{
 	 */
 	private void clickConfirm()
 	{
+		String paypassword = editPwd.getEditableText().toString();
 		if("".equals(txtBank.getText()))
 		{
 			dialog.setText("绑定银行卡");
@@ -163,13 +173,23 @@ public class ToCashActivity extends GtsdpActivity implements OnClickListener{
 			{
 				dialog.setText("提现金额需为100的整数倍");
 				dialog.show();
+				return;
 			}
 		}
 		catch(Exception e)
 		{
 			dialog.setText("请输入正确的提现金额");
 			dialog.show();
+			return;
 		}
+		if(paypassword == null || "".equals(paypassword))
+		{
+			dialog.setText("请输入提现密码");
+			dialog.show();
+			return;
+		}
+		getNetWorker().cashAdd(getApplicationContext().getUser().getToken(), "2", strCount, paypassword);
+		showProgressDialog("提交中");
 	}
 	
 	@Override

@@ -20,7 +20,12 @@ import com.hemaapp.hm_gtsdp.db.UserDBHelper;
 import com.hemaapp.hm_gtsdp.dialog.GtsdptOneButtonDialog;
 import com.hemaapp.hm_gtsdp.dialog.GtsdptOneButtonDialog.OnButtonListener;
 import com.hemaapp.hm_gtsdp.model.User;
-
+/**
+ * ÷ß∏∂±¶Ã·œ÷
+ * @author Wen
+ * @author HuFanglin
+ *
+ */
 public class AlipayIncashActivity extends GtsdpActivity implements OnClickListener{
 	private final int INPUT_ALIPAY_ACCOUNT = 100;
 	private ImageView imageQuitActivity;

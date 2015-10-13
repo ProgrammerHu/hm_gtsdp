@@ -1,5 +1,7 @@
 package com.hemaapp.hm_gtsdp.activity;
+import java.util.ArrayList;
 import java.util.List;
+
 import xtom.frame.view.XtomRefreshLoadmoreLayout;
 import xtom.frame.view.XtomRefreshLoadmoreLayout.OnStartListener;
 import android.content.Intent;
@@ -10,10 +12,12 @@ import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ImageView;
+
 import com.hemaapp.hm_FrameWork.HemaNetTask;
 import com.hemaapp.hm_FrameWork.result.HemaBaseResult;
 import com.hemaapp.hm_gtsdp.GtsdpActivity;
 import com.hemaapp.hm_gtsdp.GtsdpArrayResult;
+import com.hemaapp.hm_gtsdp.GtsdpHttpInformation;
 import com.hemaapp.hm_gtsdp.R;
 import com.hemaapp.hm_gtsdp.adapter.MessageListAdapter;
 import com.hemaapp.hm_gtsdp.model.NoticeModel;
@@ -40,6 +44,8 @@ OnItemClickListener, OnStartListener{
 	private MessageListAdapter adapter;
 	private GtsdpRefreshLoadmoreLayout refreshLoadmoreLayout;
 	private int page;
+	
+	private int Position;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		setContentView(R.layout.activity_messages);
@@ -63,30 +69,66 @@ OnItemClickListener, OnStartListener{
 	}
 
 	@Override
-	protected void callBackForServerFailed(HemaNetTask arg0, HemaBaseResult arg1) {
-		// TODO Auto-generated method stub
+	protected void callBackForServerFailed(HemaNetTask nettask, HemaBaseResult result) {
+		cancelProgressDialog();
+		showTextDialog(result.getMsg());
 		
 	}
 
 	@Override
 	protected void callBackForServerSuccess(HemaNetTask nettask,
 			HemaBaseResult result) {
-		GtsdpArrayResult<NoticeModel> mResult = (GtsdpArrayResult<NoticeModel>)result;
-		if(page == 0)
-		{
-			listNotices = mResult.getObjects();
-			adapter = new MessageListAdapter(mContext, this, listNotices);
-			listViewCompat.setAdapter(adapter);
-			refreshLoadmoreLayout.refreshSuccess();
-		}
-		else
-		{
-			for(NoticeModel notice : mResult.getObjects())
+		cancelProgressDialog();
+		GtsdpHttpInformation information = (GtsdpHttpInformation)nettask.getHttpInformation();
+		switch (information) {
+		case NOTICE_LIST:
+			GtsdpArrayResult<NoticeModel> mResult = (GtsdpArrayResult<NoticeModel>)result;
+			if(page == 0)
 			{
-				listNotices.add(notice);
+				listNotices = mResult.getObjects();
+				adapter = new MessageListAdapter(mContext, this, listNotices);
+				listViewCompat.setAdapter(adapter);
+				refreshLoadmoreLayout.refreshSuccess();
 			}
-			refreshLoadmoreLayout.loadmoreSuccess();
+			else
+			{
+				for(NoticeModel notice : mResult.getObjects())
+				{
+					listNotices.add(notice);
+				}
+				refreshLoadmoreLayout.loadmoreSuccess();
+			}
+			break;
+		case NOTICE_SAVEOPERATE:
+			String a = nettask.getParams().get("operatetype");
+			int operatetype = Integer.parseInt(a, 5);
+			switch (operatetype) {
+			case 1:
+				listNotices.get(Position).setLooktype("2");
+				adapter.notifyDataSetChanged();
+				break;
+			case 2:
+				for(NoticeModel notice : listNotices)
+				{
+					notice.setLooktype("2");
+				}
+				adapter.notifyDataSetChanged();
+				break;
+			case 3:
+				listNotices.remove(Position);
+				adapter.notifyDataSetChanged();
+				break;
+			case 4:
+				listNotices.clear();
+				adapter.notifyDataSetChanged();
+				break;
+			default:
+				showTextDialog("请求参数错了");
+				break;
+			}
+			break;
 		}
+		
 		
 	}
 
@@ -132,14 +174,25 @@ OnItemClickListener, OnStartListener{
 			break;
 		case R.id.btnTop:
 			selectPopupWindow.dismiss();
+			if(listNotices != null && listNotices.size() > 0)
+			{
+				showProgressDialog("提交中");
+				getNetWorker().noticeSaveOperate(getApplicationContext().getUser().getToken(), 
+						listNotices.get(0).getId(), 
+						listNotices.get(0).getKeytype(), 
+						listNotices.get(0).getKeyid(), "4");
+			}
 			break;
 		case R.id.btnMiddle:
 			selectPopupWindow.dismiss();
-			for(NoticeModel item : listNotices)
+			if(listNotices != null && listNotices.size() > 0)
 			{
-				item.setLooktype("2");
+				showProgressDialog("提交中");
+				getNetWorker().noticeSaveOperate(getApplicationContext().getUser().getToken(), 
+						listNotices.get(0).getId(), 
+						listNotices.get(0).getKeytype(), 
+						listNotices.get(0).getKeyid(), "2");
 			}
-			adapter.notifyDataSetChanged();
 			break;
 		}
 	}
@@ -157,16 +210,18 @@ OnItemClickListener, OnStartListener{
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position,
 			long id) {
-		listNotices.get(position).setLooktype("2");
-		adapter.notifyDataSetChanged();
-		
+		Position = position;
+		getNetWorker().noticeSaveOperate(getApplicationContext().getUser().getToken(), 
+				listNotices.get(position).getId(), 
+				listNotices.get(position).getKeytype(), 
+				listNotices.get(position).getKeyid(), "1");
 	}
 
 	@Override
 	public void onStartLoadmore(XtomRefreshLoadmoreLayout arg0) {
 		// TODO 加载更多
 		page++;
-		getNetWorker().getNoticeList(token, "3", String.valueOf(page));
+		getNetWorker().getNoticeList(token, "1", String.valueOf(page));
 		
 	}
 
@@ -174,7 +229,7 @@ OnItemClickListener, OnStartListener{
 	public void onStartRefresh(XtomRefreshLoadmoreLayout arg0) {
 		// TODO 刷新
 		page = 0;
-		getNetWorker().getNoticeList(token, "3", String.valueOf(page));
+		getNetWorker().getNoticeList(token, "1", String.valueOf(page));
 		
 	}
 	

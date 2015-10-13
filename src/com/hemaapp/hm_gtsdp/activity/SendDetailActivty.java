@@ -51,7 +51,8 @@ public class SendDetailActivty extends GtsdpActivity implements OnClickListener 
 	private final int SCAN_SQCODE = 3;//重新扫描二维码
 	private final int SENDER = 100;//发件人
 	private final int RECIVER = 200;//收件人
-
+	public static final int EDIT_SENDER = 400;//编辑发件人
+	public static final int EDIT_RECIVER = 500;//编辑收件人
 	private View detialMainLinear;
 	
 	private TextView txtTitle, txtNext, txtSendProtocol, txtSenderTemplet,
@@ -61,9 +62,9 @@ public class SendDetailActivty extends GtsdpActivity implements OnClickListener 
 			editSenderPhone;
 	private Button btnSend;
 	private CheckBox isAgree;
-	private LinearLayout layoutReciverAddress, layoutSendAddress;
+	private LinearLayout layoutReciverAddress, layoutSendAddress, layoutReciver, layoutSender;
 
-	private SelectDistrictPicker myDistrictPicker;
+//	private SelectDistrictPicker myDistrictPicker;
 	private GridView gridView;
 
 	private ArrayList<String> images = new ArrayList<String>();
@@ -80,9 +81,9 @@ public class SendDetailActivty extends GtsdpActivity implements OnClickListener 
 		setContentView(R.layout.activity_send_detail);
 		super.onCreate(savedInstanceState);
 		CameraManager.init(getApplication());
-		if (myDistrictPicker == null) {
-			myDistrictPicker = new SelectDistrictPicker(mContext);
-		}
+//		if (myDistrictPicker == null) {
+//			myDistrictPicker = new SelectDistrictPicker(mContext);
+//		}
 
 		imageWay = new HemaImageWay(mContext, 1, 2) {
 			@Override
@@ -233,6 +234,26 @@ public class SendDetailActivty extends GtsdpActivity implements OnClickListener 
 				SQCode = data.getStringExtra("SQCode");
 				clickConfirm();//重新提交申请
 				break;
+			case EDIT_RECIVER:
+			{
+				String Name = data.getStringExtra("name");
+				String Address = data.getStringExtra("address");
+				String Phone = data.getStringExtra("telphone");
+				editReciverName.setText(Name);
+				txtReciverAddress.setText(Address);
+				editReciverPhone.setText(Phone);
+			}
+				break;
+			case EDIT_SENDER:{
+				String Name = data.getStringExtra("name");
+				String Address = data.getStringExtra("address");
+				String Phone = data.getStringExtra("telphone");
+				editSenderName.setText(Name);
+				txtSenderAddress.setText(Address);
+				editSenderPhone.setText(Phone);
+			}
+				
+				break;
 			}
 		}
 	}
@@ -268,8 +289,10 @@ public class SendDetailActivty extends GtsdpActivity implements OnClickListener 
 		txtSenderTemplet.setOnClickListener(this);
 		txtReciverTemplet.setOnClickListener(this);
 		btnSend.setOnClickListener(this);
-		layoutReciverAddress.setOnClickListener(this);
-		layoutSendAddress.setOnClickListener(this);
+//		layoutReciverAddress.setOnClickListener(this);
+//		layoutSendAddress.setOnClickListener(this);
+		layoutReciver.setOnClickListener(this);
+		layoutSender.setOnClickListener(this);
 	}
 
 	@Override
@@ -283,17 +306,28 @@ public class SendDetailActivty extends GtsdpActivity implements OnClickListener 
 		txtSenderTemplet = (TextView) findViewById(R.id.txtSenderTemplet);
 		txtReciverTemplet = (TextView) findViewById(R.id.txtReciverTemplet);
 		editReciverName = (EditText) findViewById(R.id.editReciverName);
+		editReciverName.setFocusable(false);
 		txtSenderAddress = (TextView) findViewById(R.id.txtSenderAddress);
+		txtSenderAddress.setText(getApplicationContext().getUser().getAddress());
 		editReciverPhone = (EditText) findViewById(R.id.editReciverPhone);
+		editReciverPhone.setFocusable(false);
+		
 		editSenderName = (EditText) findViewById(R.id.editSenderName);
+		editSenderName.setFocusable(false);
+		editSenderName.setText(getApplicationContext().getUser().getNickname());
 		txtReciverAddress = (TextView) findViewById(R.id.txtReciverAddress);
 		editSenderPhone = (EditText) findViewById(R.id.editSenderPhone);
+		editSenderPhone.setFocusable(false);
+		editSenderPhone.setText(getApplicationContext().getUser().getUsername());
+		
 		detialMainLinear = findViewById(R.id.detialMainLinear);
 		btnSend = (Button) findViewById(R.id.btnSend);
 		isAgree = (CheckBox) findViewById(R.id.isAgree);
 		layoutReciverAddress = (LinearLayout) findViewById(R.id.layoutReciverAddress);
 		layoutSendAddress = (LinearLayout) findViewById(R.id.layoutSenderAddress);
 		gridView = (GridView) findViewById(R.id.gridview);
+		layoutReciver = (LinearLayout) findViewById(R.id.layoutReciver);
+		layoutSender = (LinearLayout) findViewById(R.id.layoutSender);
 	}
 
 	@Override
@@ -306,19 +340,19 @@ public class SendDetailActivty extends GtsdpActivity implements OnClickListener 
 		case R.id.imageQuitActivity:
 			finish(R.anim.none, R.anim.right_out);
 			break;
-		case R.id.layoutReciverAddress:
-			myDistrictPicker.setOnClickListener(clickReciver);
-			myDistrictPicker.showAtLocation(
-					SendDetailActivty.this.findViewById(R.id.detialMainLinear),
-					Gravity.CENTER | Gravity.CENTER_HORIZONTAL, 0, 0);
-			break;
-		case R.id.layoutSenderAddress:
-			myDistrictPicker.setOnClickListener(clickSender);
-			myDistrictPicker.showAtLocation(
-					SendDetailActivty.this.findViewById(R.id.detialMainLinear),
-					Gravity.CENTER | Gravity.CENTER_HORIZONTAL, 0, 0);
-
-			break;
+//		case R.id.layoutReciverAddress:
+//			myDistrictPicker.setOnClickListener(clickReciver);
+//			myDistrictPicker.showAtLocation(
+//					SendDetailActivty.this.findViewById(R.id.detialMainLinear),
+//					Gravity.CENTER | Gravity.CENTER_HORIZONTAL, 0, 0);
+//			break;
+//		case R.id.layoutSenderAddress:
+//			myDistrictPicker.setOnClickListener(clickSender);
+//			myDistrictPicker.showAtLocation(
+//					SendDetailActivty.this.findViewById(R.id.detialMainLinear),
+//					Gravity.CENTER | Gravity.CENTER_HORIZONTAL, 0, 0);
+//
+//			break;
 		case R.id.txtSenderTemplet:
 			intent = new Intent(this, TemplateListActivty.class);
 			intent.putExtra("ActivityType", SENDER);
@@ -340,6 +374,22 @@ public class SendDetailActivty extends GtsdpActivity implements OnClickListener 
 		case R.id.btnSend:
 			clickConfirm();
 			break;
+		case R.id.layoutReciver:
+			intent = new Intent(this, TemplateEditActivty.class);
+			intent.putExtra("name", editReciverName.getEditableText().toString().trim());
+			intent.putExtra("address", txtReciverAddress.getText().toString().trim());
+			intent.putExtra("telphone", editReciverPhone.getEditableText().toString().trim());
+			intent.putExtra("ActivityType", EDIT_RECIVER);
+			startActivityForResult(intent, EDIT_RECIVER);
+			break;
+		case R.id.layoutSender:
+			intent = new Intent(this, TemplateEditActivty.class);
+			intent.putExtra("name", editSenderName.getEditableText().toString().trim());
+			intent.putExtra("address", txtSenderAddress.getText().toString().trim());
+			intent.putExtra("telphone", editSenderPhone.getEditableText().toString().trim());
+			intent.putExtra("ActivityType", EDIT_SENDER);
+			startActivityForResult(intent, EDIT_SENDER);
+			break;
 		}
 	}
 	
@@ -350,40 +400,40 @@ public class SendDetailActivty extends GtsdpActivity implements OnClickListener 
 	}
 	
 
-	/**
-	 * 点击收件人地址
-	 */
-	private OnClickListener clickReciver = new OnClickListener() {
-		@Override
-		public void onClick(View v) {
-			if (v.getId() == R.id.btnDistrictPickerCancel) {
-				myDistrictPicker.dismiss();
-				return;
-			}
-			if (v.getId() == R.id.btnDistrictPickerClose) {
-				String address = myDistrictPicker.getDistrcictString();
-				txtReciverAddress.setText(address);
-			}
-			myDistrictPicker.dismiss();
-		}
-	};
-	/**
-	 * 点击发件人地址
-	 */
-	private OnClickListener clickSender = new OnClickListener() {
-		@Override
-		public void onClick(View v) {
-			if (v.getId() == R.id.btnDistrictPickerCancel) {
-				myDistrictPicker.dismiss();
-				return;
-			}
-			if (v.getId() == R.id.btnDistrictPickerClose) {
-				String address = myDistrictPicker.getDistrcictString();
-				txtSenderAddress.setText(address);
-			}
-			myDistrictPicker.dismiss();
-		}
-	};
+//	/**
+//	 * 点击收件人地址
+//	 */
+//	private OnClickListener clickReciver = new OnClickListener() {
+//		@Override
+//		public void onClick(View v) {
+//			if (v.getId() == R.id.btnDistrictPickerCancel) {
+//				myDistrictPicker.dismiss();
+//				return;
+//			}
+//			if (v.getId() == R.id.btnDistrictPickerClose) {
+////				String address = myDistrictPicker.getDistrcictString();
+//				txtReciverAddress.setText(address);
+//			}
+//			myDistrictPicker.dismiss();
+//		}
+//	};
+//	/**
+//	 * 点击发件人地址
+//	 */
+//	private OnClickListener clickSender = new OnClickListener() {
+//		@Override
+//		public void onClick(View v) {
+//			if (v.getId() == R.id.btnDistrictPickerCancel) {
+//				myDistrictPicker.dismiss();
+//				return;
+//			}
+//			if (v.getId() == R.id.btnDistrictPickerClose) {
+//				String address = myDistrictPicker.getDistrcictString();
+//				txtSenderAddress.setText(address);
+//			}
+//			myDistrictPicker.dismiss();
+//		}
+//	};
 
 	/**
 	 * 点击选择图片来源
