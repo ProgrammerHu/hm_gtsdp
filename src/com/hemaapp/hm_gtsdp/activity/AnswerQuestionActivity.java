@@ -8,6 +8,9 @@ import org.json.JSONObject;
 import xtom.frame.exception.DataParseException;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -19,11 +22,13 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 
 import com.hemaapp.hm_FrameWork.HemaNetTask;
 import com.hemaapp.hm_FrameWork.result.HemaBaseResult;
 import com.hemaapp.hm_gtsdp.GtsdpActivity;
+import com.hemaapp.hm_gtsdp.GtsdpArrayResult;
 import com.hemaapp.hm_gtsdp.GtsdpHttpInformation;
 import com.hemaapp.hm_gtsdp.GtsdpUtil;
 import com.hemaapp.hm_gtsdp.R;
@@ -36,16 +41,17 @@ import com.hemaapp.hm_gtsdp.model.User;
  * @author HuFanglin
  *
  */
-public class AnswerQuestionActivity extends GtsdpActivity implements OnClickListener, OnItemSelectedListener {
+public class AnswerQuestionActivity extends GtsdpActivity implements OnClickListener {
 
 	private TextView txtTitle, txtNext;
 	private ImageView imageQuitActivity;
-	private Spinner spinner1, spinner2, spinner3;
+	private TextView spinner1, spinner2, spinner3;
     private ArrayAdapter<QuestionModel> adapter1, adapter2, adapter3;
     private QuestionModel tempModel1, tempModel2, tempModel3;
     private List<QuestionModel> list1, list2, list3, listTemp;
     private Button btnConfirm;
     private EditText editPhone, editText1, editText2, editText3;
+    private String id1, id2, id3;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		setContentView(R.layout.activity_question);
@@ -60,8 +66,8 @@ public class AnswerQuestionActivity extends GtsdpActivity implements OnClickList
 	}
 
 	@Override
-	protected void callBackForGetDataFailed(HemaNetTask arg0, int arg1) {
-		// TODO Auto-generated method stub
+	protected void callBackForGetDataFailed(HemaNetTask netTask, int arg1) {
+		
 		
 	}
 
@@ -76,6 +82,9 @@ public class AnswerQuestionActivity extends GtsdpActivity implements OnClickList
 		case PASSWORD_ASK_CHECK:
 			showTextDialog("验证失败");
 			break;
+		case PASSWORD_ASK_LIST:
+			showTextDialog(baseResult.getMsg());
+			break;
 		}
 		
 	}
@@ -87,12 +96,9 @@ public class AnswerQuestionActivity extends GtsdpActivity implements OnClickList
 		switch (information) {
 		case CLIENT_VERIFY:
 			getNetWorker().checkAsk(editPhone.getEditableText().toString(), 
-					String.valueOf(((QuestionModel)spinner1.getSelectedItem()).getId()), 
-					editText1.getEditableText().toString().trim(), 
-					String.valueOf(((QuestionModel)spinner2.getSelectedItem()).getId()),   
-					editText2.getEditableText().toString().trim(), 
-					String.valueOf(((QuestionModel)spinner3.getSelectedItem()).getId()), 
-					editText3.getEditableText().toString().trim());
+					id1, editText1.getEditableText().toString().trim(), 
+					id2, editText2.getEditableText().toString().trim(), 
+					id3, editText3.getEditableText().toString().trim());
 			break;
 		case PASSWORD_ASK_CHECK:
 			cancelProgressDialog();
@@ -103,6 +109,22 @@ public class AnswerQuestionActivity extends GtsdpActivity implements OnClickList
 			startActivity(intent);
 			overridePendingTransition(R.anim.right_in, R.anim.none);
 			finish();
+			break;
+	case PASSWORD_ASK_LIST:
+			cancelProgressDialog();
+			GtsdpArrayResult<QuestionModel> result = (GtsdpArrayResult<QuestionModel>)baseResult;
+			List<QuestionModel> list = result.getObjects();
+			if(list == null || list.size() <= 0)
+			{
+				showTextDialog("您的账号没有设置密保问题");
+				return;
+			}
+			spinner1.setText(list.get(0).name);
+			id1 = list.get(0).id;
+			spinner2.setText(list.get(1).name);
+			id2 = list.get(1).id;
+			spinner3.setText(list.get(2).name);
+			id3 = list.get(2).id;
 			break;
 		}
 		
@@ -115,7 +137,7 @@ public class AnswerQuestionActivity extends GtsdpActivity implements OnClickList
 		switch (information) 
 		{
 		case CLIENT_VERIFY:
-			showProgressDialog("验证中，请稍后");
+			showProgressDialog("验证中");
 			break;
 		
 		}
@@ -129,41 +151,9 @@ public class AnswerQuestionActivity extends GtsdpActivity implements OnClickList
 		txtNext = (TextView)findViewById(R.id.txtNext);
 		txtNext.setVisibility(View.INVISIBLE);
 		imageQuitActivity = (ImageView)findViewById(R.id.imageQuitActivity);
-		spinner1 = (Spinner)findViewById(R.id.spinner1); 
-		spinner2 = (Spinner)findViewById(R.id.spinner2); 
-		spinner3 = (Spinner)findViewById(R.id.spinner3); 
-		//将可选内容与ArrayAdapter连接起来
-        adapter1 = new ArrayAdapter<QuestionModel>(this,android.R.layout.simple_spinner_item);
-        adapter2 = new ArrayAdapter<QuestionModel>(this,android.R.layout.simple_spinner_item);
-        adapter3 = new ArrayAdapter<QuestionModel>(this,android.R.layout.simple_spinner_item);
-        list1 = new ArrayList<QuestionModel>();
-        list1.add(new QuestionModel("0", "请选择"));
-        list1.add(new QuestionModel("1", "你最喜欢的菜是什么？"));
-        list1.add(new QuestionModel("2", "你最喜欢的颜色？"));
-        list1.add(new QuestionModel("3", "你爸爸叫什么名字？"));
-        list1.add(new QuestionModel("4", "你妈妈叫什么名字？"));
-        list1.add(new QuestionModel("5", "你的家乡在哪里？"));
-        list1.add(new QuestionModel("6", "你的大学叫什么？"));
-        list2 = new ArrayList<QuestionModel>();
-        list3 = new ArrayList<QuestionModel>();
-        listTemp = new ArrayList<QuestionModel>();
-        for(QuestionModel model : list1)
-        {
-        	adapter1.add(model);
-        	adapter2.add(model);
-        	adapter3.add(model);
-        	list2.add(model);
-        	list3.add(model);
-        	listTemp.add(model);
-        }
-
-        //设置下拉列表的风格
-        adapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        adapter3.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner1.setAdapter(adapter1);
-        spinner2.setAdapter(adapter2);
-        spinner3.setAdapter(adapter3);
+		spinner1 = (TextView)findViewById(R.id.spinner1); 
+		spinner2 = (TextView)findViewById(R.id.spinner2); 
+		spinner3 = (TextView)findViewById(R.id.spinner3); 
         btnConfirm = (Button)findViewById(R.id.btnConfirm);
         editText1 = (EditText)findViewById(R.id.editText1);
         editText2 = (EditText)findViewById(R.id.editText2);
@@ -182,9 +172,24 @@ public class AnswerQuestionActivity extends GtsdpActivity implements OnClickList
 		imageQuitActivity.setOnClickListener(this);
 		txtNext.setOnClickListener(this);
 		btnConfirm.setOnClickListener(this);
-		spinner1.setOnItemSelectedListener(this);
-		spinner2.setOnItemSelectedListener(this);
-		spinner3.setOnItemSelectedListener(this);
+		editPhone.addTextChangedListener(new TextWatcher() {
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before, int count) {
+				String username = editPhone.getEditableText().toString().trim();
+				if(username != null && username.length() == 11)
+				{
+					showProgressDialog("获取密保问题");
+					getNetWorker().getPwdAskList("2", username);
+				}
+			}
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count,
+					int after) {
+			}
+			@Override
+			public void afterTextChanged(Editable s) {
+			}
+		});
 	}
 
 	@Override
@@ -204,6 +209,11 @@ public class AnswerQuestionActivity extends GtsdpActivity implements OnClickList
 	{
 		if(GtsdpUtil.checkPhoneNumber(editPhone.getEditableText().toString()))
 		{
+			if(id1 == null || "".equals(id1))
+			{
+				showTextDialog("您的账号没有设置密保问题");
+				return;
+			}
 			getNetWorker().clientVerify(editPhone.getEditableText().toString());
 		}
 		else
@@ -212,96 +222,4 @@ public class AnswerQuestionActivity extends GtsdpActivity implements OnClickList
 		}
 	}
 
-	@Override
-	public void onItemSelected(AdapterView<?> parent, View view, int position,
-			long id) {
-		if(position == 0)
-		{
-			if(tempModel1 == null && tempModel2 == null && tempModel3 == null)
-				return;
-			switch (parent.getId()) 
-			{
-			case R.id.spinner1:
-				ResetAdapter(adapter2, list2, tempModel3);
-				ResetAdapter(adapter3, list3, tempModel2);
-				break;
-			case R.id.spinner2:
-				ResetAdapter(adapter1, list1, tempModel3);
-				ResetAdapter(adapter3, list3, tempModel1);
-				break;
-			case R.id.spinner3:
-				ResetAdapter(adapter1, list1, tempModel2);
-				ResetAdapter(adapter2, list2, tempModel1);
-				break;
-			}
-		}
-		else
-		{
-			switch (parent.getId()) {
-			case R.id.spinner1:
-				tempModel1 = adapter1.getItem(position);
-				ResetAdapter(adapter2, list2, tempModel3);
-				ResetAdapter(adapter3, list3, tempModel2);
-				list2.remove(tempModel1);
-				list3.remove(tempModel1);
-				setAdapter(adapter2, list2);
-				setAdapter(adapter3, list3);
-				break;
-			case R.id.spinner2:
-				tempModel2 = adapter2.getItem(position);
-				ResetAdapter(adapter1, list1, tempModel3);
-				ResetAdapter(adapter3, list3, tempModel1);
-				list1.remove(tempModel2);
-				list3.remove(tempModel2);
-				setAdapter(adapter1, list1);
-				setAdapter(adapter3, list3);
-				break;
-			case R.id.spinner3:
-				tempModel3 = adapter3.getItem(position);
-				ResetAdapter(adapter1, list1, tempModel2);
-				ResetAdapter(adapter2, list2, tempModel1);
-				list1.remove(tempModel3);
-				list2.remove(tempModel3);
-				setAdapter(adapter1, list1);
-				setAdapter(adapter2, list2);
-				break;
-			}
-		}
-	}
-
-	@Override
-	public void onNothingSelected(AdapterView<?> parent) {
-	}
-	/**
-	 * 点击请选择重置适配器
-	 * @param adapter
-	 * @param list
-	 */
-	private void ResetAdapter(ArrayAdapter<QuestionModel> adapter, List<QuestionModel> list, QuestionModel tempModel)
-	{
-		list.clear();
-		for(QuestionModel model : listTemp)
-		{
-			list.add(model);
-		}
-		if(tempModel != null)
-		{
-			list.remove(tempModel);
-		}
-		setAdapter(adapter, list);
-		tempModel = null;
-	}
-	/**
-	 * 选择时设置适配器
-	 * @param adapter
-	 * @param list
-	 */
-	private void setAdapter(ArrayAdapter<QuestionModel> adapter, List<QuestionModel> list)
-	{
-		adapter.clear();
-		for(QuestionModel model : list)
-		{
-			adapter.add(model);
-		}
-	}
 }

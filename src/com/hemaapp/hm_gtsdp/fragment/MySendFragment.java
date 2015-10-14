@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import com.hemaapp.hm_FrameWork.HemaNetTask;
 import com.hemaapp.hm_FrameWork.result.HemaBaseResult;
+import com.hemaapp.hm_gtsdp.GtsdpArrayResult;
 import com.hemaapp.hm_gtsdp.GtsdpFragment;
 import com.hemaapp.hm_gtsdp.GtsdpFragmentActivity;
 import com.hemaapp.hm_gtsdp.GtsdpHttpInformation;
@@ -41,8 +42,9 @@ OnItemClickListener{
 	private GtsdpListView showListView;
 	private RadioGroup radioGroup;
 	private RadioButton rbtnLeft;
-	private List<OrderModel> listDataOnPassage;//在途
-	private List<OrderModel> listDataServed;//已送达
+	private List<OrderModel> listData;
+//	private List<OrderModel> listDataOnPassage;//在途
+//	private List<OrderModel> listDataServed;//已送达
 	private OrdersListAdapter listViewAdapter;
 	public MySendFragment(int pageNumber, GtsdpFragmentActivity activity)
 	{
@@ -56,6 +58,9 @@ OnItemClickListener{
 		setContentView(R.layout.fragment_send);
 		super.onCreate(savedInstanceState);
 		keyid = 1;
+		listData = new ArrayList<OrderModel>();
+		listViewAdapter = new OrdersListAdapter(Activity, listData);
+		showListView.setAdapter(listViewAdapter);
 		doRequset();
 	}
 
@@ -95,11 +100,25 @@ OnItemClickListener{
 		{
 		case TRANS_LIST:
 			cancelProgressDialog();
+			GtsdpArrayResult<OrderModel> result = (GtsdpArrayResult<OrderModel>)baseResult;
+			List<OrderModel> listResult = result.getObjects();
 			if(pages == 0)
+			{
+				listData = listResult;
+				listViewAdapter.setListData(listData);
+				listViewAdapter.notifyDataSetChanged();
 				refreshLoadmoreLayout.refreshSuccess();
+			}
 			else
+			{
+				for(OrderModel order : listResult)
+				{
+					listData.add(order);
+				}
+				listViewAdapter.setListData(listData);
+				listViewAdapter.notifyDataSetChanged();
 				refreshLoadmoreLayout.loadmoreSuccess();
-			//到不了啊到不了
+			}
 			break;
 		}
 		
@@ -122,29 +141,6 @@ OnItemClickListener{
 
 	@Override
 	protected void setListener() {
-		listDataOnPassage = new ArrayList<OrderModel>();
-		listDataOnPassage.add(new OrderModel("E156456115645641756","", "", 11, "1", "收件人的姓名", "收件人的地址", "收件人的电话", "发件人姓名",
-				"发件人地址", "发件人电话", "二维码信息", "二维码信息", "订单号"));
-		listDataOnPassage.add(new OrderModel("E156456115645641756","", "", 12, "1", "收件人的姓名", "收件人的地址", "收件人的电话", "发件人姓名",
-				"发件人地址", "发件人电话", "二维码信息", "二维码信息", "订单号"));
-		listDataOnPassage.add(new OrderModel("E156456115645641756","", "", 13, "1", "收件人的姓名", "收件人的地址", "收件人的电话", "发件人姓名",
-				"发件人地址", "发件人电话", "二维码信息", "二维码信息", "订单号"));
-		
-		listDataServed = new ArrayList<OrderModel>();
-		listDataServed.add(new OrderModel("E156456115645641756","", "", 10, "1", "收件人的姓名", "收件人的地址", "收件人的电话", "发件人姓名",
-				"发件人地址", "发件人电话", "二维码信息", "二维码信息", "订单号"));
-		listDataServed.add(new OrderModel("E156456115645641756","", "", 10, "1", "收件人的姓名", "收件人的地址", "收件人的电话", "发件人姓名",
-				"发件人地址", "发件人电话", "二维码信息", "二维码信息", "订单号"));
-		listDataServed.add(new OrderModel("E156456115645641756","", "", 10, "1", "收件人的姓名", "收件人的地址", "收件人的电话", "发件人姓名",
-				"发件人地址", "发件人电话", "二维码信息", "二维码信息", "订单号"));
-		listDataServed.add(new OrderModel("E156456115645641756","", "", 10, "1", "收件人的姓名", "收件人的地址", "收件人的电话", "发件人姓名",
-				"发件人地址", "发件人电话", "二维码信息", "二维码信息", "订单号"));
-		listDataServed.add(new OrderModel("E156456115645641756","", "", 10, "1", "收件人的姓名", "收件人的地址", "收件人的电话", "发件人姓名",
-				"发件人地址", "发件人电话", "二维码信息", "二维码信息", "订单号"));
-		listDataServed.add(new OrderModel("E156456115645641756","", "", 10, "1", "收件人的姓名", "收件人的地址", "收件人的电话", "发件人姓名",
-				"发件人地址", "发件人电话", "二维码信息", "二维码信息", "订单号"));
-		listViewAdapter = new OrdersListAdapter(getActivity(), listDataOnPassage);
-		showListView.setAdapter(listViewAdapter);
 		radioGroup.setOnCheckedChangeListener(this);
 		refreshLoadmoreLayout.setOnStartListener(new StartListener());
 		showListView.setOnItemClickListener(this);
@@ -157,14 +153,10 @@ OnItemClickListener{
 		case R.id.rbtnLeft:
 			keyid = 1;
 			doRequset();
-			listViewAdapter.changeListData(listDataOnPassage);
-			listViewAdapter.notifyDataSetChanged();
 			break;
 		case R.id.rbtnRight:
 			keyid = 2;
 			doRequset();
-			listViewAdapter.changeListData(listDataServed);
-			listViewAdapter.notifyDataSetChanged();
 			break;
 		}
 		
@@ -195,12 +187,8 @@ OnItemClickListener{
 	public void onItemClick(AdapterView<?> parent, View view, int position,
 			long id) {
 		Intent intent = new Intent(getActivity(), OrderDetailActivity.class);
-		if (rbtnLeft.isSelected()) {
-			intent.putExtra("keyid", listDataOnPassage.get(position).getTrade_no());
-		} else {
-			intent.putExtra("keyid", listDataServed.get(position).getTrade_no());
-		}
 		intent.putExtra("keytype", "1");
+		intent.putExtra("keyid",listData.get(position).getId());
 		startActivity(intent);
 		getActivity().overridePendingTransition(R.anim.right_in, R.anim.none);
 

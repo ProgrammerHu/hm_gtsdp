@@ -36,7 +36,7 @@ public class GtsdpDBHelper extends SQLiteOpenHelper {
 				+ "avatar text,birthday text,avatarbig text,backimg text,address text,onlineflag text,validflag text,vestflag text,score text,feeaccount text,"
 				+ "lng text,lat text,deviceid text,devicetype text,channelid text,lastloginversion text,lastlogintime text,content text,delflag text,regdate text,"
 				+ "ask1_id text,answer1 text,ask2_id text,answer2 text,ask3_id text,answer3 text,aliuser text,bankuser text,bankname text,bankcard text,"
-				+ "bankaddress text,transflag text,checkflag text,token text,android_must_update text,android_last_version text,android_update_url text";
+				+ "bankaddress text,transflag text,checkflag text,token text,role text,android_must_update text,android_last_version text,android_update_url text";
 		String userSQL = "create table " + USER + " (" + user + ")";
 		db.execSQL(userSQL);
 	}

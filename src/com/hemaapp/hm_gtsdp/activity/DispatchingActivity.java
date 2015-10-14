@@ -18,6 +18,8 @@ import android.widget.TextView;
 import com.hemaapp.hm_FrameWork.HemaNetTask;
 import com.hemaapp.hm_FrameWork.result.HemaBaseResult;
 import com.hemaapp.hm_gtsdp.GtsdpActivity;
+import com.hemaapp.hm_gtsdp.GtsdpArrayResult;
+import com.hemaapp.hm_gtsdp.GtsdpHttpInformation;
 import com.hemaapp.hm_gtsdp.R;
 import com.hemaapp.hm_gtsdp.adapter.DispatchingListAdapter;
 import com.hemaapp.hm_gtsdp.model.OrderModel;
@@ -40,35 +42,18 @@ public class DispatchingActivity extends GtsdpActivity implements OnCheckedChang
 	private RadioGroup radioGroup;
 	private RadioButton rbtnLeft;
 	private DispatchingListAdapter adapter;
-	private List<OrderModel> listDatasLeft;
-	private List<OrderModel> listDatasRight;
+	private List<OrderModel> listDatas;
+	
+	private String keytype;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		setContentView(R.layout.activity_dispatching);
 		super.onCreate(savedInstanceState);
-		listDatasLeft = new ArrayList<OrderModel>();
-		listDatasLeft.add(new OrderModel("E156456115645641756","", "", 10, "1", "收件人的姓名", "收件人的地址", "收件人的电话", "发件人姓名",
-				"发件人地址", "发件人电话", "二维码信息", "二维码信息", "订单号"));
-		listDatasLeft.add(new OrderModel("E156456115645641756","", "", 100, "1", "收件人的姓名", "收件人的地址", "收件人的电话", "发件人姓名",
-				"发件人地址", "发件人电话", "二维码信息", "二维码信息", "订单号"));
-		listDatasLeft.add(new OrderModel("E156456115645641756","", "", 1000, "1", "收件人的姓名", "收件人的地址", "收件人的电话", "发件人姓名",
-				"发件人地址", "发件人电话", "二维码信息", "二维码信息", "订单号"));
-		adapter = new DispatchingListAdapter(mContext, listDatasLeft);
-		showListView.setAdapter(adapter);
+		keytype = "1";
+		getNetWorker().getDeliveryOrderList(getApplicationContext().getUser().getToken(), keytype);
+		showProgressDialog("数据获取中");
+		listDatas = new ArrayList<OrderModel>();
 		
-		listDatasRight = new ArrayList<OrderModel>();
-		listDatasRight.add(new OrderModel("E156456115645641756","", "", 10, "1", "收件人的姓名", "收件人的地址", "收件人的电话", "发件人姓名",
-				"发件人地址", "发件人电话", "二维码信息", "二维码信息", "订单号"));
-		listDatasRight.add(new OrderModel("E156456115645641756","", "", 100, "1", "收件人的姓名", "收件人的地址", "收件人的电话", "发件人姓名",
-				"发件人地址", "发件人电话", "二维码信息", "二维码信息", "订单号"));
-		listDatasRight.add(new OrderModel("E156456115645641756","", "", 1000, "1", "收件人的姓名", "收件人的地址", "收件人的电话", "发件人姓名",
-				"发件人地址", "发件人电话", "二维码信息", "二维码信息", "订单号"));
-		listDatasRight.add(new OrderModel("E156456115645641756","", "", 20, "1", "收件人的姓名", "收件人的地址", "收件人的电话", "发件人姓名",
-				"发件人地址", "发件人电话", "二维码信息", "二维码信息", "订单号"));
-		listDatasRight.add(new OrderModel("E156456115645641756","", "", 200, "1", "收件人的姓名", "收件人的地址", "收件人的电话", "发件人姓名",
-				"发件人地址", "发件人电话", "二维码信息", "二维码信息", "订单号"));
-		listDatasRight.add(new OrderModel("E156456115645641756","", "", 2000, "1", "收件人的姓名", "收件人的地址", "收件人的电话", "发件人姓名",
-				"发件人地址", "发件人电话", "二维码信息", "二维码信息", "订单号"));
 	}
 
 	@Override
@@ -84,16 +69,27 @@ public class DispatchingActivity extends GtsdpActivity implements OnCheckedChang
 	}
 
 	@Override
-	protected void callBackForServerFailed(HemaNetTask arg0, HemaBaseResult arg1) {
-		// TODO Auto-generated method stub
-		
+	protected void callBackForServerFailed(HemaNetTask netTask, HemaBaseResult baseResult) {
+		cancelProgressDialog();
+		showTextDialog(baseResult.getMsg());
 	}
 
 	@Override
-	protected void callBackForServerSuccess(HemaNetTask arg0,
-			HemaBaseResult arg1) {
-		// TODO Auto-generated method stub
-		
+	protected void callBackForServerSuccess(HemaNetTask netTask,
+			HemaBaseResult baseResult) {
+		GtsdpHttpInformation information = (GtsdpHttpInformation)netTask.getHttpInformation();
+		switch (information) {
+		case DELIVERY_ORDER_LIST:
+			cancelProgressDialog();
+			GtsdpArrayResult<OrderModel> result = (GtsdpArrayResult<OrderModel>)baseResult;
+			listDatas = result.getObjects();
+			adapter = new DispatchingListAdapter(mContext, listDatas);
+			showListView.setAdapter(adapter);
+			break;
+
+		default:
+			break;
+		}
 	}
 
 	@Override
@@ -134,11 +130,8 @@ public class DispatchingActivity extends GtsdpActivity implements OnCheckedChang
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
 				Intent intent = new Intent(DispatchingActivity.this, OrderDetailActivity.class);
-				if (rbtnLeft.isSelected()) {
-					intent.putExtra("Id", "listDataOnPassage_ID");
-				} else {
-					intent.putExtra("Id", "listDataServed_ID");
-				}
+				intent.putExtra("keytype", "1");
+				intent.putExtra("keyid", listDatas.get(position).getId());
 				startActivity(intent);
 				overridePendingTransition(R.anim.right_in, R.anim.none);
 
@@ -150,13 +143,15 @@ public class DispatchingActivity extends GtsdpActivity implements OnCheckedChang
 	public void onCheckedChanged(RadioGroup group, int checkedId) {
 		if(checkedId == R.id.rbtnLeft)
 		{
-			adapter.ChangeListData(listDatasLeft);
-			adapter.notifyDataSetChanged();
+			keytype = "1";
+			getNetWorker().getDeliveryOrderList(getApplicationContext().getUser().getToken(), keytype);
+			showProgressDialog("数据获取中");
 		}
 		else
 		{
-			adapter.ChangeListData(listDatasRight);
-			adapter.notifyDataSetChanged();
+			keytype = "2";
+			getNetWorker().getDeliveryOrderList(getApplicationContext().getUser().getToken(), keytype);
+			showProgressDialog("数据获取中");
 		}
 	}
 	

@@ -1,6 +1,7 @@
 package com.hemaapp.hm_gtsdp.activity;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -23,7 +24,9 @@ import com.hemaapp.hm_gtsdp.R;
 import com.hemaapp.hm_gtsdp.adapter.FindGoodsImageAdapter;
 import com.hemaapp.hm_gtsdp.dialog.GtsdpTwoButtonDialog;
 import com.hemaapp.hm_gtsdp.dialog.GtsdpTwoButtonDialog.OnButtonListener;
+import com.hemaapp.hm_gtsdp.model.ImageItem;
 import com.hemaapp.hm_gtsdp.model.OrderModel;
+import com.hemaapp.hm_gtsdp.result.TransDetailResult;
 import com.hemaapp.hm_gtsdp.view.MyGridView;
 /**
  * 货物详情
@@ -63,7 +66,7 @@ public class GoodsDetailActivity extends GtsdpActivity implements OnClickListene
 		images.add("http://7tszkm.com1.z0.glb.clouddn.com/keep-calm-and-carry-on_1423461.jpg");
 		images.add("http://7tszkm.com1.z0.glb.clouddn.com/keep-calm-and-carry-on_1423461.jpg");
 		images.add("http://d.hiphotos.baidu.com/baike/c0%3Dbaike150%2C5%2C5%2C150%2C50/sign=78fb3c9ffbdcd100d991f07313e22c75/0eb30f2442a7d9338ba972e1ae4bd11373f0011a.jpg");
-		gridview.setAdapter(new FindGoodsImageAdapter(mContext, findViewById(R.id.father), images, gridview));
+//		gridview.setAdapter(new FindGoodsImageAdapter(mContext, findViewById(R.id.father), images, gridview));
 
 		if(ActivityType == -1 || keyid == null || "".equals(keyid))
 			showTextDialog("页面调用参数错误");
@@ -89,13 +92,13 @@ public class GoodsDetailActivity extends GtsdpActivity implements OnClickListene
 	 * @param sender_telphone 发件人电话
 	 * @param regdate 提交时间
 	 */
-	private void setData(String id, String receiver_address, String sender_address, int total_fee, 
+	private void setData(String id, String receiver_address, String sender_address, double total_fee, 
 			String receiver_name, String sender_name, String receiver_telphone, String sender_telphone,
 			String regdate)
 	{
-		txtOrderNumber.setText("订单号："+id);
-		txtStart.setText(receiver_address);
-		txtEnd.setText(sender_address);
+		txtOrderNumber.setText("订单号:"+id);
+		txtStart.setText("出发地："+receiver_address);
+		txtEnd.setText("目的地："+sender_address);
 		txtDatetime.setText(regdate);
 		txtReciverName.setText(receiver_name);
 		txtReciverAddress.setText(receiver_address);
@@ -146,12 +149,12 @@ public class GoodsDetailActivity extends GtsdpActivity implements OnClickListene
 		GtsdpHttpInformation information = (GtsdpHttpInformation)netTask.getHttpInformation();
 		switch (information) {
 		case TRANS_GET:
-			ORDER = new OrderModel("8254545613", "18800000000", "18800000001", 50, 
-					"2", "收件人的姓名", "收件人的地址", "收件人的电话", 
-					"发件人姓名", "发件人地址", "发件人电话", "二维码信息", "2015-10-12 16:20", "528532213389");
-			setData(ORDER.getId(), ORDER.getReceiver_address(), ORDER.getSender_address(), 
-					ORDER.getTotal_fee(), ORDER.getReceiver_name(), ORDER.getSender_name(), 
-					ORDER.getReceiver_telphone(), ORDER.getSender_telphone(), ORDER.getRegdate());
+//			ORDER = new OrderModel("8254545613", "18800000000", "18800000001", 50, 
+//					"2", "收件人的姓名", "收件人的地址", "收件人的电话", 
+//					"发件人姓名", "发件人地址", "发件人电话", "二维码信息", "2015-10-12 16:20", "528532213389");
+//			setData(ORDER.getId(), ORDER.getReceiver_address(), ORDER.getSender_address(), 
+//					ORDER.getTotal_fee(), ORDER.getReceiver_name(), ORDER.getSender_name(), 
+//					ORDER.getReceiver_telphone(), ORDER.getSender_telphone(), ORDER.getRegdate());
 			break;
 		case TRANS_PRICE_SAVE:
 		case NETWORK_RECEIVE:
@@ -169,11 +172,21 @@ public class GoodsDetailActivity extends GtsdpActivity implements OnClickListene
 		GtsdpHttpInformation information = (GtsdpHttpInformation)netTask.getHttpInformation();
 		switch (information) {
 		case TRANS_GET:
-			GtsdpArrayResult<OrderModel> result = (GtsdpArrayResult<OrderModel>)baseResult;
-			ORDER = result.getObjects().get(0);
-			setData(ORDER.getId(), ORDER.getReceiver_address(), ORDER.getSender_address(), 
+			TransDetailResult result = (TransDetailResult)baseResult;
+			ORDER = result.getInfo();
+			setData(ORDER.getTrade_no(), ORDER.getReceiver_address(), ORDER.getSender_address(), 
 					ORDER.getTotal_fee(), ORDER.getReceiver_name(), ORDER.getSender_name(), 
 					ORDER.getReceiver_telphone(), ORDER.getSender_telphone(), ORDER.getRegdate());
+			List<ImageItem>imageList = ORDER.getImageItems();
+			if(imageList != null && imageList.size() > 0)
+			{
+				images = new ArrayList<String>();
+				for(ImageItem item : imageList)
+				{
+					images.add(item.getImgurlbig());
+				}
+				gridview.setAdapter(new FindGoodsImageAdapter(mContext, findViewById(R.id.father), imageList, gridview));
+			}
 			break;
 		case TRANS_PRICE_SAVE:
 			showTextDialog("金额保存成功");

@@ -22,8 +22,12 @@ import com.hemaapp.hm_gtsdp.nettask.GetTemplateTask;
 import com.hemaapp.hm_gtsdp.nettask.InitTask;
 import com.hemaapp.hm_gtsdp.nettask.NoticeListTask;
 import com.hemaapp.hm_gtsdp.nettask.CurrentTask;
+import com.hemaapp.hm_gtsdp.nettask.QuestionListTask;
 import com.hemaapp.hm_gtsdp.nettask.RemoveTask;
+import com.hemaapp.hm_gtsdp.nettask.SiteListTask;
 import com.hemaapp.hm_gtsdp.nettask.TransAddTask;
+import com.hemaapp.hm_gtsdp.nettask.TransCodeCheckTask;
+import com.hemaapp.hm_gtsdp.nettask.TransDetailTask;
 import com.hemaapp.hm_gtsdp.nettask.TransListTask;
 import com.hemaapp.hm_gtsdp.nettask.UnionTradeTask;
 
@@ -250,8 +254,14 @@ public class GtsdpNetWorker extends HemaNetWorker {
 	/**
 	 * 上传文件（图片，音频，视频）
 	 * @param token 登录令牌
-	 * @param keytype 上传操作类型 1：用户头像; 
-	 * @param keyid 主键id 当keytype=1时，keyid=client_id；
+	 * @param keytype 上传操作类型 
+	 * 1：用户头像; 
+	 * 2：发货时货物的图片; 
+	 * 3：申请成为配送员的身份图片; 
+	 * @param keyid 主键id 
+	 * 当keytype=1时，keyid=0； 
+	 * 当keytype=2时，keyid=发货id； 
+	 * 当keytype=3时，keyid=申请id； 
 	 * @param duration 播放时长 上传图片时，此值固定传"0"即可 单位：S(秒)
 	 * @param orderby 排序上传多副图片时，传递上传次序  从0开始，依次递增
 	 * @param content 内容描述  有的项目中，展示性图片需要附属一段文字说明信息。  默认传"无"
@@ -533,7 +543,7 @@ public class GtsdpNetWorker extends HemaNetWorker {
 		params.put("token", token);
 		params.put("keytype", keytype);
 		params.put("keyid", keyid);
-		GtsdpNetTask task = new TransListTask(information, params);
+		GtsdpNetTask task = new TransDetailTask(information, params);
 		executeTask(task);
 	}
 	/**
@@ -663,6 +673,56 @@ public class GtsdpNetWorker extends HemaNetWorker {
 		params.put("token", token);
 		params.put("content", content);
 		GtsdpNetTask task = new CurrentTask(information, params);
+		executeTask(task);
+	}
+	/**
+	 * 验证二维码是否有效
+	 * @param code
+	 */
+	public void TransCodeCheck(String code)
+	{
+		GtsdpHttpInformation information = GtsdpHttpInformation.TRANS_CODE_CHECK;
+		HashMap<String, String> params = new HashMap<String, String>();
+		params.put("code", code);
+		GtsdpNetTask task = new TransCodeCheckTask(information, params);
+		executeTask(task);
+	}
+	/**
+	 * 获取密保列表
+	 * @param keytype
+	 * @param keyid
+	 */
+	public void getPwdAskList(String keytype, String keyid)
+	{
+		GtsdpHttpInformation information = GtsdpHttpInformation.PASSWORD_ASK_LIST;
+		HashMap<String, String> params = new HashMap<String, String>();
+		params.put("keytype", keytype);
+		params.put("keyid", keyid);
+		GtsdpNetTask task = new QuestionListTask(information, params);
+		executeTask(task);
+	}
+	/**
+	 * 获取站点列表
+	 */
+	public void getSiteList()
+	{
+		GtsdpHttpInformation information = GtsdpHttpInformation.SITE_LIST;
+		HashMap<String, String> params = new HashMap<String, String>();
+		GtsdpNetTask task = new SiteListTask(information, params);
+		executeTask(task);
+	}
+	/**
+	 * 获取配送订单列表
+	 * @param token 登录令牌
+	 * @param keytype 业务类型 1：捎带中；2：捎带历史
+	 */
+	public void getDeliveryOrderList(String token, String keytype)
+	{
+		GtsdpHttpInformation information = GtsdpHttpInformation.DELIVERY_ORDER_LIST;
+		HashMap<String, String> params = new HashMap<String, String>();
+		params.put("token", token);
+		params.put("keytype", keytype);
+		GtsdpNetTask task = new TransListTask(information, params);
 		executeTask(task);
 	}
 }

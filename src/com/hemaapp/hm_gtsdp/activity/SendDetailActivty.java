@@ -21,6 +21,7 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.hemaapp.GtsdpConfig;
 import com.hemaapp.hm_FrameWork.HemaImageWay;
@@ -34,6 +35,8 @@ import com.hemaapp.hm_gtsdp.R;
 import com.hemaapp.hm_gtsdp.adapter.SendImageAdapter;
 import com.hemaapp.hm_gtsdp.dialog.GtsdpTwoButtonDialog;
 import com.hemaapp.hm_gtsdp.dialog.GtsdpTwoButtonDialog.OnButtonListener;
+import com.hemaapp.hm_gtsdp.dialog.GtsdptOneButtonDialog;
+import com.hemaapp.hm_gtsdp.result.ValidflagResult;
 import com.hemaapp.hm_gtsdp.view.SelectDistrictPicker;
 import com.hemaapp.hm_gtsdp.view.SelectPopupWindow;
 import com.hemaapp.hm_gtsdp.zxing.camera.CameraManager;
@@ -76,15 +79,13 @@ public class SendDetailActivty extends GtsdpActivity implements OnClickListener 
 	private String SQCode;//二维码信息
 	private String token, receiver_name, receiver_address, receiver_telphone, sender_name, sender_address, sender_telphone;
 	private boolean CouldCommit = false;//true:可以提交数据，false:需要验证手机号
+	private int SendIndex;//发货次序
+	private GtsdptOneButtonDialog successDialog;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		setContentView(R.layout.activity_send_detail);
 		super.onCreate(savedInstanceState);
 		CameraManager.init(getApplication());
-//		if (myDistrictPicker == null) {
-//			myDistrictPicker = new SelectDistrictPicker(mContext);
-//		}
-
 		imageWay = new HemaImageWay(mContext, 1, 2) {
 			@Override
 			public void album() {
@@ -100,6 +101,16 @@ public class SendDetailActivty extends GtsdpActivity implements OnClickListener 
 				clickFace, "拍照", "从相册选择");
 		imageAdapter = new SendImageAdapter(mContext, detialMainLinear, images);
 		gridView.setAdapter(imageAdapter);
+		successDialog = new GtsdptOneButtonDialog(mContext);
+		successDialog.setText("发货成功");
+		successDialog.setButtonListener(new GtsdptOneButtonDialog.OnButtonListener() {
+			
+			@Override
+			public void onRightButtonClick(GtsdptOneButtonDialog gtsdptOneButtonDialog) {
+				finish(R.anim.none, R.anim.right_out);
+			}
+		});
+		successDialog.cancel();
 	}
 
 	@Override
@@ -134,48 +145,33 @@ public class SendDetailActivty extends GtsdpActivity implements OnClickListener 
 			int errorCode = baseResult.getError_code();
 			if(errorCode == 703)
 			{//无效二维码
-				GtsdpTwoButtonDialog dialog = new GtsdpTwoButtonDialog(mContext);
-				dialog.setCancelable(true);
-				dialog.setText("无效二维码，请重新扫描");
-				dialog.setLeftButtonText("取消");
-				dialog.setRightButtonText("确定");
-				dialog.setRightButtonTextColor(GtsdpConfig.Main_Blue);
-				dialog.setButtonListener(new OnButtonListener() {
-					@Override
-					public void onRightButtonClick(GtsdpTwoButtonDialog dialog) {
-						dialog.cancel();
-						Intent intent = new Intent(SendDetailActivty.this, CodeCaptureActivity.class);
-						intent.putExtra("ActivityType", GtsdpConfig.CODE_SEND);
-						intent.putExtra("IsRepeat", true);
-						startActivityForResult(intent, SCAN_SQCODE);
-						overridePendingTransition(R.anim.right_in, R.anim.none);
-					}
-					
-					@Override
-					public void onLeftButtonClick(GtsdpTwoButtonDialog dialog) {
-						dialog.cancel();
-					}
-				});
-				dialog.show();
+				Recode();
 			}
 			else
 			{
 				showTextDialog(baseResult.getMsg());
 			}
 			break;
+		case TRANS_CODE_CHECK:
+			Recode();
+			break;
+		default:
+			showTextDialog(baseResult.getMsg());
+			break;
+				
 		}
 	}
 
 	@Override
 	protected void callBackForServerSuccess(HemaNetTask netTask,
 			HemaBaseResult baseResult) {
-		//TODO 验证收件人电话->验证发件人电话->提交订单数据->上传物品物品 
+		//TODO 验证收件人电话->验证发件人电话->验证二维码->提交订单数据->上传物品物品 
 		GtsdpHttpInformation information = (GtsdpHttpInformation)netTask.getHttpInformation();
 		switch (information) {
 		case CLIENT_VERIFY:
 			if(CouldCommit)
 			{
-				getNetWorker().transAdd(token, receiver_name, receiver_address, receiver_telphone, sender_name, sender_address, sender_telphone, SQCode);
+				getNetWorker().TransCodeCheck(SQCode);
 			}
 			else
 			{//继续验证发件人手机号
@@ -183,10 +179,44 @@ public class SendDetailActivty extends GtsdpActivity implements OnClickListener 
 				CouldCommit = true;//否则会死循环的
 			}
 			break;
+		case TRANS_CODE_CHECK:
+			if(((ValidflagResult)baseResult).getValidflag())
+			{
+				getNetWorker().transAdd(token, receiver_name, receiver_address, receiver_telphone, sender_name, sender_address, sender_telphone, SQCode);
+			}
+			else
+			{
+				cancelProgressDialog();
+				Recode();
+				return;
+			}
+			break;
 		case TRANS_ADD:
 			//订单提交成功，上传图片
 			HemaArrayResult<String> result = (HemaArrayResult<String>)baseResult;
-			showTextDialog(result.getObjects().get(0));
+			String keyid = result.getObjects().get(0);
+			if(images != null && images.size() > 0)
+			{
+				for(int i = 0; i < images.size(); i++)
+				{
+					getNetWorker().fileUpload(getApplicationContext().getUser().getToken(), 
+							"2", keyid, "0", String.valueOf(i), String.valueOf(i), images.get(i));
+				}
+			}
+			else
+			{
+				cancelProgressDialog();
+				successDialog.show();
+			}
+			break;
+		case FILE_UPLOAD:
+			String orderby = netTask.getParams().get("orderby");
+			int index = Integer.valueOf(orderby);
+			if(index >= images.size() - 1)
+			{
+				cancelProgressDialog();
+				successDialog.show();
+			}
 			break;
 		}
 	}
@@ -562,5 +592,33 @@ public class SendDetailActivty extends GtsdpActivity implements OnClickListener 
 		getNetWorker().clientVerify(receiver_telphone);
 		showProgressDialog("提交中");
 	}
-	
+	/**
+	 * 重新扫描二维码提示
+	 */
+	private void Recode()
+	{
+		GtsdpTwoButtonDialog dialog = new GtsdpTwoButtonDialog(mContext);
+		dialog.setCancelable(true);
+		dialog.setText("无效二维码，请重新扫描");
+		dialog.setLeftButtonText("取消");
+		dialog.setRightButtonText("确定");
+		dialog.setRightButtonTextColor(GtsdpConfig.Main_Blue);
+		dialog.setButtonListener(new OnButtonListener() {
+			@Override
+			public void onRightButtonClick(GtsdpTwoButtonDialog dialog) {
+				dialog.cancel();
+				Intent intent = new Intent(SendDetailActivty.this, CodeCaptureActivity.class);
+				intent.putExtra("ActivityType", GtsdpConfig.CODE_SEND);
+				intent.putExtra("IsRepeat", true);
+				startActivityForResult(intent, SCAN_SQCODE);
+				overridePendingTransition(R.anim.right_in, R.anim.none);
+			}
+			
+			@Override
+			public void onLeftButtonClick(GtsdpTwoButtonDialog dialog) {
+				dialog.cancel();
+			}
+		});
+		dialog.show();
+	}
 }

@@ -1,4 +1,8 @@
 package com.hemaapp.hm_gtsdp.model;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 /**
  * 问题模型
  * @author Wen
@@ -7,6 +11,16 @@ package com.hemaapp.hm_gtsdp.model;
  */
 public class QuestionModel 
 {
+	public QuestionModel(JSONObject json)
+	{
+		try {
+			id = json.getString("id");
+			name = json.getString("name");
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 	public QuestionModel(String id, String name)
 	{
 		this.id = id;

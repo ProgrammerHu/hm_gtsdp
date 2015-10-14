@@ -45,10 +45,13 @@ import com.hemaapp.hm_FrameWork.HemaNetTask;
 import com.hemaapp.hm_FrameWork.result.HemaBaseResult;
 import com.hemaapp.hm_gtsdp.GtsdpActivity;
 import com.hemaapp.hm_gtsdp.GtsdpApplication;
+import com.hemaapp.hm_gtsdp.GtsdpArrayResult;
 import com.hemaapp.hm_gtsdp.GtsdpHttpInformation;
 import com.hemaapp.hm_gtsdp.dialog.GtsdpTwoButtonDialog;
+import com.hemaapp.hm_gtsdp.dialog.GtsdptOneButtonDialog;
 import com.hemaapp.hm_gtsdp.dialog.GtsdpTwoButtonDialog.OnButtonListener;
 import com.hemaapp.hm_gtsdp.model.User;
+import com.hemaapp.hm_gtsdp.result.ValidflagResult;
 import com.hemaapp.hm_gtsdp.zxing.camera.CameraManager;
 import com.hemaapp.hm_gtsdp.zxing.decoding.CaptureActivityHandler;
 import com.hemaapp.hm_gtsdp.zxing.decoding.InactivityTimer;
@@ -92,6 +95,7 @@ public class CodeCaptureActivity extends GtsdpActivity implements Callback, OnCl
 	private User user;
 
 	private GtsdpTwoButtonDialog dialog;
+	private GtsdptOneButtonDialog onButtonDialog;
 	
 	private String SQCode;//二维码数据
 	/** Called when the activity is first created. */
@@ -151,12 +155,6 @@ public class CodeCaptureActivity extends GtsdpActivity implements Callback, OnCl
 			Toast.makeText(CodeCaptureActivity.this, "扫描失败！", Toast.LENGTH_SHORT).show();
 			return;
 		}
-//		Intent resultIntent = new Intent(CodeCaptureActivity.this ,CodeIfoActivity.class);
-//		Bundle bundle = new Bundle();
-//		bundle.putString("result", resultString);
-//		bundle.putParcelable("bitmap", bitmap);
-//		resultIntent.putExtras(bundle);
-//		startActivity(resultIntent);
 	}
 	
 	@Override
@@ -292,7 +290,14 @@ public class CodeCaptureActivity extends GtsdpActivity implements Callback, OnCl
 //			resultIntent.putExtras(bundle);
 //			startActivity(resultIntent);
 			SQCode = resultString;
-			dialog.show();
+			SQCode = SQCode.replace("hmgtsd_", "");
+			if(ActivityType == GtsdpConfig.CODE_SEND)
+			{//发货时要先验证
+				showProgressDialog("验证中");
+				getNetWorker().TransCodeCheck(SQCode);
+			}
+			else
+				dialog.show();
 		}
 	}
 
@@ -363,6 +368,11 @@ public class CodeCaptureActivity extends GtsdpActivity implements Callback, OnCl
 		case TRANS_GET:
 			showTextDialog(baseResult.getMsg());
 			break;
+		case TRANS_CODE_CHECK:
+			cancelProgressDialog();
+			showTextDialog("二维码无效");
+			ReStartCode();
+			break;
 		}
 	}
 
@@ -376,7 +386,20 @@ public class CodeCaptureActivity extends GtsdpActivity implements Callback, OnCl
 			cancelProgressDialog();
 			showTextDialog("确认收货");
 			break;
-
+		case TRANS_CODE_CHECK:
+			cancelProgressDialog();
+			if(((ValidflagResult)baseResult).getValidflag())
+			{
+				dialog.show();
+			}
+			else
+			{
+				showTextDialog("二维码无效");
+				ReStartCode();
+				return;
+			}
+			
+			break;
 		default:
 			break;
 		}
@@ -417,9 +440,12 @@ public class CodeCaptureActivity extends GtsdpActivity implements Callback, OnCl
 			dialog.setText("确认接单？");
 			break;
 		case GtsdpConfig.CODE_SEND:
-			dialog.setText("确认填写详细信息？");
+			dialog.setText("二维码验证成功，是否去发货");
 			break;
 		}
+		onButtonDialog = new GtsdptOneButtonDialog(mContext);
+		onButtonDialog.setText("二维码已失效");
+		onButtonDialog.cancel();
 	}
 
 	@Override
@@ -468,6 +494,7 @@ public class CodeCaptureActivity extends GtsdpActivity implements Callback, OnCl
 		@Override
 		public void onLeftButtonClick(GtsdpTwoButtonDialog dialog) {
 			dialog.cancel();
+			ReStartCode();
 		}
 	};
 	
@@ -482,14 +509,7 @@ public class CodeCaptureActivity extends GtsdpActivity implements Callback, OnCl
 	 */
 	private void clickRightButton()
 	{
-		//重新开始扫描
-		if (handler != null) 
-		{
-			handler.quitSynchronously();
-			handler = null;
-		}
-		CameraManager.get().closeDriver();
-		onResume();
+		ReStartCode();
 		Intent intent;
 		switch(ActivityType)
 		{
@@ -529,5 +549,18 @@ public class CodeCaptureActivity extends GtsdpActivity implements Callback, OnCl
 			break;
 		}
 	}
-
+	/**
+	 * 重新开始扫描
+	 */
+	private void ReStartCode()
+	{
+		//
+		if (handler != null) 
+		{
+			handler.quitSynchronously();
+			handler = null;
+		}
+		CameraManager.get().closeDriver();
+		onResume();
+	}
 }

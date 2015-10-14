@@ -146,14 +146,14 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1px"
-            android:layout_marginLeft="15dp"
             android:background="@color/grey_line" />
 
         <RelativeLayout
             android:id="@+id/layoutScore"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/bg_click_layout" >
+            android:background="@drawable/bg_click_layout" 
+            android:visibility="gone">
 
             <TextView
                 android:layout_width="match_parent"
@@ -175,7 +175,8 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1px"
-            android:background="@color/grey_line" />
+            android:background="@color/grey_line" 
+            android:visibility="gone"/>
     </LinearLayout>
 
     <LinearLayout

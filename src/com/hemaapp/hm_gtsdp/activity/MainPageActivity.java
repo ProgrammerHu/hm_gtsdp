@@ -43,6 +43,7 @@ import com.hemaapp.hm_gtsdp.push.PushUtils;
 public class MainPageActivity extends GtsdpFragmentActivity implements OnClickListener {
 	private int transflag;//配送员状态 0：不是配送员；1：是配送员
 	private int checkflag;//配送员审核状态 0：未审核；1：已审核
+	private int role;//身份	1：普通用户；2：网点；
 	private TextView txtTitle, txtNext;
 	private ImageView imageQuitActivity, pointsImage, imageSend, imageGet, imageFind;
 	private ViewPager mainViewPager;
@@ -58,6 +59,7 @@ public class MainPageActivity extends GtsdpFragmentActivity implements OnClickLi
 		{
 			transflag = Integer.parseInt(getApplicationContext().getUser().getTransflag());
 			checkflag = Integer.parseInt(getApplicationContext().getUser().getCheckflag());
+			role = Integer.parseInt(getApplicationContext().getUser().getRole());
 		}
 		catch(NumberFormatException e)
 		{
@@ -199,9 +201,18 @@ public class MainPageActivity extends GtsdpFragmentActivity implements OnClickLi
 			break;
 		case R.id.imageGet://收货
 			intent = new Intent(this, CodeCaptureActivity.class);
-			intent.putExtra("ActivityType", GtsdpConfig.CODE_GET);
-			startActivity(intent);
-			overridePendingTransition(R.anim.right_in, R.anim.none);
+			if(role == 2)
+			{//网点
+				intent.putExtra("ActivityType", GtsdpConfig.CODE_SITE);
+				startActivity(intent);
+				overridePendingTransition(R.anim.right_in, R.anim.none);
+			}
+			else
+			{//普通用户
+				intent.putExtra("ActivityType", GtsdpConfig.CODE_GET);
+				startActivity(intent);
+				overridePendingTransition(R.anim.right_in, R.anim.none);
+			}
 			break;
 		case R.id.imageFind://找货
 			intent = new Intent();

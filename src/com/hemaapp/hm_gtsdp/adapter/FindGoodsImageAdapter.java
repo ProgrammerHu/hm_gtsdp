@@ -3,6 +3,7 @@ package com.hemaapp.hm_gtsdp.adapter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 
 import xtom.frame.image.load.XtomImageTask;
 import xtom.frame.image.load.XtomImageTask.Size;
@@ -27,34 +28,36 @@ import com.hemaapp.hm_FrameWork.view.ShowLargeImageView;
 import com.hemaapp.hm_gtsdp.GtsdpAdapter;
 import com.hemaapp.hm_gtsdp.R;
 import com.hemaapp.hm_gtsdp.activity.MyShowLargePicActivity;
+import com.hemaapp.hm_gtsdp.model.ImageItem;
 import com.hemaapp.hm_gtsdp.view.MyGridView;
 
 public class FindGoodsImageAdapter extends GtsdpAdapter implements OnClickListener {
 	private View rootView;
-	private ArrayList<String> images;
+//	private ArrayList<String> images;
 	private MyGridView gridview;
 	private ShowLargeImageView mView;
+	private List<ImageItem>imageList;
 	
 
 	public FindGoodsImageAdapter(Context mContext, View rootView,
-			ArrayList<String> images, MyGridView gridview) {
+			List<ImageItem>imageList, MyGridView gridview) {
 		super(mContext);
 		this.rootView = rootView;
-		this.images = images;
+		this.imageList = imageList;
 		this.gridview = gridview;
 	}
 
 	@Override
 	public int getCount() {
-		if(images == null)
+		if(imageList == null)
 			return 0;
 		else 
-			return images.size();
+			return imageList.size();
 	}
 
 	@Override
 	public boolean isEmpty() {
-		int size = images == null ? 0 : images.size();
+		int size = imageList == null ? 0 : imageList.size();
 		return size == 0;
 	}
 
@@ -83,7 +86,7 @@ public class FindGoodsImageAdapter extends GtsdpAdapter implements OnClickListen
 		}
 		ViewHolder holder = new ViewHolder();
 		holder.imageView = (ImageView)convertView.findViewById(R.id.imageview);
-		String path = images.get(position);
+		String path = imageList.get(position).getImgurl();
 		holder.imageView.setTag(R.id.TAG, position);
 		try
 		{
@@ -134,9 +137,9 @@ public class FindGoodsImageAdapter extends GtsdpAdapter implements OnClickListen
 	{
 		ArrayList<Image> imageList = new ArrayList<Image>();
 		int i=0;
-		for(String url : this.images)
+		for(ImageItem image : this.imageList)
 		{
-			imageList.add(new Image(String.valueOf(i), String.valueOf(i), String.valueOf(i+1), "", url, url, String.valueOf(i)));
+			imageList.add(new Image(String.valueOf(i), String.valueOf(i), String.valueOf(i+1), "", image.getImgurl(), image.getImgurlbig(), String.valueOf(i)));
 			i++;
 		}
 		

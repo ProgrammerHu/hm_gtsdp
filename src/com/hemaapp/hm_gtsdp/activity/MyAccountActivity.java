@@ -10,9 +10,13 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.hemaapp.hm_FrameWork.HemaNetTask;
+import com.hemaapp.hm_FrameWork.result.HemaArrayResult;
 import com.hemaapp.hm_FrameWork.result.HemaBaseResult;
 import com.hemaapp.hm_gtsdp.GtsdpActivity;
+import com.hemaapp.hm_gtsdp.GtsdpHttpInformation;
 import com.hemaapp.hm_gtsdp.R;
+import com.hemaapp.hm_gtsdp.db.UserDBHelper;
+import com.hemaapp.hm_gtsdp.model.User;
 import com.hemaapp.hm_gtsdp.view.SelectPopupWindow;
 
 /**
@@ -24,11 +28,13 @@ import com.hemaapp.hm_gtsdp.view.SelectPopupWindow;
 public class MyAccountActivity extends GtsdpActivity implements OnClickListener{
 	
 	private ImageView imageQuitActivity;
-	private TextView txtTitle;
+	private TextView txtTitle, txtCount;
 	private View layoutRecords;
 	private LinearLayout layoutIncash, layoutRecharge;
 	
 	private SelectPopupWindow popupWindow;
+	
+	private double FeeAccount;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +42,14 @@ public class MyAccountActivity extends GtsdpActivity implements OnClickListener{
 		super.onCreate(savedInstanceState);
 		popupWindow = new SelectPopupWindow(mContext, this, "支付宝提现", "银行卡提现");
 	}
-
+	@Override
+	protected void onRestart() {
+		super.onRestart();
+		getNetWorker().clientGet(getApplicationContext().getUser().getToken(), getApplicationContext().getUser().getId());
+		showProgressDialog("更新中");
+		FeeAccount = Double.parseDouble(getApplicationContext().getUser().getFeeaccount());
+		txtCount.setText("￥"+String.valueOf(FeeAccount));
+	}
 	@Override
 	protected void callAfterDataBack(HemaNetTask arg0) {
 		// TODO Auto-generated method stub
@@ -51,14 +64,25 @@ public class MyAccountActivity extends GtsdpActivity implements OnClickListener{
 
 	@Override
 	protected void callBackForServerFailed(HemaNetTask arg0, HemaBaseResult arg1) {
-		// TODO Auto-generated method stub
+		cancelProgressDialog();
 		
 	}
 
 	@Override
-	protected void callBackForServerSuccess(HemaNetTask arg0,
-			HemaBaseResult arg1) {
-		// TODO Auto-generated method stub
+	protected void callBackForServerSuccess(HemaNetTask netTask,
+			HemaBaseResult baseResult) {
+		cancelProgressDialog();
+		GtsdpHttpInformation information = (GtsdpHttpInformation)netTask.getHttpInformation();
+		switch (information) {
+		case CLIENT_GET:
+			HemaArrayResult<User> successResult = (HemaArrayResult<User>)baseResult;
+			User user = successResult.getObjects().get(0);
+			new UserDBHelper(mContext).update(user);//更新用户数据
+			FeeAccount = Double.parseDouble(user.getFeeaccount());
+			txtCount.setText("￥"+String.valueOf(FeeAccount));
+			break;
+
+		}
 		
 	}
 
@@ -77,6 +101,9 @@ public class MyAccountActivity extends GtsdpActivity implements OnClickListener{
 		layoutRecords = findViewById(R.id.layoutRecords);
 		layoutIncash = (LinearLayout)findViewById(R.id.layoutIncash);
 		layoutRecharge = (LinearLayout)findViewById(R.id.layoutRecharge);
+		txtCount = (TextView)findViewById(R.id.txtCount);
+		FeeAccount = Double.parseDouble(getApplicationContext().getUser().getFeeaccount());
+		txtCount.setText("￥"+String.valueOf(FeeAccount));
 	}
 
 	@Override

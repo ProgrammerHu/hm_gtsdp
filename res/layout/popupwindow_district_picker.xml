@@ -54,14 +54,7 @@
 		 	</com.hemaapp.hm_gtsdp.view.widget.WheelView>
 		
 		    <com.hemaapp.hm_gtsdp.view.widget.WheelView
-		        android:id="@+id/id_city"
-		        android:layout_width="0dp"
-		        android:layout_height="wrap_content"
-		        android:layout_weight="1" >
-		    </com.hemaapp.hm_gtsdp.view.widget.WheelView>
-		
-		    <com.hemaapp.hm_gtsdp.view.widget.WheelView
-		        android:id="@+id/id_district"
+		        android:id="@+id/id_site"
 		        android:layout_width="0dp"
 		        android:layout_height="wrap_content"
 		        android:layout_weight="1" >

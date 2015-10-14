@@ -58,9 +58,8 @@ public class User extends HemaUser {
 	private String bankaddress;
 	private String transflag;
 	private String checkflag;
-	private String android_must_update;
-	private String android_last_version;
-	private String android_update_url;
+	private String role;
+	
 
 
 	public User(JSONObject jsonObject) throws DataParseException {
@@ -110,9 +109,7 @@ public class User extends HemaUser {
 				bankaddress = get(jsonObject, "bankaddress");
 				transflag = get(jsonObject, "transflag");
 				checkflag = get(jsonObject, "checkflag");
-				android_must_update = get(jsonObject, "android_must_update");
-				android_last_version = get(jsonObject, "android_last_version");
-				android_update_url = get(jsonObject, "android_update_url");
+				role = get(jsonObject, "role");
 				log_i(toString());
 			} catch (JSONException e) {
 				throw new DataParseException(e);
@@ -133,8 +130,7 @@ public class User extends HemaUser {
 			String ask2_id, String answer2, String ask3_id, String answer3,
 			String aliuser, String bankuser, String bankname, String bankcard,
 			String bankaddress, String transflag, String checkflag,
-			String token, String android_must_update,
-			String android_last_version, String android_update_url)
+			String token, String role)
 	{
 		super(token);
 		this.id = id;
@@ -180,9 +176,7 @@ public class User extends HemaUser {
 		this.bankaddress = bankaddress;
 		this.transflag = transflag;
 		this.checkflag = checkflag;
-		this.android_must_update = android_must_update;
-		this.android_last_version = android_last_version;
-		this.android_update_url = android_update_url;
+		this.role = role;
 	}
 
 
@@ -401,19 +395,11 @@ public class User extends HemaUser {
 	}
 
 
-	public String getAndroid_must_update() {
-		return android_must_update;
+	public String getRole() {
+		return role;
 	}
 
 
-	public String getAndroid_last_version() {
-		return android_last_version;
-	}
-
-
-	public String getAndroid_update_url() {
-		return android_update_url;
-	}
 
 
 	@Override
@@ -438,9 +424,7 @@ public class User extends HemaUser {
 				+ ", bankuser=" + bankuser + ", bankname=" + bankname
 				+ ", bankcard=" + bankcard + ", bankaddress=" + bankaddress
 				+ ", transflag=" + transflag + ", checkflag=" + checkflag
-				+ ", android_must_update=" + android_must_update
-				+ ", android_last_version=" + android_last_version
-				+ ", android_update_url=" + android_update_url + "]";
+				+ ", role=" + role+ "]";
 	}
 
 

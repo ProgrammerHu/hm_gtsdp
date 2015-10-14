@@ -1,5 +1,7 @@
 package com.hemaapp.hm_gtsdp.activity;
 
+import java.util.List;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -9,12 +11,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.hemaapp.hm_gtsdp.GtsdpArrayResult;
 import com.hemaapp.hm_gtsdp.GtsdpHttpInformation;
 import com.hemaapp.hm_gtsdp.R;
 import com.hemaapp.hm_FrameWork.HemaNetTask;
 import com.hemaapp.hm_FrameWork.result.HemaArrayResult;
 import com.hemaapp.hm_FrameWork.result.HemaBaseResult;
 import com.hemaapp.hm_gtsdp.GtsdpActivity;
+import com.hemaapp.hm_gtsdp.model.QuestionModel;
 
 /**
  * 设置密码和重设密码的界面，要注意区分
@@ -133,18 +137,18 @@ public class SetPwdActivity extends GtsdpActivity implements OnClickListener{
 	}
 
 	@Override
-	protected void callBackForServerFailed(HemaNetTask arg0, HemaBaseResult arg1) {
-		// TODO Auto-generated method stub
-		
+	protected void callBackForServerFailed(HemaNetTask netTask, HemaBaseResult baseResult) {
+		cancelProgressDialog();
+		showTextDialog(baseResult.getMsg());
 	}
 
 	@Override
 	protected void callBackForServerSuccess(HemaNetTask netTask,
 			HemaBaseResult baseResult) {
+		cancelProgressDialog();
 		GtsdpHttpInformation infomation = (GtsdpHttpInformation)netTask.getHttpInformation();
 		switch (infomation) {
 		case PASSWORD_RESET:
-			cancelProgressDialog();
 			if(ActivityType == RESET_PWD)
 			{
 				Toast.makeText(mContext, "密码重置成功", Toast.LENGTH_SHORT).show();

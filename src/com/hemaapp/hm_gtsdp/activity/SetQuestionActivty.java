@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.hemaapp.hm_FrameWork.HemaNetTask;
 import com.hemaapp.hm_FrameWork.result.HemaBaseResult;
 import com.hemaapp.hm_gtsdp.GtsdpActivity;
+import com.hemaapp.hm_gtsdp.GtsdpArrayResult;
 import com.hemaapp.hm_gtsdp.GtsdpHttpInformation;
 import com.hemaapp.hm_gtsdp.R;
 import com.hemaapp.hm_gtsdp.model.QuestionModel;
@@ -43,6 +44,8 @@ public class SetQuestionActivty extends GtsdpActivity implements OnClickListener
 	protected void onCreate(Bundle savedInstanceState) {
 		setContentView(R.layout.activity_set_question);
 		super.onCreate(savedInstanceState);
+		getNetWorker().getPwdAskList("1", "0");
+		showProgressDialog("获取密保问题");
 	}
 	
 	@Override
@@ -63,6 +66,7 @@ public class SetQuestionActivty extends GtsdpActivity implements OnClickListener
 		GtsdpHttpInformation information = (GtsdpHttpInformation)netTask.getHttpInformation();
 		switch (information) {
 		case PASSWORD_ASK_SAVE:
+		case PASSWORD_ASK_LIST:
 			showTextDialog(baseResult.getMsg());
 			break;
 		}
@@ -76,6 +80,33 @@ public class SetQuestionActivty extends GtsdpActivity implements OnClickListener
 		switch (information) {
 		case PASSWORD_ASK_SAVE:
 			showTextDialog("保存成功");
+			break;
+		case PASSWORD_ASK_LIST:
+			GtsdpArrayResult<QuestionModel> result = (GtsdpArrayResult<QuestionModel>) baseResult;
+			List<QuestionModel> list = result.getObjects();
+			list1 = new ArrayList<QuestionModel>();
+			list1.add(new QuestionModel("0", "请选择"));
+			for(QuestionModel model : list)
+				list1.add(model);
+			list2 = new ArrayList<QuestionModel>();
+			list3 = new ArrayList<QuestionModel>();
+			listTemp = new ArrayList<QuestionModel>();
+			for (QuestionModel model : list1) {
+				adapter1.add(model);
+				adapter2.add(model);
+				adapter3.add(model);
+				list2.add(model);
+				list3.add(model);
+				listTemp.add(model);
+			}
+
+			// 设置下拉列表的风格
+			adapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+			adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+			adapter3.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+			spinner1.setAdapter(adapter1);
+			spinner2.setAdapter(adapter2);
+			spinner3.setAdapter(adapter3);
 			break;
 		}
 		
@@ -101,34 +132,7 @@ public class SetQuestionActivty extends GtsdpActivity implements OnClickListener
 		adapter1 = new ArrayAdapter<QuestionModel>(this,android.R.layout.simple_spinner_item);
         adapter2 = new ArrayAdapter<QuestionModel>(this,android.R.layout.simple_spinner_item);
         adapter3 = new ArrayAdapter<QuestionModel>(this,android.R.layout.simple_spinner_item);
-        list1 = new ArrayList<QuestionModel>();
-        list1.add(new QuestionModel("0", "请选择"));
-        list1.add(new QuestionModel("1", "你最喜欢的菜是什么？"));
-        list1.add(new QuestionModel("2", "你最喜欢的颜色？"));
-        list1.add(new QuestionModel("3", "你爸爸叫什么名字？"));
-        list1.add(new QuestionModel("4", "你妈妈叫什么名字？"));
-        list1.add(new QuestionModel("5", "你的家乡在哪里？"));
-        list1.add(new QuestionModel("6", "你的大学叫什么？"));
-        list2 = new ArrayList<QuestionModel>();
-        list3 = new ArrayList<QuestionModel>();
-        listTemp = new ArrayList<QuestionModel>();
-        for(QuestionModel model : list1)
-        {
-        	adapter1.add(model);
-        	adapter2.add(model);
-        	adapter3.add(model);
-        	list2.add(model);
-        	list3.add(model);
-        	listTemp.add(model);
-        }
-
-        //设置下拉列表的风格
-        adapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        adapter3.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner1.setAdapter(adapter1);
-        spinner2.setAdapter(adapter2);
-        spinner3.setAdapter(adapter3);
+       
 		btnConfirm = (Button) findViewById(R.id.btnConfirm);
 		editText1 = (EditText) findViewById(R.id.editText1);
 		editText2 = (EditText) findViewById(R.id.editText2);

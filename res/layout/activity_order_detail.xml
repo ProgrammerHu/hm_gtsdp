@@ -38,8 +38,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
-                        android:text="订单号：1234567890"
-                        android:textColor="@color/main_blue" />
+                        android:text="订单号:"
+                        android:textColor="@color/main_blue"
+                        android:textSize="@dimen/textsize_5.5" />
 
                     <TextView
                         android:id="@+id/txtPosition"
@@ -47,7 +48,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="12dp"
                         android:layout_marginTop="12dp"
-                        android:text="当前位置：山东济南营业网点"
+                        android:text="当前位置："
                         android:textColor="@color/black"
                         android:textSize="@dimen/textsize_8" />
 
@@ -57,7 +58,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="10dp"
                         android:layout_marginTop="5dp"
-                        android:text="2015.5.26 15:23" />
+                        android:text="0000.0.00 00:00" />
                 </LinearLayout>
 
                 <ImageView
@@ -90,7 +91,7 @@
                     android:layout_centerVertical="true"
                     android:layout_marginRight="5dp"
                     android:padding="5dp"
-                    android:text="99元"
+                    android:text="0元"
                     android:textColor="@color/orange"
                     android:textSize="@dimen/textsize_9" />
             </RelativeLayout>
@@ -316,7 +317,7 @@
                     android:src="@drawable/star" />
 
                 <TextView
-                    android:id="@+id/editSenderPhone"
+                    android:id="@+id/txtSenderPhone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp" />

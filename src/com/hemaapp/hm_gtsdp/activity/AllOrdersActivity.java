@@ -129,5 +129,9 @@ public class AllOrdersActivity extends GtsdpFragmentActivity{
 		});
 		
 	}
-
+	@Override
+	protected boolean onKeyBack() {
+		finish(R.anim.none, R.anim.right_out);
+		return super.onKeyBack();
+	}
 }

@@ -16,12 +16,12 @@ public class UserDBHelper extends GtsdpDBHelper {
 	String columns = "id,username,email,password,nickname,charindex,sex,mobile,age,selfsign,avatar,birthday,avatarbig,backimg,address,"
 			+ "onlineflag,validflag,vestflag,score,feeaccount,lng,lat,deviceid,devicetype,channelid,lastloginversion,lastlogintime,content,delflag,"
 			+ "regdate,ask1_id,answer1,ask2_id,answer2,ask3_id,answer3,aliuser,bankuser,bankname,bankcard,bankaddress,transflag,checkflag,"
-			+ "token,android_must_update,android_last_version,android_update_url";
+			+ "token,role,android_must_update,android_last_version,android_update_url";
 
 	String updateColumns = "id=?,username=?,email=?,password=?,nickname=?,charindex=?,sex=?,mobile=?,age=?,selfsign=?,avatar=?,birthday=?,avatarbig=?,backimg=?,address=?,"
 			+ "onlineflag=?,validflag=?,vestflag=?,score=?,feeaccount=?,lng=?,lat=?,deviceid=?,devicetype=?,channelid=?,lastloginversion=?,lastlogintime=?,content=?,delflag=?,"
 			+ "regdate=?,ask1_id=?,answer1=?,ask2_id=?,answer2=?,ask3_id=?,answer3=?,aliuser=?,bankuser=?,bankname=?,bankcard=?,bankaddress=?,transflag=?,checkflag=?,"
-			+ "token=?,android_must_update=?,android_last_version=?,android_update_url=?";
+			+ "token=?,role=?,android_must_update=?,android_last_version=?,android_update_url=?";
 
 	/**
 	 * 实例化系统初始化信息数据库帮助类
@@ -50,7 +50,7 @@ public class UserDBHelper extends GtsdpDBHelper {
 				+ tableName
 				+ " ("
 				+ columns
-				+ ") values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+				+ ") values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";//46
 
 		Object[] bindArgs = new Object[] { user.getId(), user.getUsername(),
 				user.getEmail(), user.getPassword(), user.getNickname(),
@@ -67,9 +67,9 @@ public class UserDBHelper extends GtsdpDBHelper {
 				user.getAnswer2(), user.getAsk3_id(), user.getAnswer3(),
 				user.getAliuser(), user.getBankuser(), user.getBankname(),
 				user.getBankcard(), user.getBankaddress(), user.getTransflag(),
-				user.getCheckflag(), user.getToken(),
+				user.getCheckflag(), user.getToken(),user.getRole(),
 				user.getAndroid_must_update(), user.getAndroid_last_version(),
-				user.getAndroid_update_url() };
+				user.getAndroid_update_url() };//48
 
 		SQLiteDatabase db = getWritableDatabase();
 		boolean success = true;
@@ -106,7 +106,7 @@ public class UserDBHelper extends GtsdpDBHelper {
 				user.getAnswer2(), user.getAsk3_id(), user.getAnswer3(),
 				user.getAliuser(), user.getBankuser(), user.getBankname(),
 				user.getBankcard(), user.getBankaddress(), user.getTransflag(),
-				user.getCheckflag(), user.getToken(),
+				user.getCheckflag(), user.getToken(),user.getRole(), 
 				user.getAndroid_must_update(), user.getAndroid_last_version(),
 				user.getAndroid_update_url() };
 
@@ -189,8 +189,7 @@ public class UserDBHelper extends GtsdpDBHelper {
 					cursor.getString(38), cursor.getString(39),
 					cursor.getString(40), cursor.getString(41),
 					cursor.getString(42), cursor.getString(43),
-					cursor.getString(44), cursor.getString(45),
-					cursor.getString(46));
+					cursor.getString(44));
 		}
 		cursor.close();
 		db.close();

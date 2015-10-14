@@ -1,5 +1,9 @@
 package com.hemaapp.hm_gtsdp.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -7,117 +11,200 @@ import xtom.frame.XtomObject;
 
 /**
  * 订单列表模型
+ * 
  * @author Wen
  * @author HuFanglin
- *
+ * 
  */
 public class OrderModel extends XtomObject {
-	private String id;//捎带id
-	private String client_id;//发货人id
-	private String to_client_id;//收货人的id
-	private int total_fee;//支付金额
-	private String tradetype;/*交易类型0:未审核；1起始网点已填价格；2:已支付；3:已发货；4:已收货*/
-	private String receiver_name;//收件人的姓名
-	private String receiver_address;//收件人的地址
-	private String receiver_telphone;//收件人的电话
-	private String sender_name;//发件人姓名
-	private String sender_address;//发件人地址
-	private String sender_telphone;//发件人电话
-	private String code;//二维码信息
-	private String regdate;//提交时间
-	private String trade_no;//订单号
-	public OrderModel(String id, String client_id, String to_client_id,
-			int total_fee, String tradetype, String receiver_name,
-			String receiver_address, String receiver_telphone,
-			String sender_name, String sender_address, String sender_telphone,
-			String code, String regdate, String trade_no) {
-		super();
-		this.id = id;
-		this.client_id = client_id;
-		this.to_client_id = to_client_id;
-		this.total_fee = total_fee;
-		this.tradetype = tradetype;
-		this.receiver_name = receiver_name;
-		this.receiver_address = receiver_address;
-		this.receiver_telphone = receiver_telphone;
-		this.sender_name = sender_name;
-		this.sender_address = sender_address;
-		this.sender_telphone = sender_telphone;
-		this.code = code;
-		this.regdate = regdate;
-		this.trade_no = trade_no;
-	}
-	public OrderModel(JSONObject json)
-	{
+	private String id;
+	private String client_id;
+	private String to_client_id;
+	private String receiver_name;
+	private String receiver_address;
+	private String receiver_telphone;
+	private String sender_name;
+	private String sender_address;
+	private String sender_telphone;
+	private String current_address;
+	private String code;
+	private double total_fee;
+	private String tradetype;
+	private String delflag;
+	private String regdate;
+	private String admindate;
+	private String paydate;
+	private String paytype;
+	private String trade_no;
+	private String out_trade_no;
+	private String senddate;
+	private String receivedate;
+	private List<ImageItem> imageItems;
+	public OrderModel(JSONObject json) {
 		try {
 			this.id = json.getString("id");
 			this.client_id = json.getString("client_id");
 			this.to_client_id = json.getString("to_client_id");
-			this.total_fee = json.getInt("total_fee");
-			this.tradetype = json.getString("tradetype");
 			this.receiver_name = json.getString("receiver_name");
 			this.receiver_address = json.getString("receiver_address");
 			this.receiver_telphone = json.getString("receiver_telphone");
 			this.sender_name = json.getString("sender_name");
 			this.sender_address = json.getString("sender_address");
 			this.sender_telphone = json.getString("sender_telphone");
+			this.current_address = json.getString("current_address");
 			this.code = json.getString("code");
+			this.total_fee = json.getDouble("total_fee");
+			this.tradetype = json.getString("tradetype");
+			this.delflag = json.getString("delflag");
 			this.regdate = json.getString("regdate");
+			this.admindate = json.getString("admindate");
+			this.paydate = json.getString("paydate");
+			this.paytype = json.getString("paytype");
 			this.trade_no = json.getString("trade_no");
+			this.out_trade_no = json.getString("out_trade_no");
+			this.senddate = json.getString("senddate");
+			this.receivedate = json.getString("receivedate");
+			if (!json.isNull("imageItems") && !"".equals(json.getString("imageItems"))) {
+				imageItems = new ArrayList<ImageItem>();
+				JSONArray imageJsonArray = json.getJSONArray("imageItems");
+				if(imageJsonArray != null && imageJsonArray.length() > 0)
+				{
+					for(int i = 0; i < imageJsonArray.length(); i++)
+					{
+						imageItems.add(new ImageItem(imageJsonArray.getJSONObject(i)));
+					}
+				}
+			}
+
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
 	}
+
+	public OrderModel(String id, String client_id, String to_client_id,
+			String receiver_name, String receiver_address,
+			String receiver_telphone, String sender_name,
+			String sender_address, String sender_telphone,
+			String current_address, String code, int total_fee,
+			String tradetype, String delflag, String regdate, String admindate,
+			String paydate, String paytype, String trade_no,
+			String out_trade_no, String senddate, String receivedate) {
+		super();
+		this.id = id;
+		this.client_id = client_id;
+		this.to_client_id = to_client_id;
+		this.receiver_name = receiver_name;
+		this.receiver_address = receiver_address;
+		this.receiver_telphone = receiver_telphone;
+		this.sender_name = sender_name;
+		this.sender_address = sender_address;
+		this.sender_telphone = sender_telphone;
+		this.current_address = current_address;
+		this.code = code;
+		this.total_fee = total_fee;
+		this.tradetype = tradetype;
+		this.delflag = delflag;
+		this.regdate = regdate;
+		this.admindate = admindate;
+		this.paydate = paydate;
+		this.paytype = paytype;
+		this.trade_no = trade_no;
+		this.out_trade_no = out_trade_no;
+		this.senddate = senddate;
+		this.receivedate = receivedate;
+	}
+
 	public String getId() {
 		return id;
 	}
+
 	public String getClient_id() {
 		return client_id;
 	}
+
 	public String getTo_client_id() {
 		return to_client_id;
 	}
-	public int getTotal_fee() {
-		return total_fee;
-	}
-	/**
-	 * 交易类型
-	 * @return 交易类型0:未审核
-	1起始网点已填价格
-	2:已支付
-	3:已发货
-	4:已收货
-	 */
-	public String getTradetype() {
-		return tradetype;
-	}
+
 	public String getReceiver_name() {
 		return receiver_name;
 	}
+
 	public String getReceiver_address() {
 		return receiver_address;
 	}
+
 	public String getReceiver_telphone() {
 		return receiver_telphone;
 	}
+
 	public String getSender_name() {
 		return sender_name;
 	}
+
 	public String getSender_address() {
 		return sender_address;
 	}
+
 	public String getSender_telphone() {
 		return sender_telphone;
 	}
+
+	public String getCurrent_address() {
+		return current_address;
+	}
+
 	public String getCode() {
 		return code;
 	}
+
+	public double getTotal_fee() {
+		return total_fee;
+	}
+
+	public String getTradetype() {
+		return tradetype;
+	}
+
+	public String getDelflag() {
+		return delflag;
+	}
+
 	public String getRegdate() {
 		return regdate;
 	}
+
+	public String getAdmindate() {
+		return admindate;
+	}
+
+	public String getPaydate() {
+		return paydate;
+	}
+
+	public String getPaytype() {
+		return paytype;
+	}
+
 	public String getTrade_no() {
 		return trade_no;
 	}
 
+	public String getOut_trade_no() {
+		return out_trade_no;
+	}
+
+	public String getSenddate() {
+		return senddate;
+	}
+
+	public String getReceivedate() {
+		return receivedate;
+	}
 	
+	public List<ImageItem> getImageItems()
+	{
+		return imageItems;
+	}
+
 }

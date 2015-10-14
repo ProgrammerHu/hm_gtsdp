@@ -155,6 +155,23 @@ public enum GtsdpHttpInformation implements HemaHttpInfomation {
 	 * 意见反馈
 	 */
 	ADVICE_ADD(34, "advice_add", "意见反馈", false),
+	/**
+	 * 验证二维码是否有效
+	 */
+	TRANS_CODE_CHECK(35, "trans_code_check", "验证二维码是否有效", false),
+	/**
+	 * 密保列表
+	 */
+	PASSWORD_ASK_LIST(36, "password_ask_list", "密保列表", false),
+	/**
+	 * 获取站点列表
+	 */
+	SITE_LIST(37, "site_list", "获取站点列表", false),
+	/**
+	 * 获取站点列表
+	 */
+	DELIVERY_ORDER_LIST(38, "delivery_order_list", "获取站点列表", false),
+	
 	
 	
 	

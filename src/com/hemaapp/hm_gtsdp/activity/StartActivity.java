@@ -24,6 +24,7 @@ import com.hemaapp.hm_gtsdp.GtsdpActivity;
 import com.hemaapp.hm_gtsdp.model.SysInitInfo;
 import com.hemaapp.hm_gtsdp.model.User;
 import com.hemaapp.hm_gtsdp.push.PushUtils;
+import com.hemaapp.hm_gtsdp.result.SiteListResult;
 
 /**
  * ≥ı º“≥
@@ -128,6 +129,12 @@ public class StartActivity extends GtsdpActivity
 			HemaArrayResult<User> sUser = (HemaArrayResult<User>)baseResult;
 			this.user = sUser.getObjects().get(0);
 			getApplicationContext().setUser(user);
+			getNetWorker().getSiteList();
+			break;
+		case SITE_LIST:
+			SiteListResult result = (SiteListResult)baseResult;
+			XtomSharedPreferencesUtil.save(mContext, "provinces", result.getProvinces());
+			XtomSharedPreferencesUtil.save(mContext, "sites", result.getSites());
 			Intent intent = new Intent(StartActivity.this, MainPageActivity.class);
 			startActivity(intent);
 			overridePendingTransition(R.anim.right_in, R.anim.none);

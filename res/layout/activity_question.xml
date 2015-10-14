@@ -96,7 +96,7 @@
                         android:text="问题一"
                         android:textColor="@color/white" />
 
-                    <Spinner
+                   <!--  <Spinner
                         android:id="@+id/spinner1"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -105,7 +105,21 @@
                         android:layout_toRightOf="@id/txtQuestion1"
                         android:paddingBottom="15dp"
                         android:paddingTop="15dp"
-                        android:textSize="@dimen/textsize_8" />
+                        android:textSize="@dimen/textsize_8" /> -->
+                        <TextView 
+                            android:id="@+id/spinner1"
+	                        android:layout_width="match_parent"
+	                        android:layout_height="wrap_content"
+	                        android:layout_centerVertical="true"
+	                        android:layout_toLeftOf="@id/image1"
+	                        android:layout_toRightOf="@id/txtQuestion1"
+	                        android:paddingBottom="15dp"
+	                        android:paddingTop="15dp"
+	                        android:textSize="@dimen/textsize_8"
+	                        android:hint="请选择"
+                        	android:paddingLeft="5dp"
+                        	android:textColor="@color/black"
+                            />
                 </RelativeLayout>
 
                 <LinearLayout
@@ -180,7 +194,7 @@
                         android:textColor="@color/white" />
 
 
-                    <Spinner
+                    <!-- <Spinner
                         android:id="@+id/spinner2"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -189,7 +203,21 @@
                         android:layout_toRightOf="@id/txtQuestion2"
                         android:paddingBottom="15dp"
                         android:paddingTop="15dp"
-                        android:textSize="@dimen/textsize_8" />
+                        android:textSize="@dimen/textsize_8" /> -->
+                    <TextView
+                        android:id="@+id/spinner2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_toLeftOf="@id/image1"
+                        android:layout_toRightOf="@id/txtQuestion2"
+                        android:hint="请选择"
+                        android:paddingBottom="15dp"
+                        android:paddingLeft="5dp"
+                        android:paddingTop="15dp"
+                        android:textSize="@dimen/textsize_8"
+                        android:textColor="@color/black" />
+
                 </RelativeLayout>
 
                 <LinearLayout
@@ -262,8 +290,7 @@
                         android:gravity="center"
                         android:text="问题三"
                         android:textColor="@color/white" />
-
-
+					<!-- 
                     <Spinner
                         android:id="@+id/spinner3"
                         android:layout_width="match_parent"
@@ -273,7 +300,22 @@
                         android:layout_toRightOf="@id/txtQuestion3"
                         android:paddingBottom="15dp"
                         android:paddingTop="15dp"
-                        android:textSize="@dimen/textsize_8" />
+                        android:textSize="@dimen/textsize_8" /> -->
+
+                    <TextView
+                        android:id="@+id/spinner3"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_toLeftOf="@id/image1"
+                        android:layout_toRightOf="@id/txtQuestion3"
+                        android:hint="请选择"
+                        android:paddingBottom="15dp"
+                        android:paddingLeft="5dp"
+                        android:paddingTop="15dp"
+                        android:textSize="@dimen/textsize_8" 
+                        android:textColor="@color/black"/>
+
                 </RelativeLayout>
 
                 <LinearLayout
