@@ -57,13 +57,17 @@ public class UserCenterActivity extends GtsdpActivity implements
 	private final int REQUEST_CODE_CAPTURE_CAMEIA = 2;// 相机获取
 	private final int EDIT_IMAGE = 3;// 剪裁图片
 
+	private String transflag;//配送员状态 0：不是配送员；1：是配送员
+	private String checkflag;//配送员审核状态 0：未审核；1：已审核
+	private String role;//身份	1：普通用户；2：网点；
+	
 	private RelativeLayout insideFather, view1, father;
 	private ScrollView scrollview;
 	private LinearLayout layoutBottom, layoutHead;
 	private View imageQuitActivity, imageSetting, layoutMyAccount,
 			layoutMyOrder, layoutChangePwd, layoutPwdSafety, layoutOrders;
 	private SelectPopupWindow selectPop;
-	private TextView txtUsername;
+	private TextView txtUsername, txtIdentity;
 	private String tempPath;// 保存图片路径
 	private String imagePathCamera;// 相机拍照路径
 	private RoundedImageView image_avatar;
@@ -76,7 +80,6 @@ public class UserCenterActivity extends GtsdpActivity implements
 		setContentView(R.layout.activity_usercenter);
 		super.onCreate(savedInstanceState);
 		init();
-
 		imageWay = new HemaImageWay(mContext, 1, 2) {
 			@Override
 			public void album() {
@@ -86,6 +89,7 @@ public class UserCenterActivity extends GtsdpActivity implements
 				startActivityForResult(it, albumRequestCode);
 			}
 		};
+		CheckUserRole();
 	}
 
 	@Override
@@ -128,6 +132,7 @@ public class UserCenterActivity extends GtsdpActivity implements
 			String AvatarBig = successResult.getObjects().get(0).getAvatarbig();
 			LoadImage(Avatar, AvatarBig);
 			User user = successResult.getObjects().get(0);
+			
 			new UserDBHelper(mContext).update(user);//更新用户数据
 			break;
 		}
@@ -164,13 +169,16 @@ public class UserCenterActivity extends GtsdpActivity implements
 		layoutOrders = findViewById(R.id.layoutOrders);
 		image_avatar = (RoundedImageView) findViewById(R.id.imageHead);
 		txtUsername = (TextView) findViewById(R.id.txtUsername);
+		txtIdentity = (TextView) findViewById(R.id.txtIdentity);
 		txtUsername.setText(user.getNickname());
 	}
 
 	@Override
 	protected void getExras() {
 		user = getApplicationContext().getUser();
-
+		transflag = user.getTransflag();
+		checkflag =  user.getCheckflag();
+		role = user.getRole();
 	}
 
 	@Override
@@ -479,6 +487,7 @@ public class UserCenterActivity extends GtsdpActivity implements
 		String Token = getApplicationContext().getUser().getToken();
 		String ID = getApplicationContext().getUser().getId();
 		getNetWorker().clientGet(Token, ID);
+
 	}
 
 	/**
@@ -542,6 +551,33 @@ public class UserCenterActivity extends GtsdpActivity implements
 				showTextDialog("图片压缩失败");
 				break;
 			}
+		}
+	}
+	/**
+	 * 设置身份
+	 */
+	private void CheckUserRole()
+	{
+		if("1".equals(role))
+		{//普通用户
+			if("0".equals(transflag))
+				txtIdentity.setText("普通用户");
+			else
+			{
+				if("1".equals(checkflag))
+				{
+					txtIdentity.setText("配送员");
+					layoutBottom.setVisibility(View.VISIBLE);
+				}
+				else
+				{
+					txtIdentity.setText("普通用户");
+				}
+			}
+		}
+		else
+		{
+			txtIdentity.setText("网点");
 		}
 	}
 }

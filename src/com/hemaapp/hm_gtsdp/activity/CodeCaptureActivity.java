@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Hashtable;
 import java.util.Vector;
 
+import xtom.frame.util.XtomSharedPreferencesUtil;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -51,6 +52,7 @@ import com.hemaapp.hm_gtsdp.dialog.GtsdpTwoButtonDialog;
 import com.hemaapp.hm_gtsdp.dialog.GtsdptOneButtonDialog;
 import com.hemaapp.hm_gtsdp.dialog.GtsdpTwoButtonDialog.OnButtonListener;
 import com.hemaapp.hm_gtsdp.model.User;
+import com.hemaapp.hm_gtsdp.result.TransDetailResult;
 import com.hemaapp.hm_gtsdp.result.ValidflagResult;
 import com.hemaapp.hm_gtsdp.zxing.camera.CameraManager;
 import com.hemaapp.hm_gtsdp.zxing.decoding.CaptureActivityHandler;
@@ -75,9 +77,9 @@ public class CodeCaptureActivity extends GtsdpActivity implements Callback, OnCl
 	private boolean IsRepeat;//标记是否无效之后扫描 true：是；false或者不传否
 	private ImageView imageQuitActivity, imageOpenLight;
 	
-	private TextView left, title, txtTop, txtBottom, txtTitle; 
+	private TextView left, title, txtTop, txtBottom, txtTitle, txtAccount, txtCount; 
 	private Button right;
-	private LinearLayout layout_empty; //未登录界面
+	private LinearLayout layout_empty, layoutCursor; //未登录界面
 	
 	private RelativeLayout layout1;//已登录界面
 	private CaptureActivityHandler handler;
@@ -373,6 +375,9 @@ public class CodeCaptureActivity extends GtsdpActivity implements Callback, OnCl
 			showTextDialog("二维码无效");
 			ReStartCode();
 			break;
+		case TRANS_RECEIVE:
+			showTextDialog(baseResult.getMsg());
+			break;
 		}
 	}
 
@@ -383,8 +388,18 @@ public class CodeCaptureActivity extends GtsdpActivity implements Callback, OnCl
 		GtsdpHttpInformation information = (GtsdpHttpInformation)netTask.getHttpInformation();
 		switch (information) {
 		case TRANS_GET:
-			cancelProgressDialog();
-			showTextDialog("确认收货");
+			TransDetailResult result = (TransDetailResult)baseResult;
+			String trans_id = result.getInfo().getId();
+			if(ActivityType == GtsdpConfig.CODE_GET)
+			{//扫码收货
+				getNetWorker().TransReceive(getApplicationContext().getUser().getToken(), trans_id);
+			}
+			else if(ActivityType == GtsdpConfig.CODE_CURSOR)
+			{//配送员接货
+				String sender_address = XtomSharedPreferencesUtil.get(mContext, "Start");
+				String receiver_address = XtomSharedPreferencesUtil.get(mContext, "End");
+				getNetWorker().DeliveryReceive(getApplicationContext().getUser().getToken(), trans_id, sender_address, receiver_address);
+			}
 			break;
 		case TRANS_CODE_CHECK:
 			cancelProgressDialog();
@@ -398,7 +413,34 @@ public class CodeCaptureActivity extends GtsdpActivity implements Callback, OnCl
 				ReStartCode();
 				return;
 			}
-			
+			break;
+		case TRANS_RECEIVE:
+		{
+			cancelProgressDialog();
+			GtsdptOneButtonDialog dialogOne = new GtsdptOneButtonDialog(mContext);
+			dialogOne.setText("收货成功");
+			dialogOne.setButtonListener(new GtsdptOneButtonDialog.OnButtonListener() {
+						@Override
+						public void onRightButtonClick(
+								GtsdptOneButtonDialog gtsdptOneButtonDialog) {
+							gtsdptOneButtonDialog.cancel();
+						}
+					});
+		}
+			break;
+		case DELIVERY_RECEIVE:
+		{
+			cancelProgressDialog();
+			GtsdptOneButtonDialog dialogOne = new GtsdptOneButtonDialog(mContext);
+			dialogOne.setText("接货成功");
+			dialogOne.setButtonListener(new GtsdptOneButtonDialog.OnButtonListener() {
+						@Override
+						public void onRightButtonClick(
+								GtsdptOneButtonDialog gtsdptOneButtonDialog) {
+							gtsdptOneButtonDialog.cancel();
+						}
+					});
+		}
 			break;
 		default:
 			break;
@@ -417,6 +459,9 @@ public class CodeCaptureActivity extends GtsdpActivity implements Callback, OnCl
 		txtTop = (TextView)findViewById(R.id.txtTop);
 		txtBottom = (TextView)findViewById(R.id.txtBottom);
 		txtTitle = (TextView)findViewById(R.id.txtTitle);
+		txtAccount = (TextView)findViewById(R.id.txtAccount);
+		txtCount = (TextView)findViewById(R.id.txtCount);
+		layoutCursor = (LinearLayout)findViewById(R.id.layoutCursor);
 
 		dialog = new GtsdpTwoButtonDialog(mContext);
 		dialog.setButtonListener(buttonListener);
@@ -442,10 +487,18 @@ public class CodeCaptureActivity extends GtsdpActivity implements Callback, OnCl
 		case GtsdpConfig.CODE_SEND:
 			dialog.setText("二维码验证成功，是否去发货");
 			break;
+		case GtsdpConfig.CODE_CURSOR:
+			txtTitle.setText("接货");
+			txtTop.setVisibility(View.GONE);
+			txtBottom.setVisibility(View.GONE);
+			dialog.setText("确认接货？");
+			layoutCursor.setVisibility(View.VISIBLE);
+			break;
 		}
 		onButtonDialog = new GtsdptOneButtonDialog(mContext);
 		onButtonDialog.setText("二维码已失效");
 		onButtonDialog.cancel();
+		
 	}
 
 	@Override
@@ -537,11 +590,12 @@ public class CodeCaptureActivity extends GtsdpActivity implements Callback, OnCl
 			intent.putExtra("keyid", SQCode);
 			startActivity(intent);
 			overridePendingTransition(R.anim.right_in, R.anim.none);
-//			finish();
+			finish();
 			break;
 			
 		case GtsdpConfig.CODE_CURSOR:
-			showTextDialog("接货成功");
+			getNetWorker().getTransDetail(getApplicationContext().getUser().getToken(), "3", SQCode);
+			showProgressDialog("加载中");
 			break;
 		case GtsdpConfig.CODE_GET:
 			getNetWorker().getTransDetail(getApplicationContext().getUser().getToken(), "3", SQCode);

@@ -66,7 +66,7 @@ public class StartActivity extends GtsdpActivity
 				@Override
 				public void run() {
 					try {
-						Thread.sleep(1000);
+						Thread.sleep(0);
 					} 
 					catch (InterruptedException e) {
 						e.printStackTrace();
@@ -123,22 +123,22 @@ public class StartActivity extends GtsdpActivity
 			HemaArrayResult<SysInitInfo> sResult = (HemaArrayResult<SysInitInfo>)baseResult;
 			sysInitInfo = sResult.getObjects().get(0);
 			getApplicationContext().setSysInitInfo(sysInitInfo);
-			checkLogin();
+			getNetWorker().getSiteList();
 			break;
 		case CLIENT_LOGIN:
 			HemaArrayResult<User> sUser = (HemaArrayResult<User>)baseResult;
 			this.user = sUser.getObjects().get(0);
 			getApplicationContext().setUser(user);
-			getNetWorker().getSiteList();
+			Intent intent = new Intent(StartActivity.this, MainPageActivity.class);
+			startActivity(intent);
+			overridePendingTransition(R.anim.right_in, R.anim.none);
+			this.finish();
 			break;
 		case SITE_LIST:
 			SiteListResult result = (SiteListResult)baseResult;
 			XtomSharedPreferencesUtil.save(mContext, "provinces", result.getProvinces());
 			XtomSharedPreferencesUtil.save(mContext, "sites", result.getSites());
-			Intent intent = new Intent(StartActivity.this, MainPageActivity.class);
-			startActivity(intent);
-			overridePendingTransition(R.anim.right_in, R.anim.none);
-			this.finish();
+			checkLogin();
 			break;
 		}
 	}

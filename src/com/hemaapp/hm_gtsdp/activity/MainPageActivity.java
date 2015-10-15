@@ -24,6 +24,7 @@ import android.widget.RelativeLayout;
 import android.widget.Scroller;
 import android.widget.TextView;
 
+import com.amap.api.mapcore.ba;
 import com.baidu.android.pushservice.PushConstants;
 import com.baidu.android.pushservice.PushManager;
 import com.hemaapp.GtsdpConfig;
@@ -39,13 +40,14 @@ import com.hemaapp.hm_gtsdp.dialog.GtsdpTwoButtonDialog.OnButtonListener;
 import com.hemaapp.hm_gtsdp.model.AdvertiseModel;
 import com.hemaapp.hm_gtsdp.model.User;
 import com.hemaapp.hm_gtsdp.push.PushUtils;
+import com.hemaapp.hm_gtsdp.result.NoticeCountResult;
 
 public class MainPageActivity extends GtsdpFragmentActivity implements OnClickListener {
 	private int transflag;//配送员状态 0：不是配送员；1：是配送员
 	private int checkflag;//配送员审核状态 0：未审核；1：已审核
 	private int role;//身份	1：普通用户；2：网点；
 	private TextView txtTitle, txtNext;
-	private ImageView imageQuitActivity, pointsImage, imageSend, imageGet, imageFind;
+	private ImageView imageQuitActivity, pointsImage, imageSend, imageGet, imageFind, imageBell;
 	private ViewPager mainViewPager;
 	private int PageId;
 	private LinearLayout UserCenter, SystemMessage, layoutPoint;
@@ -66,6 +68,7 @@ public class MainPageActivity extends GtsdpFragmentActivity implements OnClickLi
 			showTextDialog("用户身份异常");
 		}
 		getNetWorker().getAdList();
+		getNetWorker().getNoticeCount(getApplicationContext().getUser().getToken());
 	}
 
 	@Override
@@ -92,6 +95,7 @@ public class MainPageActivity extends GtsdpFragmentActivity implements OnClickLi
 		GtsdpHttpInformation information = (GtsdpHttpInformation)netTask.getHttpInformation();
 		switch (information) {
 		case AD_LIST:
+		{
 			GtsdpArrayResult<AdvertiseModel> result = (GtsdpArrayResult<AdvertiseModel>)baseResult;
 			listData= result.getObjects();
 			mainViewPager.setAdapter(new ImageViewPagerAdapter(getSupportFragmentManager(), 
@@ -99,8 +103,15 @@ public class MainPageActivity extends GtsdpFragmentActivity implements OnClickLi
 			addImageView(listData);
 			PageId = listData.size() * 10;
 	    	switchTask.run();
+		}
 			break;
-
+		case NOTICE_COUNT:
+		{
+			NoticeCountResult result = (NoticeCountResult)baseResult;
+			if(result.getSysCount() > 0)
+				imageBell.setImageResource(R.drawable.bell_message);
+		}
+			break;
 		}
 		
 	}
@@ -134,6 +145,7 @@ public class MainPageActivity extends GtsdpFragmentActivity implements OnClickLi
 		UserCenter = (LinearLayout)findViewById(R.id.UserCenter);
 		SystemMessage = (LinearLayout)findViewById(R.id.SystemMessage);
 		layoutPoint = (LinearLayout)findViewById(R.id.layoutPoint);
+		imageBell = (ImageView)findViewById(R.id.imageBell);
 	}
 
 	@Override
@@ -216,27 +228,27 @@ public class MainPageActivity extends GtsdpFragmentActivity implements OnClickLi
 			break;
 		case R.id.imageFind://找货
 			intent = new Intent();
-			if(GtsdpConfig.IS_DEVELOPMENT)
-			{
-				intent.setClass(this, FindGoodsActivity.class);
-				startActivity(intent);
-				overridePendingTransition(R.anim.right_in, R.anim.none);
-				return;
-			}
+//			if(GtsdpConfig.IS_DEVELOPMENT)
+//			{
+//				intent.setClass(this, FindGoodsActivity.class);
+//				startActivity(intent);
+//				overridePendingTransition(R.anim.right_in, R.anim.none);
+//				return;
+//			}
 			if(transflag == 1)
 			{/* 是配送员->找货界面*/
-				intent.setClass(this, FindGoodsActivity.class);
-			}
-			else if(transflag == 0)
-			{
-				if(checkflag == 1)
+				if(checkflag == 0)
 				{/*审核中*/
 					intent.setClass(this, IdentifyingActivity.class);
 				}
-				else if(checkflag == 0)
-				{/*不是配送员*/
-					intent.setClass(this, NotCursorActivity.class);
+				else
+				{
+					intent.setClass(this, FindGoodsActivity.class);
 				}
+			}
+			else if(transflag == 0)
+			{/*不是配送员*/
+				intent.setClass(this, NotCursorActivity.class);
 			}
 			if(intent != null)
 			{

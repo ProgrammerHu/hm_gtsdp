@@ -1,5 +1,6 @@
 package com.hemaapp.hm_gtsdp.activity;
 
+import xtom.frame.util.XtomSharedPreferencesUtil;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
@@ -22,12 +23,13 @@ import com.hemaapp.hm_gtsdp.view.SelectDistrictPicker;
  *
  */
 public class PublishRouteActivity extends GtsdpActivity implements OnClickListener{
-
 	private TextView txtTitle, txtNext, txtStart, txtEnd, TempTextView;
 	private ImageView imageQuitActivity;
 	private Button btnConfirm;
 	private RelativeLayout layoutEnd, layoutStart;
 	private SelectDistrictPicker myDistrictPicker;
+	private String StartStationLat, StartStationLog;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		setContentView(R.layout.activity_publishroute);
@@ -81,13 +83,17 @@ public class PublishRouteActivity extends GtsdpActivity implements OnClickListen
 		layoutEnd = (RelativeLayout)findViewById(R.id.layoutEnd);
 		layoutStart = (RelativeLayout)findViewById(R.id.layoutStart);
 		txtStart = (TextView)findViewById(R.id.txtStart);
+		String Start = XtomSharedPreferencesUtil.get(mContext, "Start");
+		if(Start != null && !Start.equals(""))
+			txtStart.setText(Start);
 		txtEnd = (TextView)findViewById(R.id.txtEnd);
+		String End = XtomSharedPreferencesUtil.get(mContext, "End");
+		if(End != null && !End.equals(""))
+			txtEnd.setText(End);
 	}
 
 	@Override
 	protected void getExras() {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
@@ -103,10 +109,11 @@ public class PublishRouteActivity extends GtsdpActivity implements OnClickListen
 		switch(v.getId())
 		{
 		case R.id.imageQuitActivity:
+			setResult(RESULT_CANCELED);
 			finish(R.anim.none, R.anim.right_out);
 			break;
 		case R.id.btnConfirm:
-			//TODO 提交
+			clickConfirm();
 			break;
 		case R.id.layoutStart:
 			TempTextView = txtStart;
@@ -122,6 +129,7 @@ public class PublishRouteActivity extends GtsdpActivity implements OnClickListen
 	}
 	@Override
 	protected boolean onKeyBack() {
+		setResult(RESULT_CANCELED);
 		finish(R.anim.none, R.anim.right_out);
 		return super.onKeyBack();
 	}
@@ -141,8 +149,37 @@ public class PublishRouteActivity extends GtsdpActivity implements OnClickListen
 			{
 				String address = myDistrictPicker.getDistrcictString();
 				TempTextView.setText(address);
+				if(TempTextView.equals(txtStart))
+				{
+					StartStationLog = myDistrictPicker.getLog();
+					StartStationLat = myDistrictPicker.getLat();
+				}
 			}
 			myDistrictPicker.dismiss();
 		}
 	};
+	/**
+	 * 点击发布
+	 */
+	private void clickConfirm()
+	{
+		String Start = txtStart.getText().toString();
+		String End = txtEnd.getText().toString();
+		if("".equals(Start))
+		{
+			showTextDialog("请选择出发地");
+			return;
+		}
+		if("".equals(End))
+		{
+			showTextDialog("请选择到达地");
+			return;
+		}
+		XtomSharedPreferencesUtil.save(mContext, "Start", Start);
+		XtomSharedPreferencesUtil.save(mContext, "End", End);
+		XtomSharedPreferencesUtil.save(mContext, "StartStationLog", StartStationLog);
+		XtomSharedPreferencesUtil.save(mContext, "StartStationLat", StartStationLat);
+		setResult(RESULT_OK);
+		finish(R.anim.none, R.anim.right_out);
+	}
 }

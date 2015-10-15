@@ -122,6 +122,7 @@
             android:layout_centerHorizontal="true"
             android:orientation="vertical"
             android:paddingRight="15dp"
+            android:paddingLeft="15dp"
             android:layout_alignParentBottom="true" 
             android:layout_marginBottom="50dp">
 
@@ -142,6 +143,7 @@
                 android:textColor="@color/white"
                 android:textSize="@dimen/textsize_7"
                 android:id="@+id/txtBottom" />
+            <include layout="@layout/layout_cursor_button"/>
         </LinearLayout>
     </RelativeLayout>
 

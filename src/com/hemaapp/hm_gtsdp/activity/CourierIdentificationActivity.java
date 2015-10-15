@@ -27,9 +27,13 @@ import com.hemaapp.hm_FrameWork.HemaNetTask;
 import com.hemaapp.hm_FrameWork.result.HemaBaseResult;
 import com.hemaapp.hm_FrameWork.view.ShowLargeImageView;
 import com.hemaapp.hm_gtsdp.GtsdpActivity;
+import com.hemaapp.hm_gtsdp.GtsdpArrayResult;
 import com.hemaapp.hm_gtsdp.GtsdpHttpInformation;
 import com.hemaapp.hm_gtsdp.GtsdpUtil;
 import com.hemaapp.hm_gtsdp.R;
+import com.hemaapp.hm_gtsdp.dialog.GtsdptOneButtonDialog;
+import com.hemaapp.hm_gtsdp.dialog.GtsdptOneButtonDialog.OnButtonListener;
+import com.hemaapp.hm_gtsdp.result.DeliveryAddResult;
 import com.hemaapp.hm_gtsdp.view.SelectPopupWindow;
 
 /**
@@ -106,9 +110,27 @@ public class CourierIdentificationActivity extends GtsdpActivity implements OnCl
 					editTelPhone.getEditableText().toString().trim());
 			break;
 		case DELIVERY_ADD:
-			//还到不了这里
+			 DeliveryAddResult result = ( DeliveryAddResult)baseResult;
+			String keyid = result.getPubid();
+			getNetWorker().fileUpload(getApplicationContext().getUser().getToken(), 
+					"3", keyid, "0", "0", "0", imageFace.getTag(R.id.TAG).toString());
+			getNetWorker().fileUpload(getApplicationContext().getUser().getToken(), 
+					"3", keyid, "0", "1", "1", imageFace.getTag(R.id.TAG).toString());
+			getNetWorker().fileUpload(getApplicationContext().getUser().getToken(), 
+					"3", keyid, "0", "2", "2", imageFace.getTag(R.id.TAG).toString());
 			break;
-
+		case FILE_UPLOAD:
+			cancelProgressDialog();
+			GtsdptOneButtonDialog dialog = new GtsdptOneButtonDialog(mContext);
+			dialog.setText("申请成功");
+			dialog.setButtonListener(new OnButtonListener() {
+				@Override
+				public void onRightButtonClick(GtsdptOneButtonDialog gtsdptOneButtonDialog) {
+					gtsdptOneButtonDialog.cancel();
+					finish(R.anim.none, R.anim.right_out);
+				}
+			});
+			break;
 		}
 	}
 

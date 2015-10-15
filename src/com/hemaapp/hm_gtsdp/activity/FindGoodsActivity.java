@@ -20,6 +20,7 @@ import com.amap.api.maps.AMap.InfoWindowAdapter;
 import com.amap.api.maps.AMap.OnInfoWindowClickListener;
 import com.amap.api.maps.AMap.OnMapClickListener;
 import com.amap.api.maps.AMap.OnMyLocationChangeListener;
+import com.amap.api.maps.AMapUtils;
 import com.amap.api.maps.CameraUpdate;
 import com.amap.api.maps.CameraUpdateFactory;
 import com.amap.api.maps.LocationSource;
@@ -43,18 +44,22 @@ import com.hemaapp.GtsdpConfig;
 import com.hemaapp.hm_FrameWork.HemaNetTask;
 import com.hemaapp.hm_FrameWork.result.HemaBaseResult;
 import com.hemaapp.hm_gtsdp.GtsdpActivity;
+import com.hemaapp.hm_gtsdp.GtsdpUtil;
 import com.hemaapp.hm_gtsdp.R;
 
 public class FindGoodsActivity extends GtsdpActivity implements  LocationSource,
 AMapLocationListener, OnMarkerClickListener, InfoWindowAdapter, OnClickListener, 
 OnInfoWindowClickListener, OnMapClickListener, OnGeocodeSearchListener
 {
+	private final int SET_ROUTE = 100;//发布和修改路线
 	//地图相关
 	private MapView mapView;
 	private AMap aMap;
 	private LocationManagerProxy mAMapLocationManager;
 	private OnLocationChangedListener mListener;
 	private GeocodeSearch geocodeSearch;
+	private LatLng StationLatLng;//车站坐标
+	
 	private LatLng latLng;//标点的位置
 	private String lng;
 	private String lat;
@@ -66,7 +71,12 @@ OnInfoWindowClickListener, OnMapClickListener, OnGeocodeSearchListener
 	private TextView txtTitle, txtNext;
 	private ImageView imageQuitActivity;
 	private Button btnConfirm;
+	AMapLocation HereLocation;
 	
+	//数据相关
+	private String StationName;
+	private String Count;
+	private String Price;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		setContentView(R.layout.activity_findgoods);
@@ -75,6 +85,8 @@ OnInfoWindowClickListener, OnMapClickListener, OnGeocodeSearchListener
 		geocodeSearch = new GeocodeSearch(getApplication());
 		geocodeSearch.setOnGeocodeSearchListener(this);
 		initMap();
+		showProgressDialog("定位中");
+//		haveChangeRoute();
 	}
 
 	private void initMap() {
@@ -102,10 +114,10 @@ OnInfoWindowClickListener, OnMapClickListener, OnGeocodeSearchListener
 	 * 注册监听
 	 */
 	private void registerListener() {
-		aMap.setOnMapClickListener(this);
 		aMap.setOnMarkerClickListener(this);
 		aMap.setOnInfoWindowClickListener(this);
 		aMap.setInfoWindowAdapter(this);
+		aMap.setOnMapClickListener(this);
 	}
 	@Override
 	protected void callAfterDataBack(HemaNetTask arg0) {
@@ -180,16 +192,22 @@ OnInfoWindowClickListener, OnMapClickListener, OnGeocodeSearchListener
 	protected void findView() {
 		mapView = (MapView) findViewById(R.id.mapView);
 		txtNext = (TextView)findViewById(R.id.txtNext);
-		txtNext.setText("更改路线");
 		txtTitle = (TextView)findViewById(R.id.txtTitle);
 		txtTitle.setText("找货");
 		imageQuitActivity = (ImageView)findViewById(R.id.imageQuitActivity);
+
 		btnConfirm = (Button)findViewById(R.id.btnConfirm);
+		txtNext.setText("更改路线");
+		
+		String Start = XtomSharedPreferencesUtil.get(mContext, "Start");
+		if(Start != null && !Start.equals(""))
+			btnConfirm.setVisibility(View.GONE);
+		else
+			txtNext.setVisibility(View.GONE);
 	}
 
 	@Override
 	protected void getExras() {
-		// TODO Auto-generated method stub
 		
 	}
 
@@ -210,7 +228,7 @@ OnInfoWindowClickListener, OnMapClickListener, OnGeocodeSearchListener
 			break;
 		case R.id.btnConfirm:
 			intent = new Intent(this, PublishRouteActivity.class);
-			startActivity(intent);
+			startActivityForResult(intent, SET_ROUTE);
 			overridePendingTransition(R.anim.right_in, R.anim.none);
 			break;
 		case R.id.txtTitle:
@@ -219,7 +237,11 @@ OnInfoWindowClickListener, OnMapClickListener, OnGeocodeSearchListener
 			//这里要加上当前的起止位置
 			overridePendingTransition(R.anim.right_in, R.anim.none);
 			break;
-			
+		case R.id.txtNext:
+			intent = new Intent(this, PublishRouteActivity.class);
+			startActivityForResult(intent, SET_ROUTE);
+			overridePendingTransition(R.anim.right_in, R.anim.none);
+			break;
 		}
 		
 	}
@@ -257,6 +279,16 @@ OnInfoWindowClickListener, OnMapClickListener, OnGeocodeSearchListener
 			aMap.setMyLocationRotateAngle(bearing);// 设置小蓝点旋转角度
 		}
 		deactivate();
+		HereLocation = location;
+		haveChangeRoute();
+		if(StationLatLng != null)
+		{
+			onMapClick(StationLatLng);
+			aMap.setOnMapClickListener(null);
+			aMap.moveCamera(CameraUpdateFactory.changeLatLng(StationLatLng));
+			int state = GtsdpUtil.getZoomTo(AMapUtils.calculateLineDistance(new LatLng(location.getLatitude(), location.getLongitude()), StationLatLng));
+			aMap.moveCamera(CameraUpdateFactory.zoomTo(state));
+		}
 	}
 
 
@@ -320,11 +352,9 @@ OnInfoWindowClickListener, OnMapClickListener, OnGeocodeSearchListener
 				String township = result.getRegeocodeAddress().getTownship();
 				address = address.split(township)[1];
 			} catch (Exception e) {
-				// ignore
 			}
 			showMarker();
 		} else {
-			// nothing
 		}
 	}
 	
@@ -352,8 +382,8 @@ OnInfoWindowClickListener, OnMapClickListener, OnGeocodeSearchListener
 
 	@Override
 	public void onInfoWindowClick(Marker marker) {
-		Intent intent = new Intent(this, GoodsDetailActivity.class);
-		intent.putExtra("ActivityType", GtsdpConfig.USER_IDENTIFY_CURSOR);
+		Intent intent = new Intent(this, CodeCaptureActivity.class);
+		intent.putExtra("ActivityType", GtsdpConfig.CODE_CURSOR);
 		startActivity(intent);
 		overridePendingTransition(R.anim.right_in, R.anim.none);
 //		marker.hideInfoWindow();
@@ -369,6 +399,12 @@ OnInfoWindowClickListener, OnMapClickListener, OnGeocodeSearchListener
 	public View getInfoWindow(Marker marker) {
 		View infoWindow = getLayoutInflater().inflate(
 				R.layout.custom_info_window, null);
+		TextView txtStationName = (TextView)infoWindow.findViewById(R.id.txtStationName);
+		TextView txtCount = (TextView)infoWindow.findViewById(R.id.txtCount);//货物数量
+		TextView txtPrice = (TextView)infoWindow.findViewById(R.id.txtPrice);//单价
+		txtStationName.setText(StationName);
+		txtCount.setText(Count);
+		txtPrice.setText(Price);
 		return infoWindow;
 	}
 
@@ -377,5 +413,46 @@ OnInfoWindowClickListener, OnMapClickListener, OnGeocodeSearchListener
 	 */
 	public void render(Marker marker, View view) {
 		
+	}
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		if(resultCode == RESULT_OK)
+		{
+			switch (requestCode) {
+			case SET_ROUTE:
+				btnConfirm.setVisibility(View.GONE);
+				txtNext.setVisibility(View.VISIBLE);
+				haveChangeRoute();
+				if(StationLatLng != null)
+				{
+					onMapClick(StationLatLng);
+					aMap.setOnMapClickListener(null);
+					aMap.moveCamera(CameraUpdateFactory.changeLatLng(StationLatLng));
+					int state = GtsdpUtil.getZoomTo(AMapUtils.calculateLineDistance(new LatLng(HereLocation.getLatitude(), HereLocation.getLongitude()), StationLatLng));
+					aMap.moveCamera(CameraUpdateFactory.zoomTo(state));
+				}
+				break;
+			}
+		}
+	}
+	/**
+	 * 加载路线
+	 */
+	private void haveChangeRoute()
+	{
+		StationName = XtomSharedPreferencesUtil.get(mContext, "Start");
+		Count = "500";
+		Price = "85";
+		String StartStationLat = XtomSharedPreferencesUtil.get(mContext, "StartStationLat");
+		String StartStationLog = XtomSharedPreferencesUtil.get(mContext, "StartStationLog");
+		if(StartStationLat != null && !"".equals(StartStationLat))
+		{
+			double lat = Double.parseDouble(StartStationLat);
+			double log = Double.parseDouble(StartStationLog);
+			StationLatLng = new LatLng(lat, log);
+		}
+		cancelProgressDialog();
 	}
 }

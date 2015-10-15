@@ -36,5 +36,6 @@
 	    android:layout_marginRight="20dp"
 	    android:background="@drawable/bg_button_submit_blue"
 	    android:textColor="@color/white"
+        android:textSize="@dimen/textsize_9"
 	    />
 </LinearLayout>

@@ -171,6 +171,18 @@ public enum GtsdpHttpInformation implements HemaHttpInfomation {
 	 * 获取站点列表
 	 */
 	DELIVERY_ORDER_LIST(38, "delivery_order_list", "获取站点列表", false),
+	/**
+	 * 确认收货
+	 */
+	TRANS_RECEIVE(39, "trans_receive", "确认收货", false),
+	/**
+	 * 配送员接单
+	 */
+	DELIVERY_RECEIVE(40, "delivery_receive", "配送员接单", false),
+	/**
+	 * 获取系统通知未读消息数
+	 */
+	NOTICE_COUNT(41, "notice_count", "获取系统通知未读消息数", false),
 	
 	
 	

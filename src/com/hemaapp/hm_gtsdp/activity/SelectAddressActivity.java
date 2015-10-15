@@ -23,6 +23,7 @@ import com.amap.api.location.LocationManagerProxy;
 import com.amap.api.location.LocationProviderProxy;
 import com.amap.api.maps.AMap;
 import com.amap.api.maps.AMap.OnCameraChangeListener;
+import com.amap.api.maps.AMapUtils;
 import com.amap.api.maps.CameraUpdate;
 import com.amap.api.maps.CameraUpdateFactory;
 import com.amap.api.maps.LocationSource;
@@ -100,6 +101,7 @@ OnInfoWindowClickListener, OnMapClickListener, OnGeocodeSearchListener, OnMyLoca
 	private SelectAddressAdapter addressAdapter;
 	private String ClickAddress;
 	
+	private LatLng locationLatLng;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		setContentView(R.layout.activity_set_address);
@@ -323,6 +325,7 @@ OnInfoWindowClickListener, OnMapClickListener, OnGeocodeSearchListener, OnMyLoca
 			float bearing = aMap.getCameraPosition().bearing;
 			aMap.setMyLocationRotateAngle(bearing);// 设置小蓝点旋转角度
 		}
+		locationLatLng = new LatLng(location.getLatitude(), location.getLongitude());
 		deactivate();
 	}
 
@@ -358,6 +361,7 @@ OnInfoWindowClickListener, OnMapClickListener, OnGeocodeSearchListener, OnMyLoca
 	@Override
 	public void onMapClick(LatLng latLng) {
 		this.latLng = latLng;
+		
 		getAddress(latLng.latitude, latLng.longitude);
 	}
 

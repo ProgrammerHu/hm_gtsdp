@@ -42,6 +42,7 @@ public class SelectDistrictPicker extends PopupWindow implements
 	private AssetManager asset;
 	private WheelView mViewProvince, mViewCity;
 	private Context context;
+	private String lat, log;
 
 	/**
 	 * 所有省
@@ -60,6 +61,10 @@ public class SelectDistrictPicker extends PopupWindow implements
 	 * 当前市的名称
 	 */
 	protected String mCurrentCityName;
+	/**
+	 * 车站经纬度
+	 */
+	private Map<String, String[]> stationLatLogMap = new HashMap<String, String[]>();
 	
 	private JSONArray provincesArray;
 
@@ -132,6 +137,8 @@ public class SelectDistrictPicker extends PopupWindow implements
 		mViewCity
 				.setViewAdapter(new ArrayWheelAdapter<String>(context, cities));
 		mViewCity.setCurrentItem(0);
+		mCurrentCityName = cities[0];
+		
 //		updateDistricts();
 	}
 
@@ -214,6 +221,10 @@ public class SelectDistrictPicker extends PopupWindow implements
 				{//这是地级市
 					cityList.add(Name);
 				}
+				String [] LatLog = new String[2];
+				LatLog[0] =  jsonArray.getJSONObject(j).getString("lat");
+				LatLog[1] =  jsonArray.getJSONObject(j).getString("lng");
+				stationLatLogMap.put(Name, LatLog);
 			}
 			String[] CitisDatas = new String[cityList.size()];
 			for (int j = 0; j < cityList.size(); j++) {// 第二次遍历，充实字符串数组
@@ -222,7 +233,22 @@ public class SelectDistrictPicker extends PopupWindow implements
 				aa[0] = CitisDatas[j];
 			}
 			mCitisDatasMap.put(provinceName, CitisDatas);
-			
 		}
+	}
+	/**
+	 * 返回车站纬度
+	 * @return
+	 */
+	public String getLat()
+	{
+		return stationLatLogMap.get(mCurrentCityName)[0];
+	}
+	/**
+	 * 返回车站经度
+	 * @return
+	 */
+	public String getLog()
+	{
+		return stationLatLogMap.get(mCurrentCityName)[1];
 	}
 }

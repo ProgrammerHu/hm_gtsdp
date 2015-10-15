@@ -15,11 +15,13 @@ import com.hemaapp.hm_gtsdp.nettask.ClientGetTask;
 import com.hemaapp.hm_gtsdp.nettask.ClientLoginTask;
 import com.hemaapp.hm_gtsdp.nettask.ClientLoginoutTask;
 import com.hemaapp.hm_gtsdp.nettask.CodeVerifyTask;
+import com.hemaapp.hm_gtsdp.nettask.DeliveryAddTask;
 import com.hemaapp.hm_gtsdp.nettask.DeviceSaveTask;
 import com.hemaapp.hm_gtsdp.nettask.FeeAccountList;
 import com.hemaapp.hm_gtsdp.nettask.FileUploadTask;
 import com.hemaapp.hm_gtsdp.nettask.GetTemplateTask;
 import com.hemaapp.hm_gtsdp.nettask.InitTask;
+import com.hemaapp.hm_gtsdp.nettask.NoticeCountTask;
 import com.hemaapp.hm_gtsdp.nettask.NoticeListTask;
 import com.hemaapp.hm_gtsdp.nettask.CurrentTask;
 import com.hemaapp.hm_gtsdp.nettask.QuestionListTask;
@@ -441,7 +443,7 @@ public class GtsdpNetWorker extends HemaNetWorker {
 		params.put("realname", realname);
 		params.put("telphone", telphone);
 		params.put("address", address);
-		GtsdpNetTask task = new CurrentTask(information, params);
+		GtsdpNetTask task = new DeliveryAddTask(information, params);
 		executeTask(task);
 	}
 	/**
@@ -723,6 +725,51 @@ public class GtsdpNetWorker extends HemaNetWorker {
 		params.put("token", token);
 		params.put("keytype", keytype);
 		GtsdpNetTask task = new TransListTask(information, params);
+		executeTask(task);
+	}
+	/**
+	 * 用户收货接口
+	 * @param token
+	 * @param trans_id
+	 */
+	public void TransReceive(String token, String trans_id)
+	{
+		GtsdpHttpInformation information = GtsdpHttpInformation.TRANS_RECEIVE;
+		HashMap<String, String> params = new HashMap<String, String>();
+		params.put("token", token);
+		params.put("trans_id", trans_id);
+		GtsdpNetTask task = new CurrentTask(information, params);
+		executeTask(task);
+	}
+	/**
+	 * 配送员接单
+	 * @param token 登录令牌
+	 * @param trans_id
+	 * @param sender_address 出发地
+	 * @param receiver_address 目的地
+	 */
+	public void DeliveryReceive(String token, String trans_id, String sender_address, String receiver_address)
+	{
+		GtsdpHttpInformation information = GtsdpHttpInformation.DELIVERY_RECEIVE;
+		HashMap<String, String> params = new HashMap<String, String>();
+		params.put("token", token);
+		params.put("trans_id", trans_id);
+		params.put("sender_address", sender_address);
+		params.put("receiver_address", receiver_address);
+		GtsdpNetTask task = new CurrentTask(information, params);
+		executeTask(task);
+	}
+	/**
+	 * 获取系统通知未读消息数
+	 * @param token
+	 */
+	public void getNoticeCount(String token)
+	{
+		GtsdpHttpInformation information = GtsdpHttpInformation.NOTICE_COUNT;
+		HashMap<String, String> params = new HashMap<String, String>();
+		params.put("token", token);
+
+		GtsdpNetTask task = new NoticeCountTask(information, params);
 		executeTask(task);
 	}
 }

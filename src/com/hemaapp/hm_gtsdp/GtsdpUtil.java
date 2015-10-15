@@ -346,4 +346,26 @@ public class GtsdpUtil {
         return image;  
     
     }  
+    /**
+     * 根据距离获取高德地图适应的缩放级别 范围3~16，3最大
+     * @param Distance 单位：米
+     * @return
+     */
+    public static int getZoomTo(double Distance)
+    {
+    	Distance = Math.abs(Distance);
+    	double Temp = 4000000;
+    	if(Distance > 4000000)
+    		return 3;
+    	if(Distance <= 488)
+    		return 16;
+    	int State = 2;
+    	while(true)
+    	{
+        	if(Distance >= Temp)
+        		return State;
+    		Temp /= 2.0;
+    		State++;
+    	}
+    }
 }

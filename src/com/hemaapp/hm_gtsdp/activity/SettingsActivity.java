@@ -265,6 +265,12 @@ public class SettingsActivity extends GtsdpActivity implements OnClickListener, 
 		GtsdpApplication.getInstance().setUser(null);
 		XtomSharedPreferencesUtil.save(mContext, "username", "");// 清空用户名
 		XtomSharedPreferencesUtil.save(mContext, "password", "");// 清空密码
+		String Start = XtomSharedPreferencesUtil.get(mContext, "Start");
+		String End = XtomSharedPreferencesUtil.get(mContext, "End");
+		if(Start != null && !"".equals(Start))
+			XtomSharedPreferencesUtil.save(mContext, "Start", "");
+		if(End != null && !"".equals(End))
+			XtomSharedPreferencesUtil.save(mContext, "End", "");
 		HemaUtil.setThirdSave(mContext, false);// 将第三方登录标记置为false
 		XtomActivityManager.finishAll();
 		Intent intent = new Intent(mContext, LoginActivity.class);

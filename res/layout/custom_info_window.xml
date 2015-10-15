@@ -41,6 +41,7 @@
             android:text="25"
             android:textSize="@dimen/textsize_7.5"
             android:layout_marginLeft="40dp"
+            android:id="@+id/txtCount"
             />
     </LinearLayout>
 
@@ -61,10 +62,18 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/orange"
-            android:text="￥30"
+            android:text="30"
             android:textSize="@dimen/textsize_7.5"
-            android:layout_marginLeft="40dp"
             android:layout_alignParentRight="true"
+            android:id="@+id/txtPrice"
+            /> 
+        <TextView 
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/orange"
+            android:text="￥"
+            android:textSize="@dimen/textsize_7.5"
+            android:layout_toLeftOf="@id/txtPrice"
             />
     </RelativeLayout>
 

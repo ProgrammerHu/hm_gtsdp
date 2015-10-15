@@ -134,15 +134,14 @@
 
 			<RelativeLayout
 			    android:layout_width="match_parent"
-			    android:layout_height="wrap_content" 
+			    android:layout_height="match_parent" 
 			    android:id="@+id/insideFather">
 
 			    <LinearLayout
 			        android:layout_width="match_parent"
 			        android:layout_height="wrap_content"
-			        android:gravity="center"
-			        android:orientation="vertical" 
-			        android:layout_centerVertical="true">
+			        android:layout_centerVertical="true"
+			        android:orientation="vertical" >
 
 			        <LinearLayout
 			            android:layout_width="match_parent"
@@ -261,7 +260,8 @@
 			            android:paddingTop="15dp"
 			            android:gravity="center_horizontal"
 			            android:orientation="horizontal" 
-			            android:id="@+id/layoutBottom">
+			            android:id="@+id/layoutBottom"
+			            android:visibility="gone">
 
 			            <LinearLayout
 			                android:layout_width="wrap_content"

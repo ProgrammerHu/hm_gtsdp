@@ -96,7 +96,6 @@ public class SendDetailActivty extends GtsdpActivity implements OnClickListener 
 			}
 		};
 		
-
 		popupWindow = new SelectPopupWindow(this, 
 				clickFace, "≈ƒ’’", "¥”œ‡≤·—°‘Ò");
 		imageAdapter = new SendImageAdapter(mContext, detialMainLinear, images);
@@ -111,6 +110,7 @@ public class SendDetailActivty extends GtsdpActivity implements OnClickListener 
 			}
 		});
 		successDialog.cancel();
+	
 	}
 
 	@Override
