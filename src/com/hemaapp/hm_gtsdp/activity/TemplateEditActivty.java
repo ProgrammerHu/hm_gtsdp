@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.hemaapp.GtsdpConfig;
 import com.hemaapp.hm_FrameWork.HemaNetTask;
 import com.hemaapp.hm_FrameWork.result.HemaBaseResult;
 import com.hemaapp.hm_gtsdp.GtsdpActivity;
@@ -27,7 +28,8 @@ public class TemplateEditActivty extends GtsdpActivity implements OnClickListene
 	private final int SENDER = 100;//发件人
 	private final int RECIVER = 200;//收件人
 	private final int SelectAddress = 300;
-	
+	private final int EDIT_SENDER = 400;//编辑发件人
+	private final int EDIT_RECIVER = 500;//编辑收件人
 	private Intent beforeIntent;
 	private String beforeName, beforeAddress, beforePhone;
 	private int ActivityType;
@@ -115,12 +117,12 @@ public class TemplateEditActivty extends GtsdpActivity implements OnClickListene
 		txtNext.setText("确定");
 		imageQuitActivity = (ImageView)findViewById(R.id.imageQuitActivity);
 		txtTemplateTitle = (TextView)findViewById(R.id.txtTemplateTitle);
-		if(ActivityType == SENDER)
+		if(ActivityType == SENDER || ActivityType == EDIT_SENDER)
 		{
 			txtTemplateTitle.setText("发件人");
 			keytype = "1";
 		}
-		else if(ActivityType == RECIVER)
+		else if(ActivityType == RECIVER || ActivityType == EDIT_RECIVER)
 		{
 			txtTemplateTitle.setText("收件人");
 			keytype = "2";

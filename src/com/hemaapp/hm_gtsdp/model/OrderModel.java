@@ -151,6 +151,28 @@ public class OrderModel extends XtomObject {
 	}
 
 	public String getCurrent_address() {
+		int Type = Integer.parseInt(tradetype);
+		switch (Type) {
+		case 0:
+			return "未审核";
+		case 1:
+			return "未支付";
+		case 2:
+			return "已支付";
+		case 3:
+			return current_address;
+		case 4:
+			return "已收货";
+		default:
+			break;
+		}
+//		if(tradetype.equals("4"))
+//			return "已收货";
+//		else if(tradetype.equals("0"))
+//			return "未审核";
+//		if(current_address == null || "".equals(current_address))
+//			return "配送中";
+		
 		return current_address;
 	}
 

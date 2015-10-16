@@ -122,7 +122,8 @@
             android:layout_centerVertical="true"
             android:layout_toLeftOf="@id/image1"
             android:text="修改"
-            android:textColor="@color/main_blue" />
+            android:textColor="@color/main_blue" 
+            android:id="@+id/txtSet"/>
     </RelativeLayout>
 
     <View

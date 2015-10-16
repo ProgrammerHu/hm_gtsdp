@@ -42,9 +42,8 @@ OnItemClickListener{
 	private GtsdpListView showListView;
 	private RadioGroup radioGroup;
 	private RadioButton rbtnLeft;
+	private RadioButton rbtnRight;
 	private List<OrderModel> listData;
-//	private List<OrderModel> listDataOnPassage;//在途
-//	private List<OrderModel> listDataServed;//已送达
 	private OrdersListAdapter listViewAdapter;
 	public MySendFragment(int pageNumber, GtsdpFragmentActivity activity)
 	{
@@ -111,14 +110,18 @@ OnItemClickListener{
 			}
 			else
 			{
-				for(OrderModel order : listResult)
-				{
-					listData.add(order);
-				}
+				listData.addAll(listResult);
 				listViewAdapter.setListData(listData);
 				listViewAdapter.notifyDataSetChanged();
 				refreshLoadmoreLayout.loadmoreSuccess();
 			}
+
+			if(listResult.size() < 20)
+			{
+				refreshLoadmoreLayout.setLoadmoreable(false);
+			}
+			else
+				refreshLoadmoreLayout.setLoadmoreable(true);
 			break;
 		}
 		
@@ -136,6 +139,17 @@ OnItemClickListener{
 		showListView = (GtsdpListView)findViewById(R.id.showListView);
 		radioGroup = (RadioGroup)findViewById(R.id.radioGroup);
 		rbtnLeft = (RadioButton)findViewById(R.id.rbtnLeft);
+		rbtnRight = (RadioButton)findViewById(R.id.rbtnRight);
+		if(keytype == 1)
+		{
+			rbtnLeft.setText("运输中");
+			rbtnRight.setText("已送达");
+		}
+		else if(keytype == 2)
+		{
+			rbtnLeft.setText("待接收");
+			rbtnRight.setText("已收货");
+		}
 		rbtnLeft.setChecked(true);
 	}
 

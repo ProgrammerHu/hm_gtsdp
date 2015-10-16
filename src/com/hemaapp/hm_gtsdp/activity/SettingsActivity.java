@@ -1,5 +1,6 @@
 package com.hemaapp.hm_gtsdp.activity;
 
+import java.text.DecimalFormat;
 import java.util.HashMap;
 
 import xtom.frame.XtomActivityManager;
@@ -46,12 +47,14 @@ public class SettingsActivity extends GtsdpActivity implements OnClickListener, 
 	private Button btnQuit;
 	private GtsdpTwoButtonDialog logoutDialog;
 	private SharePopupWindow shareWindow;
+	private TextView txtCache;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		setContentView(R.layout.activity_settings);
 		super.onCreate(savedInstanceState);
 		shareWindow = new SharePopupWindow(mContext, this);
 		ShareSDK.initSDK(this);//一定需要，否则无法分享
+		setCacheSize();
 	}
 
 	@Override
@@ -102,6 +105,7 @@ public class SettingsActivity extends GtsdpActivity implements OnClickListener, 
 		layoutShare = findViewById(R.id.layoutShare);
 		layoutScore = findViewById(R.id.layoutScore);
 		btnQuit = (Button)findViewById(R.id.btnQuit);
+		txtCache = (TextView)findViewById(R.id.txtCache);
 	}
 
 	@Override
@@ -155,9 +159,6 @@ public class SettingsActivity extends GtsdpActivity implements OnClickListener, 
 			break;
 		case R.id.layoutShare:
 			shareWindow.showAtLocation(findViewById(R.id.father), Gravity.BOTTOM, 0, 0);
-			break;
-		case R.id.layoutScore:
-			
 			break;
 		case R.id.btnQuit:
 			logout();
@@ -252,6 +253,7 @@ public class SettingsActivity extends GtsdpActivity implements OnClickListener, 
 		protected void onPostExecute(Void result) {
 			cancelProgressDialog();
 			showTextDialog("清除完成");
+			setCacheSize();
 		}
 	}
 	
@@ -342,4 +344,31 @@ public class SettingsActivity extends GtsdpActivity implements OnClickListener, 
 		return false;
 	}
 	
+	private void setCacheSize()
+	{
+		double CacheSize = XtomImageCache.getInstance(mContext).getCacheSize();
+		int i =0;
+		while(CacheSize > 1024)
+		{
+			CacheSize /= 1024.0;
+			i++;
+		}
+		String CacheSizeStr;
+		DecimalFormat dcmFmt = new DecimalFormat("0.0");
+		switch (i) {
+		case 0:
+			CacheSizeStr = dcmFmt.format(CacheSize) + "B";
+			break;
+		case 1:
+			CacheSizeStr = dcmFmt.format(CacheSize) + "KB";
+			break;
+		case 2:
+			CacheSizeStr = dcmFmt.format(CacheSize) + "MB";
+			break;
+		default:
+			CacheSizeStr = dcmFmt.format(CacheSize) + "GB";
+			break;
+		}
+		txtCache.setText(CacheSizeStr);
+	}
 }

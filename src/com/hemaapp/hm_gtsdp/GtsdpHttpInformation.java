@@ -183,6 +183,10 @@ public enum GtsdpHttpInformation implements HemaHttpInfomation {
 	 * 获取系统通知未读消息数
 	 */
 	NOTICE_COUNT(41, "notice_count", "获取系统通知未读消息数", false),
+	/**
+	 * 余额支付接口
+	 */
+	FEEACCOUNT_REMOVE(42, "feeaccount_remove", "余额支付接口", false),
 	
 	
 	

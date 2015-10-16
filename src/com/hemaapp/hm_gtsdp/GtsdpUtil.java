@@ -363,7 +363,7 @@ public class GtsdpUtil {
     	while(true)
     	{
         	if(Distance >= Temp)
-        		return State;
+        		return State + 1;
     		Temp /= 2.0;
     		State++;
     	}

@@ -100,6 +100,10 @@ public class MessagesActivity extends GtsdpActivity implements OnClickListener,
 				refreshLoadmoreLayout.loadmoreSuccess();
 			}
 			adapter.notifyDataSetChanged();
+			if(mResult.getObjects().size() < 20)
+			{
+				refreshLoadmoreLayout.setLoadmoreable(false);
+			}
 			break;
 		case NOTICE_SAVEOPERATE:
 			String a = nettask.getParams().get("operatetype");

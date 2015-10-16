@@ -58,15 +58,6 @@ public class GoodsDetailActivity extends GtsdpActivity implements OnClickListene
 		setContentView(R.layout.activity_goods_detail);
 		super.onCreate(savedInstanceState);
 		images = new ArrayList<String>();
-		images.add("http://d.hiphotos.baidu.com/baike/w%3D268/sign=ce66e2ab940a304e5222a7fce9c9a7c3/ac6eddc451da81cb0aa215625166d016082431dc.jpg");
-		images.add("http://7tszkm.com1.z0.glb.clouddn.com/keep-calm-and-carry-on_1423461.jpg");
-		images.add("http://7tszkm.com1.z0.glb.clouddn.com/keep-calm-and-carry-on_1423461.jpg");
-		images.add("http://7tszkm.com1.z0.glb.clouddn.com/keep-calm-and-carry-on_1423461.jpg");
-		images.add("http://7tszkm.com1.z0.glb.clouddn.com/keep-calm-and-carry-on_1423461.jpg");
-		images.add("http://7tszkm.com1.z0.glb.clouddn.com/keep-calm-and-carry-on_1423461.jpg");
-		images.add("http://7tszkm.com1.z0.glb.clouddn.com/keep-calm-and-carry-on_1423461.jpg");
-		images.add("http://d.hiphotos.baidu.com/baike/c0%3Dbaike150%2C5%2C5%2C150%2C50/sign=78fb3c9ffbdcd100d991f07313e22c75/0eb30f2442a7d9338ba972e1ae4bd11373f0011a.jpg");
-//		gridview.setAdapter(new FindGoodsImageAdapter(mContext, findViewById(R.id.father), images, gridview));
 
 		if(ActivityType == -1 || keyid == null || "".equals(keyid))
 			showTextDialog("页面调用参数错误");
@@ -149,12 +140,7 @@ public class GoodsDetailActivity extends GtsdpActivity implements OnClickListene
 		GtsdpHttpInformation information = (GtsdpHttpInformation)netTask.getHttpInformation();
 		switch (information) {
 		case TRANS_GET:
-//			ORDER = new OrderModel("8254545613", "18800000000", "18800000001", 50, 
-//					"2", "收件人的姓名", "收件人的地址", "收件人的电话", 
-//					"发件人姓名", "发件人地址", "发件人电话", "二维码信息", "2015-10-12 16:20", "528532213389");
-//			setData(ORDER.getId(), ORDER.getReceiver_address(), ORDER.getSender_address(), 
-//					ORDER.getTotal_fee(), ORDER.getReceiver_name(), ORDER.getSender_name(), 
-//					ORDER.getReceiver_telphone(), ORDER.getSender_telphone(), ORDER.getRegdate());
+			showTextDialog(baseResult.getMsg());
 			break;
 		case TRANS_PRICE_SAVE:
 		case NETWORK_RECEIVE:
@@ -177,6 +163,12 @@ public class GoodsDetailActivity extends GtsdpActivity implements OnClickListene
 			setData(ORDER.getTrade_no(), ORDER.getReceiver_address(), ORDER.getSender_address(), 
 					ORDER.getTotal_fee(), ORDER.getReceiver_name(), ORDER.getSender_name(), 
 					ORDER.getReceiver_telphone(), ORDER.getSender_telphone(), ORDER.getRegdate());
+			int tradetype = Integer.parseInt(ORDER.getTradetype());
+			if(tradetype >= 3)
+			{
+				findViewById(R.id.image1).setVisibility(View.INVISIBLE);
+				findViewById(R.id.txtSet).setVisibility(View.INVISIBLE);
+			}
 			List<ImageItem>imageList = ORDER.getImageItems();
 			if(imageList != null && imageList.size() > 0)
 			{

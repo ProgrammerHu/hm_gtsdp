@@ -59,7 +59,7 @@ public class SendDetailActivty extends GtsdpActivity implements OnClickListener 
 	private View detialMainLinear;
 	
 	private TextView txtTitle, txtNext, txtSendProtocol, txtSenderTemplet,
-			txtReciverTemplet, txtSenderAddress, txtReciverAddress;
+			txtReciverTemplet, txtSenderAddress, txtReciverAddress, txtAgree;
 	private ImageView imageQuitActivity;
 	private EditText editReciverName, editReciverPhone, editSenderName,
 			editSenderPhone;
@@ -197,6 +197,7 @@ public class SendDetailActivty extends GtsdpActivity implements OnClickListener 
 			String keyid = result.getObjects().get(0);
 			if(images != null && images.size() > 0)
 			{
+				showProgressDialog("正在上传图片");
 				for(int i = 0; i < images.size(); i++)
 				{
 					getNetWorker().fileUpload(getApplicationContext().getUser().getToken(), 
@@ -319,10 +320,9 @@ public class SendDetailActivty extends GtsdpActivity implements OnClickListener 
 		txtSenderTemplet.setOnClickListener(this);
 		txtReciverTemplet.setOnClickListener(this);
 		btnSend.setOnClickListener(this);
-//		layoutReciverAddress.setOnClickListener(this);
-//		layoutSendAddress.setOnClickListener(this);
 		layoutReciver.setOnClickListener(this);
 		layoutSender.setOnClickListener(this);
+		txtAgree.setOnClickListener(this);
 	}
 
 	@Override
@@ -358,6 +358,7 @@ public class SendDetailActivty extends GtsdpActivity implements OnClickListener 
 		gridView = (GridView) findViewById(R.id.gridview);
 		layoutReciver = (LinearLayout) findViewById(R.id.layoutReciver);
 		layoutSender = (LinearLayout) findViewById(R.id.layoutSender);
+		txtAgree = (TextView)findViewById(R.id.txtAgree);
 	}
 
 	@Override
@@ -370,19 +371,6 @@ public class SendDetailActivty extends GtsdpActivity implements OnClickListener 
 		case R.id.imageQuitActivity:
 			finish(R.anim.none, R.anim.right_out);
 			break;
-//		case R.id.layoutReciverAddress:
-//			myDistrictPicker.setOnClickListener(clickReciver);
-//			myDistrictPicker.showAtLocation(
-//					SendDetailActivty.this.findViewById(R.id.detialMainLinear),
-//					Gravity.CENTER | Gravity.CENTER_HORIZONTAL, 0, 0);
-//			break;
-//		case R.id.layoutSenderAddress:
-//			myDistrictPicker.setOnClickListener(clickSender);
-//			myDistrictPicker.showAtLocation(
-//					SendDetailActivty.this.findViewById(R.id.detialMainLinear),
-//					Gravity.CENTER | Gravity.CENTER_HORIZONTAL, 0, 0);
-//
-//			break;
 		case R.id.txtSenderTemplet:
 			intent = new Intent(this, TemplateListActivty.class);
 			intent.putExtra("ActivityType", SENDER);
@@ -419,6 +407,9 @@ public class SendDetailActivty extends GtsdpActivity implements OnClickListener 
 			intent.putExtra("telphone", editSenderPhone.getEditableText().toString().trim());
 			intent.putExtra("ActivityType", EDIT_SENDER);
 			startActivityForResult(intent, EDIT_SENDER);
+			break;
+		case R.id.txtAgree:
+			isAgree.setChecked(!isAgree.isChecked());
 			break;
 		}
 	}
@@ -496,7 +487,7 @@ public class SendDetailActivty extends GtsdpActivity implements OnClickListener 
 	 */
 	private class CompressPicTask extends AsyncTask<String, Void, Integer> {
 		String compressPath;
-
+		
 		@Override
 		protected Integer doInBackground(String... params) {
 			try {
@@ -526,6 +517,7 @@ public class SendDetailActivty extends GtsdpActivity implements OnClickListener 
 				break;
 			case 1:
 				showTextDialog("图片压缩失败");
+				cancelProgressDialog();
 				break;
 			}
 		}

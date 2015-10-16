@@ -36,7 +36,7 @@ public class RegisterActivity extends GtsdpActivity implements OnClickListener{
 	private Intent beforeIntent;
 	
 	private ImageView imageQuitActivity,imageClear;
-	private TextView txtTitle, txtNext, txtRemainingTime, txtDeclare, txtActionStr;
+	private TextView txtTitle, txtNext, txtRemainingTime, txtDeclare, txtActionStr, txtAgree;
 	private Button btnSendIdentifyCode;
 	private LinearLayout linearRemainingTime;
 	private EditText editRegisterPhone, editCode;
@@ -83,6 +83,7 @@ public class RegisterActivity extends GtsdpActivity implements OnClickListener{
 		editRegisterPhone = (EditText)findViewById(R.id.editRegisterPhone);
 		editCode = (EditText)findViewById(R.id.editCode);
 		checkAgree = (CheckBox)findViewById(R.id.checkAgree);
+		txtAgree = (TextView)findViewById(R.id.txtAgree);
 	}
 
 	@Override
@@ -99,6 +100,7 @@ public class RegisterActivity extends GtsdpActivity implements OnClickListener{
 		btnSendIdentifyCode.setOnClickListener(this);
 		txtDeclare.setOnClickListener(this);
 		imageClear.setOnClickListener(this);
+		txtAgree.setOnClickListener(this);
 		editRegisterPhone.addTextChangedListener(new TextWatcher() {
 			@Override
 			public void onTextChanged(CharSequence s, int start, int before, int count) {}
@@ -130,6 +132,9 @@ public class RegisterActivity extends GtsdpActivity implements OnClickListener{
 			break;
 		case R.id.imageQuitActivity:
 			finish(R.anim.none, R.anim.right_out);
+			break;
+		case R.id.txtAgree:
+			checkAgree.setChecked(!checkAgree.isChecked());
 			break;
 		case R.id.btnSendIdentifyCode:
 			SendIdentifyCode();

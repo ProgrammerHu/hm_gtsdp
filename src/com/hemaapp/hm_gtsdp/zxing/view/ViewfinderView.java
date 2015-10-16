@@ -39,11 +39,11 @@ public final class ViewfinderView extends View {
 	/**
 	 * 四个绿色边角对应的宽度
 	 */
-	private static final int CORNER_WIDTH = 10;
+	private static final int CORNER_WIDTH = 5;
 	/**
 	 * 扫描框中的中间线的宽度
 	 */
-	private static final int MIDDLE_LINE_WIDTH = 6;
+	private static final int MIDDLE_LINE_WIDTH = 3;
 	
 	/**
 	 * 扫描框中的中间线的与扫描框左右的间隙
@@ -139,6 +139,7 @@ public final class ViewfinderView extends View {
 		int height = canvas.getHeight();
 
 		paint.setColor(resultBitmap != null ? resultColor : maskColor);
+//		frame.left = width / 4;
 		
 		//画出扫描框外面的阴影部分，共四个部分，扫描框的上面到屏幕上面，扫描框的下面到屏幕下面
 		//扫描框的左边面到屏幕左边，扫描框的右边到屏幕右边

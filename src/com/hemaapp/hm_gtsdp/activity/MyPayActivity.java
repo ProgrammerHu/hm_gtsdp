@@ -7,12 +7,20 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.hemaapp.GtsdpConfig;
 import com.hemaapp.hm_FrameWork.HemaNetTask;
+import com.hemaapp.hm_FrameWork.result.HemaArrayResult;
 import com.hemaapp.hm_FrameWork.result.HemaBaseResult;
 import com.hemaapp.hm_gtsdp.GtsdpActivity;
+import com.hemaapp.hm_gtsdp.GtsdpHttpInformation;
 import com.hemaapp.hm_gtsdp.R;
+import com.hemaapp.hm_gtsdp.db.UserDBHelper;
+import com.hemaapp.hm_gtsdp.dialog.GtsdpPasswordDialog;
+import com.hemaapp.hm_gtsdp.dialog.GtsdptOneButtonDialog;
+import com.hemaapp.hm_gtsdp.dialog.GtsdptOneButtonDialog.OnButtonListener;
+import com.hemaapp.hm_gtsdp.model.User;
 import com.unionpay.UPPayAssistEx;
 import com.unionpay.uppay.PayActivity;
 /**
@@ -22,9 +30,10 @@ import com.unionpay.uppay.PayActivity;
  *
  */
 public class MyPayActivity extends GtsdpActivity implements OnClickListener{
-	String unionStr = "201509181555567100698";
-
-	private TextView txtTitle, txtNext;
+	private String keyid;
+	private double Total_fee;
+	
+	private TextView txtTitle, txtNext, txtPayCount, txtAccount;
 	private ImageView imageQuitActivity, TempImageView;
 	
 	private View layoutAccount, layoutAlipay, layoutUnionpay, layoutWechat;
@@ -48,15 +57,63 @@ public class MyPayActivity extends GtsdpActivity implements OnClickListener{
 	}
 
 	@Override
-	protected void callBackForServerFailed(HemaNetTask arg0, HemaBaseResult arg1) {
-		// TODO Auto-generated method stub
+	protected void callBackForServerFailed(HemaNetTask netTask, HemaBaseResult baseResult) {
+
+		cancelProgressDialog();
+		showTextDialog(baseResult.getMsg());
 		
 	}
 
 	@Override
-	protected void callBackForServerSuccess(HemaNetTask arg0,
-			HemaBaseResult arg1) {
-		// TODO Auto-generated method stub
+	protected void callBackForServerSuccess(HemaNetTask netTask,
+			HemaBaseResult baseResult) {
+		GtsdpHttpInformation information = (GtsdpHttpInformation)netTask.getHttpInformation();
+		switch (information) {
+		case CLIENT_GET:
+			cancelProgressDialog();
+			User user = ((HemaArrayResult<User>)baseResult).getObjects().get(0);
+			UserDBHelper helper = new UserDBHelper(mContext);
+			helper.update(user);
+			double feeaccount = Double.parseDouble(user.getFeeaccount());
+			if(feeaccount < Total_fee)
+			{
+				GtsdptOneButtonDialog dialog = new GtsdptOneButtonDialog(mContext);
+				dialog.setText("余额不足，请选择其他支付方式");
+				dialog.setButtonListener(new OnButtonListener() {
+					@Override
+					public void onRightButtonClick(GtsdptOneButtonDialog gtsdptOneButtonDialog) {
+						gtsdptOneButtonDialog.cancel();
+					}
+				});
+			}
+			else
+			{//TODO 去支付
+				GtsdpPasswordDialog dialog = new GtsdpPasswordDialog(mContext);
+				dialog.setButtonListener(new GtsdpPasswordDialog.OnButtonListener() {
+					
+					@Override
+					public void onRightButtonClick(GtsdpPasswordDialog dialog) {
+						//使用余额支付
+						showProgressDialog("支付中");
+						getNetWorker().feeAccountRemove(getApplicationContext().getUser().getToken(), "2", keyid, dialog.getPassword());
+						dialog.cancel();
+					}
+					
+					@Override
+					public void onLeftButtonClick(GtsdpPasswordDialog dialog) {
+						dialog.cancel();
+					}
+				});
+				dialog.show();
+			}
+			break;
+		case FEEACCOUNT_REMOVE:
+			cancelProgressDialog();
+			showTextDialog("支付成功");
+			break;
+		default:
+			break;
+		}
 		
 	}
 
@@ -72,6 +129,10 @@ public class MyPayActivity extends GtsdpActivity implements OnClickListener{
 		txtTitle.setText("支付");
 		txtNext = (TextView)findViewById(R.id.txtNext);
 		txtNext.setVisibility(View.INVISIBLE);
+		txtPayCount = (TextView)findViewById(R.id.txtPayCount);
+		txtPayCount.setText("￥" + Total_fee);
+		txtAccount = (TextView)findViewById(R.id.txtAccount);
+		txtAccount.setText("（余额￥" + getApplicationContext().getUser().getFeeaccount() + "）");
 		imageQuitActivity = (ImageView) findViewById(R.id.imageQuitActivity);
 		layoutAccount = findViewById(R.id.layoutAccount);
 		layoutAlipay = findViewById(R.id.layoutAlipay);
@@ -82,7 +143,8 @@ public class MyPayActivity extends GtsdpActivity implements OnClickListener{
 
 	@Override
 	protected void getExras() {
-		// TODO Auto-generated method stub
+		keyid = getIntent().getStringExtra("keyid");
+		Total_fee = getIntent().getDoubleExtra("Total_fee", -1);
 		
 	}
 
@@ -146,9 +208,13 @@ public class MyPayActivity extends GtsdpActivity implements OnClickListener{
 	{
 		switch(selectId)
 		{
+		case R.id.layoutAccount:
+			showProgressDialog("余额确认中");
+			getNetWorker().clientGet(getApplicationContext().getUser().getToken(), getApplicationContext().getUser().getId());
+			break;
 		case R.id.layoutUnionpay:
-			UPPayAssistEx.startPayByJAR(mContext, PayActivity.class, null, null,
-					unionStr, GtsdpConfig.UNIONPAY_TESTMODE);
+//			UPPayAssistEx.startPayByJAR(mContext, PayActivity.class, null, null,
+//					unionStr, GtsdpConfig.UNIONPAY_TESTMODE);
 			break;
 		}
 	}

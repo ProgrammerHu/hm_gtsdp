@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -20,6 +21,7 @@ import com.hemaapp.hm_gtsdp.model.ImageItem;
 import com.hemaapp.hm_gtsdp.model.OrderModel;
 import com.hemaapp.hm_gtsdp.result.TransDetailResult;
 import com.hemaapp.hm_gtsdp.view.MyGridView;
+import com.unionpay.uppay.PayActivity;
 /**
  * 订单详情界面
  * @author Wen
@@ -27,14 +29,18 @@ import com.hemaapp.hm_gtsdp.view.MyGridView;
  *
  */
 public class OrderDetailActivity extends GtsdpActivity{
+	private final int PAY = 90;
 	private String keytype;/* 业务类型 1:从订单列表中进入详情; 2:网点用户扫描后进入详情; 3:收货人扫描后进入详情;  */
 	private String keyid;//主键id 当keytype=1时，keyid=捎带id; 当keytype=2、3时，keyid=二维码信息; 
 	private TextView txtTitle, txtNext, txtOrderNumber, txtPosition, txtDatetime, txtCount, txtReciverName, txtReciverAddress, txtReciverPhone,
 	txtSenderName, txtSenderAddress, txtSenderPhone;
 	private ImageView imageQuitActivity;
 	private MyGridView gridview; 
+	private Button btnPay;
 
 	private ArrayList<String> images;
+	
+	private double Total_fee;//应付金额
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		setContentView(R.layout.activity_order_detail);
@@ -75,8 +81,12 @@ public class OrderDetailActivity extends GtsdpActivity{
 			cancelProgressDialog();
 			TransDetailResult result = (TransDetailResult) baseResult;
 			OrderModel order = result.getInfo();
+			String tradetype = order.getTradetype();
+			if("1".equals(tradetype))//后台已审核，未支付
+				btnPay.setVisibility(View.VISIBLE);
 			txtOrderNumber.setText("订单号:" + order.getTrade_no());
-			txtPosition.setText("当前位置:" + order.getCurrent_address());
+			String position = order.getTradetype().equals("3") ? "当前位置:" : "";
+			txtPosition.setText(position + order.getCurrent_address());
 			txtDatetime.setText(order.getRegdate());
 			txtCount.setText(order.getTotal_fee() + "元");
 			txtReciverName.setText(order.getReceiver_name());
@@ -85,7 +95,7 @@ public class OrderDetailActivity extends GtsdpActivity{
 			txtSenderName.setText(order.getSender_name());
 			txtSenderAddress.setText(order.getSender_address());
 			txtSenderPhone.setText(order.getSender_telphone());
-			
+			Total_fee = order.getTotal_fee();
 			List<ImageItem>imageList = order.getImageItems();
 			if(imageList != null && imageList.size() > 0)
 			{
@@ -125,6 +135,7 @@ public class OrderDetailActivity extends GtsdpActivity{
 		
 		imageQuitActivity = (ImageView)findViewById(R.id.imageQuitActivity);
 		gridview = (MyGridView)findViewById(R.id.gridview);
+		btnPay = (Button)findViewById(R.id.btnPay);
 	}
 
 	@Override
@@ -140,6 +151,17 @@ public class OrderDetailActivity extends GtsdpActivity{
 			@Override
 			public void onClick(View v) {
 				finish(R.anim.none, R.anim.right_out);
+			}
+		});
+		btnPay.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent(OrderDetailActivity.this, MyPayActivity.class);
+				intent.putExtra("keyid", keyid);
+				intent.putExtra("Total_fee", Total_fee);
+				startActivityForResult(intent, PAY);
+				overridePendingTransition(R.anim.right_in, R.anim.none);
 			}
 		});
 	}

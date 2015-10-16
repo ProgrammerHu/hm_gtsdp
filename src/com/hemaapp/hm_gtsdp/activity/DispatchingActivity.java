@@ -3,6 +3,8 @@ package com.hemaapp.hm_gtsdp.activity;
 import java.util.ArrayList;
 import java.util.List;
 
+import xtom.frame.view.XtomRefreshLoadmoreLayout;
+import xtom.frame.view.XtomRefreshLoadmoreLayout.OnStartListener;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -85,6 +87,10 @@ public class DispatchingActivity extends GtsdpActivity implements OnCheckedChang
 			listDatas = result.getObjects();
 			adapter = new DispatchingListAdapter(mContext, listDatas);
 			showListView.setAdapter(adapter);
+			if(result.getObjects().size() < 20)
+			{
+				refreshLoadmoreLayout.setLoadmoreable(false);
+			}
 			break;
 
 		default:
@@ -107,6 +113,7 @@ public class DispatchingActivity extends GtsdpActivity implements OnCheckedChang
 		rbtnLeft = (RadioButton)findViewById(R.id.rbtnLeft);
 		rbtnLeft.setChecked(true);
 		showListView = (GtsdpListView)findViewById(R.id.showListView);
+		refreshLoadmoreLayout = (GtsdpRefreshLoadmoreLayout)findViewById(R.id.refreshLoadmoreLayout);
 	}
 
 	@Override
@@ -135,6 +142,20 @@ public class DispatchingActivity extends GtsdpActivity implements OnCheckedChang
 				startActivity(intent);
 				overridePendingTransition(R.anim.right_in, R.anim.none);
 
+			}
+		});
+		refreshLoadmoreLayout.setOnStartListener(new OnStartListener() {
+			
+			@Override
+			public void onStartRefresh(XtomRefreshLoadmoreLayout v) {
+				// TODO Auto-generated method stub
+				refreshLoadmoreLayout.refreshSuccess();
+			}
+			
+			@Override
+			public void onStartLoadmore(XtomRefreshLoadmoreLayout v) {
+				// TODO Auto-generated method stub
+				refreshLoadmoreLayout.loadmoreSuccess();
 			}
 		});
 	}

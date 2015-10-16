@@ -224,10 +224,8 @@ public class GtsdpNetWorker extends HemaNetWorker {
 		GtsdpHttpInformation information = GtsdpHttpInformation.ALIPAY;
 		HashMap<String, String> params = new HashMap<String, String>();
 		params.put("token", token);// 登陆令牌
-//		params.put("paytype", paytype);// 支付类型 固定传1
 		params.put("keytype", keytype);// 业务类型,1：账户余额充值2：商品立即购买
 		params.put("keyid", keyid);// 业务相关,id当keytype=1时,keyid=0当keytype=2时,keyid=blog_id
-//		params.put("total_fee", total_fee);// 支付交易金额,单位：元(测试时统一传递0.01元)
 
 		GtsdpNetTask task = new AlipayTradeTask(information, params);
 		executeTask(task);
@@ -770,6 +768,24 @@ public class GtsdpNetWorker extends HemaNetWorker {
 		params.put("token", token);
 
 		GtsdpNetTask task = new NoticeCountTask(information, params);
+		executeTask(task);
+	}
+	/**
+	 * 余额支付接口
+	 * @param token 登录令牌
+	 * @param keytype 业务类型	2:支付订单 
+	 * @param keyid 主键id	当keytype=2时，keyid=order_id 
+	 * @param paypassword 支付密码
+	 */
+	public void feeAccountRemove(String token, String keytype, String keyid, String paypassword)
+	{
+		GtsdpHttpInformation information = GtsdpHttpInformation.FEEACCOUNT_REMOVE;
+		HashMap<String, String> params = new HashMap<String, String>();
+		params.put("token", token);
+		params.put("keytype", keytype);
+		params.put("keyid", keyid);
+		params.put("paypassword", paypassword);
+		GtsdpNetTask task = new CurrentTask(information, params);
 		executeTask(task);
 	}
 }

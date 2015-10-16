@@ -47,8 +47,9 @@ public class MyAccountActivity extends GtsdpActivity implements OnClickListener{
 		super.onRestart();
 		getNetWorker().clientGet(getApplicationContext().getUser().getToken(), getApplicationContext().getUser().getId());
 		showProgressDialog("¸üÐÂÖÐ");
+		String count = getApplicationContext().getUser().getFeeaccount();
 		FeeAccount = Double.parseDouble(getApplicationContext().getUser().getFeeaccount());
-		txtCount.setText("£¤"+String.valueOf(FeeAccount));
+		txtCount.setText("£¤"+getApplicationContext().getUser().getFeeaccount());
 	}
 	@Override
 	protected void callAfterDataBack(HemaNetTask arg0) {

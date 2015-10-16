@@ -48,7 +48,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="12dp"
                         android:layout_marginTop="12dp"
-                        android:text="当前位置："
+                        android:text=" "
                         android:textColor="@color/black"
                         android:textSize="@dimen/textsize_8" />
 
@@ -358,6 +358,26 @@
                 android:verticalSpacing="5dp" 
                 android:layout_marginBottom="20dp">
             </com.hemaapp.hm_gtsdp.view.MyGridView>
+            <LinearLayout 
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/background"
+                >
+                <Button 
+			        android:layout_width="match_parent"
+			        android:layout_height="50dp"
+			        android:text="去支付"
+			        android:textColor="@color/white"
+			        android:id="@+id/btnPay"
+			        android:background="@drawable/bg_button_submit_square"
+			        android:textSize="@dimen/textsize_9"
+			        android:layout_marginLeft="10dp"
+			        android:layout_marginRight="10dp"
+			        android:layout_marginTop="50dp"
+			        android:layout_marginBottom="50dp"
+			        android:visibility="gone"
+			        />
+            </LinearLayout>
         </LinearLayout>
     </ScrollView>
 

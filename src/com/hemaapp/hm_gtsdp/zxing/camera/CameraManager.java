@@ -29,8 +29,8 @@ import android.widget.Toast;
 
 	private static final int MIN_FRAME_WIDTH = 120;
 	private static final int MIN_FRAME_HEIGHT = 120;
-	private static final int MAX_FRAME_WIDTH = 540;
-	private static final int MAX_FRAME_HEIGHT = 480;
+	private static final int MAX_FRAME_WIDTH = 960;
+	private static final int MAX_FRAME_HEIGHT = 960;
 
 	private static CameraManager cameraManager;
 
@@ -216,7 +216,7 @@ import android.widget.Toast;
 			} else if (width > MAX_FRAME_WIDTH) {
 				width = MAX_FRAME_WIDTH;
 			}
-			int height = screenResolution.y * 3 / 4;
+			int height = screenResolution.x * 3 / 4;
 			if (height < MIN_FRAME_HEIGHT) {
 				height = MIN_FRAME_HEIGHT;
 			} else if (height > MAX_FRAME_HEIGHT) {
